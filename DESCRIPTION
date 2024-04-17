@@ -1,0 +1,54 @@
+Type: Package
+Package: RtsEva
+Title: Performs the Transformed-Stationary Extreme Values Analysis for
+    non-stationary analysis of extreme events
+Version: 0.1.0
+Authors@R: 
+    person(given = "Alois",
+           family = "Tilloy",
+           role = c("aut", "cre"),
+           email = "alois.tilloy@ec.europa.eu",
+           comment = c(ORCID = "https://orcid.org/0000-0002-5881-0642"))
+Maintainer: The package maintainer <alois.tilloy@ec.europa.eu>
+Description: This package is an adaptation of the Matalb tsEVA toolbox
+    developed by Lorenzo Mentaschi availaible here:
+    https://github.com/menta78/tsEva It contains an implementation of the
+    Transformed-Stationary (TS) methodology for non-stationary EVA as
+    described in Mentaschi et al. (2016).  In synthesis this approach
+    consists in (i) transforming a non-stationary time series into a
+    stationary one to which the stationary EVA theory can be applied; and
+    (ii) reverse-transforming the result into a non-stationary extreme
+    value distribution.
+License: GPL (>= 3)
+URL: https://github.com/r-lib/devtools
+Depends: 
+    R (>= 2.10)
+Imports:
+    changepoint,
+    dplyr,
+    evd,
+    ggplot2,
+    iemisc,
+    lubridate,
+    methods,
+    moments,
+    POT,
+    pracma,
+    scales,
+    texmex,
+    tsibble,
+    WGCNA,
+    grDevices,
+    stats
+Suggests: 
+    knitr,
+    ncdf4,
+    rnaturalearth,
+    terra,
+    testthat
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
