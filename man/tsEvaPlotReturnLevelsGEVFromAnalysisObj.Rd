@@ -47,8 +47,3 @@ and simplified methodology for non-stationary extreme value analysis.
 \emph{Hydrology and Earth System Sciences}, 20, 3527-3547.
 doi:10.5194/hess-20-3527-2016.
 }
-\seealso{
-Other GEVplots: 
-\code{\link{tsEvaPlotAllRLevelsGEV}()}
-}
-\concept{GEVplots}

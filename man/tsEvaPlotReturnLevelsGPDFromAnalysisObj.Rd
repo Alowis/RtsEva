@@ -36,8 +36,4 @@ Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio, G
 }
 \seealso{
 \code{\link[=tsEvaPlotReturnLevelsGPD]{tsEvaPlotReturnLevelsGPD()}} and \code{\link[=tsEvaPlotAllRLevelsGPD]{tsEvaPlotAllRLevelsGPD()}}
-
-Other GPDplots: 
-\code{\link{tsEvaPlotAllRLevelsGPD}()}
 }
-\concept{GPDplots}

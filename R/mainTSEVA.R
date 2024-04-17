@@ -34,9 +34,9 @@
 #' @param gevType The type of GEV distribution (GEV or GPD).
 #' @param evdType The type of extreme value distribution (GEV or GPD).
 #' @param tail The mode of the analysis (e.g., high for flood peaks or low for drought peaks).
-#' @param tail The average number of events per year, can be specified by the
+#' @param epy The average number of events per year, can be specified by the
 #' user or automatically set according to the tail selected.
-#' @param lowdt The temporal resultion used for low values. default is 7 days.
+#' @param lowdt The temporal resolultion used for low values. default is 7 days.
 #'
 #' @return A list containing the results of the non-stationary EVA. Containing the following components:
 #' \itemize{nonStationaryEvaParams: The estimated parameters for non-stationary EVA.
@@ -80,6 +80,8 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
   gevType <- args$gevType
   TrendTh <- args$TrendTh
   epy <- args$epy
+  tail=args$tail
+  lowdt=args$lowdt
   minPeakDistanceInDays<-args$minPeakDistanceInDays
   trans=args$trans
   mode=args$mode

@@ -402,6 +402,7 @@ tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, r
     }
   }
   returnLevels <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, timeHorizonInYears, returnPeriodsInYears)
+  returnLevelsErr <- returnLevels$returnLevelsErr
   if (nonStationary) {
     returnLevelsErrFit <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErrFit, sigmaStdErrFit, rep(0, length(thresholdStdErr)), nPeaks, timeHorizonInYears, returnPeriodsInYears)
     returnLevelsErrTransf <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErrTransf, sigmaStdErrTransf, thresholdStdErrTransf, nPeaks, timeHorizonInYears, returnPeriodsInYears)
@@ -409,6 +410,7 @@ tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, r
     returnLevelsErrFit <- returnLevelsErr
     returnLevelsErrTransf <- rep(0, length(returnLevelsErr))
   }
+  return(list(returnLevels = returnLevels$returnLevels, returnLevelsErr = returnLevelsErr, returnLevelsErrFit = returnLevelsErrFit, returnLevelsErrTransf = returnLevelsErrTransf))
 }
 
 
@@ -978,37 +980,6 @@ tsGetNumberPerYear <- function(ms, locs){
 }
 
 
-#' Find the index of the yearly maximum value in a subset of a vector
-#'
-#' This function takes a subset of a vector and returns the index of the maximum value in that subset.
-#'
-#' @param subIndxs A numeric vector representing the subset of indices to consider.
-#' @return The index of the maximum value in the subset.
-#' @examples
-#' srs <- c(10, 20, 30, 40, 50)
-#' findYMax(c(1, 3, 5))
-#' # Output: 5
-findYMax <- function(subIndxs) {
-  subIndxMaxIndx <- which.max(srs[subIndxs])
-  subIndxs[subIndxMaxIndx]
-}
-
-#' Find the index of the monthly maximum value in a given subset of a vector.
-#'
-#' This function takes a vector and a subset of indices and returns the index of the maximum value within that subset.
-#'
-#' @param indxs A numeric vector specifying the subset of indices.
-#' @return The index of the maximum value within the specified subset.
-#' @examples
-#' srs <- c(10, 20, 30, 40, 50)
-#' findMMax(c(1, 3, 5))
-#' # Output: 5
-findMMax <- function(indxs) {
-  maxVal <- max(srs[indxs])
-  maxIndx <- indxs[which.max(srs[indxs])]
-  return(maxIndx)
-}
-
 #' Compute Annual Maxima
 #'
 #' This function computes the annual maxima of a time series.
@@ -1037,7 +1008,21 @@ computeAnnualMaxima <- function(timeAndSeries) {
   srs <- timeAndSeries[,2]
   years <- year(tmvec)
 
-  annualMaxIndx <- tapply(1:length(srs), years, findMax)
+  #' Find the index of the yearly maximum value in a subset of a vector
+  #'
+  #' This function takes a subset of a vector and returns the index of the maximum value in that subset.
+  #'
+  #' @param subIndxs A numeric vector representing the subset of indices to consider.
+  #' @return The index of the maximum value in the subset.
+  #' @examples
+  #' srs <- c(10, 20, 30, 40, 50)
+  #' findYMax(c(1, 3, 5))
+  #' # Output: 5
+  findYMax <- function(subIndxs) {
+    subIndxMaxIndx <- which.max(srs[subIndxs])
+    subIndxs[subIndxMaxIndx]
+  }
+  annualMaxIndx <- tapply(1:length(srs), years, findYMax)
   annualMaxInx <- annualMaxIndx[!is.na(annualMaxIndx)]
   annualMaxIndx=as.vector(unlist((annualMaxIndx)))
   annualMax <- srs[annualMaxIndx]
@@ -1076,8 +1061,22 @@ computeMonthlyMaxima<- function(timeAndSeries) {
   mnts <- as.integer(format(tmvec, "%m"))
   mnttmvec <- data.frame(yrs, mnts)
   valsIndxs <- 1:length(srs)
-
-  monthlyMaxIndx <- aggregate(valsIndxs ~ yrs + mnts, data = mnttmvec, findMax)
+  #' Find the index of the monthly maximum value in a given subset of a vector.
+  #'
+  #' This function takes a vector and a subset of indices and returns the index of the maximum value within that subset.
+  #'
+  #' @param indxs A numeric vector specifying the subset of indices.
+  #' @return The index of the maximum value within the specified subset.
+  #' @examples
+  #' srs <- c(10, 20, 30, 40, 50)
+  #' findMMax(c(1, 3, 5))
+  #' # Output: 5
+  findMMax <- function(indxs) {
+    maxVal <- max(srs[indxs])
+    maxIndx <- indxs[which.max(srs[indxs])]
+    return(maxIndx)
+  }
+  monthlyMaxIndx <- aggregate(valsIndxs ~ yrs + mnts, data = mnttmvec, findMMax)
   monthlyMaxIndx$valsIndxs=as.numeric(monthlyMaxIndx$valsIndxs)
   monthlyMaxIndx <- monthlyMaxIndx[order(monthlyMaxIndx$yrs, monthlyMaxIndx$mnts), "valsIndxs"]
   monthlyMax <- srs[monthlyMaxIndx]

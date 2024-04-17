@@ -9,12 +9,16 @@ computeMonthlyMaxima(timeAndSeries)
 \arguments{
 \item{timeAndSeries}{A data frame containing the time stamps and series values.
 The first column should contain the time stamps, and the second column should contain the series values.}
+
+\item{indxs}{A numeric vector specifying the subset of indices.}
 }
 \value{
 A list containing the monthly maxima, corresponding dates, and indices.
 - \code{monthlyMax}: A vector of the monthly maximum values.
 - \code{monthlyMaxDate}: A vector of the dates corresponding to the monthly maximum values.
 - \code{monthlyMaxIndx}: A vector of the indices of the monthly maximum values in the original series.
+
+The index of the maximum value within the specified subset.
 }
 \description{
 This function computes the monthly maxima of a time series.
@@ -24,4 +28,7 @@ timeAndSeries <- data.frame(timeStamps = c("2022-01-01", "2022-01-02", "2022-02-
                             series = c(10, 15, 5, 20))
 computeMonthlyMaxima(timeAndSeries)
 
+srs <- c(10, 20, 30, 40, 50)
+findMMax(c(1, 3, 5))
+# Output: 5
 }

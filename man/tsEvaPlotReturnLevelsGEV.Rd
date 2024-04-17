@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotReturnLevelsGEV}
 \alias{tsEvaPlotReturnLevelsGEV}
-\title{tsEvaPlotReturnLevelsGEV Function Plot Return Levels using Generalized Extreme Value (GEV) distribution}
+\title{tsEvaPlotReturnLevelsGEV Function}
 \usage{
 tsEvaPlotReturnLevelsGEV(
   epsilon,
@@ -48,8 +48,8 @@ This function plots the return levels using the Generalized Extreme Value (GEV) 
 tsEvaPlotReturnLevelsGEV(
   epsilon = 0.1, sigma = 1, mu = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1, muStdErr = 0.05,
   rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-  tstamps = "Return Levels", trans = "inv"
-)
+  tstamps = "Return Levels", trans = "inv")
+  @export
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGEV}} \code{\link{tsEvaPlorReturnLevelsGEVFromAnalysisObj}}

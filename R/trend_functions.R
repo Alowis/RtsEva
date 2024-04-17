@@ -46,7 +46,7 @@ tsEvaTransformSeriesToStationaryTrendOnly <- function(timeStamps, series, timeWi
   stdDevSeries <- varianceSeries^.5
   statSeries <- rs@detrendSeries / stdDevSeries
   statSer3Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn3mom
-  kurstosis <- kurtosis(statSeries)
+  kurstosis <- moments::kurtosis(statSeries)
   statSer4Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn4mom
   statSer3Mom <- tsEvaNanRunningMean(statSer3Mom, ceiling(nRunMn))
   statSer4Mom <- tsEvaNanRunningMean(statSer4Mom, ceiling(nRunMn))
@@ -557,6 +557,235 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
   return(trasfData)
 }
 
+
+#' Transform Time Series to Stationary Trend and Change Points
+#'
+#' This function takes a time series and transforms it into a stationary trend series
+#' by removing the trend component and detecting change points. It computes the slowly
+#' varying standard deviation and normalizes the stationary series before detecting
+#' step changes. It also calculates the error on the trend and standard deviation.
+#'
+#' @param timeStamps A vector of time stamps corresponding to the data points in the series.
+#' @param series The original time series data.
+#' @param timeWindow The size of the time window used for detrending.
+#'
+#' @return A list containing the following elements:
+#' \itemize{
+#'   \item \code{runningStatsMulteplicity}: The running statistics multiplicity.
+#'   \item \code{stationarySeries}: The transformed stationary series.
+#'   \item \code{trendSeries}: The trend series.
+#'   \item \code{trendonlySeries}: The trend series without the stationary component.
+#'   \item \code{ChpointsSeries2}: The trend component of the change points.
+#'   \item \code{changePoints}: The detected change points.
+#'   \item \code{trendSeriesNonSeasonal}: The trend series without the seasonal component.
+#'   \item \code{trendError}: The error on the trend.
+#'   \item \code{stdDevSeries}: The slowly varying standard deviation series.
+#'   \item \code{stdDevSeriesNonStep}: The slowly varying standard deviation series without step changes.
+#'   \item \code{stdDevError}: The error on the standard deviation.
+#'   \item \code{timeStamps}: The time stamps.
+#'   \item \code{nonStatSeries}: The original non-stationary series.
+#'   \item \code{statSer3Mom}: The running mean of the third moment of the stationary series.
+#'   \item \code{statSer4Mom}: The running mean of the fourth moment of the stationary series.
+#' }
+#'
+#' @examples
+#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "day")
+#' series <- rnorm(length(timeStamps))
+#' timeWindow <- 5
+#' result <- tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps, series, timeWindow)
+#'
+#' @export
+tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series, timeWindow) {
+  cat('computing the trend ...\n')
+  #ChgPtsRaw=tsEvaChangepts(series,timeWindow/2,timeStamps)
+  rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
+  nRunMn = rs@nRunMn
+  cat('computing the slowly varying standard deviation ...\n')
+  varianceSeries <- tsEvaNanRunningVariance(rs@detrendSeries, nRunMn)
+  #further smoothing
+  varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(nRunMn/2))
+  #
+  stdDevSeries <- varianceSeries^.5
+  stdDevSeries_1<-stdDevSeries
+  statSeries <- rs@detrendSeries
+  statSeries_1=statSeries
+  cat('computing the step change detection...\n')
+  #I normalize the stationary serie before the step change detection
+  #Maybe not the best
+  statSeries=statSeries/stdDevSeries
+  ChgPts=tsEvaChangepts(statSeries,nRunMn/1.5,timeStamps)
+
+  #static std
+  statSD=sd(statSeries)
+  #ChgptStdDevSeries <- sqrt(ChgPts$variance)/statSD
+  ChgptStdDevSeries=1
+  statSeries=statSeries-ChgPts$trend
+  # statSeries=statSeries/stdDevSeries
+  stdDevSeries=stdDevSeries*ChgptStdDevSeries
+  trendSeries=rs@trendSeries+ChgPts$trend*stdDevSeries
+  # plot(ChgPts$trend)
+  # plot(stdDevSeries_1)
+  # plot(trendSeries,type="l")
+  # lines(rs@trendSeries,col=2)
+  #
+
+  statSer3Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn3mom
+  kurstosis=moments::kurtosis(statSeries)
+  statSer4Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn4mom
+  statSer3Mom <- tsEvaNanRunningMean(statSer3Mom, ceiling(nRunMn))
+  statSer4Mom <- tsEvaNanRunningMean(statSer4Mom, ceiling(nRunMn))
+
+  # N is the size of each sample used to compute the average
+  N <- nRunMn
+  # the error on the trend is computed as the error on the average:
+  #  error(average) = stdDev/sqrt(N)
+  trendError <- mean(stdDevSeries)/N^.5
+
+  # variance(stdDev) ~ 2 stdDev^4 / (n - 1)
+
+  # stdDevError is approximated as constant
+  avgStdDev <- mean(stdDevSeries)
+  S <- 2
+  # computation of the error on the standard deviation explained in
+  # Mentaschi et al 2016
+  stdDevError <- avgStdDev*( 2*S^2/N^3 )^(1/4)
+
+  trasfData <- list()
+  trasfData$runningStatsMulteplicity <- rs@nRunMn
+  trasfData$stationarySeries <- statSeries
+  trasfData$trendSeries <- trendSeries
+  trasfData$trendonlySeries <- rs@trendSeries
+  # trasfData$ChpointsSeries <- ChgPtsRaw$trend
+  trasfData$ChpointsSeries2 <- ChgPts$trend
+  trasfData$changePoints <- ChgPts$changepoints
+  trasfData$trendSeriesNonSeasonal <- trendSeries
+  trasfData$trendError <- trendError
+  trasfData$stdDevSeries <- stdDevSeries
+  trasfData$stdDevSeriesNonStep <- stdDevSeries_1
+  trasfData$stdDevError <- stdDevError*rep(1,length(stdDevSeries))
+  trasfData$timeStamps <- timeStamps
+  trasfData$nonStatSeries <- series
+  trasfData$statSer3Mom <- statSer3Mom
+  trasfData$statSer4Mom <- statSer4Mom
+  return(trasfData)
+}
+
+#' Transform Time Series to Stationary Trend and Change Points with Confidence Intervals
+#'
+#' This function takes a time series and transforms it into a stationary trend series with change points and confidence intervals.
+#'
+#' @param timeStamps A vector of time stamps corresponding to the observations in the series.
+#' @param series The time series data.
+#' @param timeWindow The size of the sliding window used for detrending the series.
+#' @param percentile The percentile value used for computing the running percentile of the stationary series.
+#'
+#' @return A list containing the following elements:
+#' \describe{
+#'   \item{runningStatsMulteplicity}{The running statistics multiplicity.}
+#'   \item{stationarySeries}{The transformed stationary series.}
+#'   \item{trendSeries}{The trend series.}
+#'   \item{trendonlySeries}{The trend series without the stationary component.}
+#'   \item{ChpointsSeries2}{The trend series with change points.}
+#'   \item{changePoints}{The detected change points.}
+#'   \item{trendSeriesNonSeasonal}{The trend series without the seasonal component.}
+#'   \item{trendError}{The error on the trend.}
+#'   \item{stdDevSeries}{The standard deviation series.}
+#'   \item{stdDevSeriesNonStep}{The standard deviation series without the step change component.}
+#'   \item{stdDevError}{The error on the standard deviation.}
+#'   \item{timeStamps}{The time stamps.}
+#'   \item{nonStatSeries}{The original non-stationary series.}
+#'   \item{statSer3Mom}{The running mean of the third moment of the stationary series.}
+#'   \item{statSer4Mom}{The running mean of the fourth moment of the stationary series.}
+#' }
+#'
+#' @examples
+#' timeStamps <- c(1, 2, 3, 4, 5)
+#' series <- c(10, 12, 15, 11, 13)
+#' timeWindow <- 2
+#' percentile <- 90
+#' result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps, series, timeWindow, percentile)
+#' print(result)
+#'
+#' @export
+tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeStamps, series, timeWindow, percentile) {
+  cat('computing the trend ...\n')
+  #ChgPtsRaw=tsEvaChangepts(series,timeWindow/2,timeStamps)
+  rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow,percent=percentile)
+  nRunMn = rs@nRunMn
+  cat('computing the slowly varying standard deviation ...\n')
+  # Compute the running percentile of the stationary series
+  percentileSeries <- tsEvaNanRunningPercentiles(timeStamps, rs@detrendSeries, nRunMn, percentile)
+  if(min(percentileSeries$rnprcnt)<0) percentileSeries$rnprcnt=percentileSeries$rnprcnt-min(percentileSeries$rnprcnt)
+  meanperc=mean(percentileSeries$rnprcnt,na.rm=T)
+
+  #here there is a problem
+  stdDev = sd(rs@detrendSeries,na.rm=T);
+  stdDevSeries <- percentileSeries$rnprcnt/meanperc*stdDev
+  stdDevError =percentileSeries$stdError/meanperc*stdDev;
+  stdDevSeries_1<-stdDevSeries
+  statSeries <- rs@detrendSeries
+  statSeries_1=statSeries
+  cat('computing the step change detection...\n')
+  #I normalize the stationary serie before the step change detection
+  #Maybe not the best
+  statSeries=statSeries/stdDevSeries
+  ChgPts=tsEvaChangepts(statSeries,nRunMn/1.5,timeStamps)
+
+  #static std
+  statSD=sd(statSeries)
+  #ChgptStdDevSeries <- sqrt(ChgPts$variance)/statSD
+  ChgptStdDevSeries=1
+  statSeries=statSeries-ChgPts$trend
+  # statSeries=statSeries/stdDevSeries
+  stdDevSeries=stdDevSeries*ChgptStdDevSeries
+  trendSeries=rs@trendSeries+ChgPts$trend*stdDevSeries
+  # plot(ChgPts$trend)
+  # plot(stdDevSeries_1)
+  # plot(trendSeries,type="l")
+  # lines(rs@trendSeries,col=2)
+  #
+
+  statSer3Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn3mom
+  kurstosis=moments::kurtosis(statSeries)
+  statSer4Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn4mom
+  statSer3Mom <- tsEvaNanRunningMean(statSer3Mom, ceiling(nRunMn))
+  statSer4Mom <- tsEvaNanRunningMean(statSer4Mom, ceiling(nRunMn))
+
+  # N is the size of each sample used to compute the average
+  N <- nRunMn
+  # the error on the trend is computed as the error on the average:
+  #  error(average) = stdDev/sqrt(N)
+  trendError <- mean(stdDevSeries)/N^.5
+
+  # variance(stdDev) ~ 2 stdDev^4 / (n - 1)
+
+  # stdDevError is approximated as constant
+  avgStdDev <- mean(stdDevSeries)
+  S <- 2
+  # computation of the error on the standard deviation explained in
+  # Mentaschi et al 2016
+  stdDevError <- avgStdDev*( 2*S^2/N^3 )^(1/4)
+
+  trasfData <- list()
+  trasfData$runningStatsMulteplicity <- rs@nRunMn
+  trasfData$stationarySeries <- statSeries
+  trasfData$trendSeries <- trendSeries
+  trasfData$trendonlySeries <- rs@trendSeries
+  #trasfData$ChpointsSeries <- ChgPtsRaw$trend
+  trasfData$ChpointsSeries2 <- ChgPts$trend
+  trasfData$changePoints <- ChgPts$changepoints
+  trasfData$trendSeriesNonSeasonal <- trendSeries
+  trasfData$trendError <- trendError
+  trasfData$stdDevSeries <- stdDevSeries
+  trasfData$stdDevSeriesNonStep <- stdDevSeries_1
+  trasfData$stdDevError <- stdDevError*rep(1,length(stdDevSeries))
+  trasfData$timeStamps <- timeStamps
+  trasfData$nonStatSeries <- series
+  trasfData$statSer3Mom <- statSer3Mom
+  trasfData$statSer4Mom <- statSer4Mom
+  return(trasfData)
+}
+
 # Helpers for main trend functions---------------
 
 #' Find Trend Threshold
@@ -581,7 +810,7 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
 #' @export
 tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
   # Initialize variables
-  ptn=timeAndSeries$timestamp[which(!is.na(timeAndSeries$data))]
+  ptn=timeStamps[which(!is.na(timeAndSeries$data))]
   bounds=unique(lubridate::year(ptn))
   nr <- rep(1, length(series))
   sts <- c()
@@ -982,7 +1211,7 @@ tsEvaNanRunningStatistics <- function(series, windowSize) {
 #' print(result$rnprcnt)
 #' print(result$stdError)
 #'
-#' @importFrom stats sd
+#' @import stats
 #' @export
 tsEvaNanRunningPercentiles <- function(timeStamps, series, windowSize, percent) {
   if (windowSize > 2000) {
@@ -1120,8 +1349,7 @@ tsEvaNanRunningPercentiles <- function(timeStamps, series, windowSize, percent) 
 #' result$trendSeries
 #' result$nRunMn
 #'
-#' @importFrom stats ts
-#' @importFrom stats na.omit
+#' @import stats
 #' @export
 tsEvaRunningMeanTrend <- function(timeStamps, series, timeWindow) {
   dt1 <- min(diff(timeStamps), na.rm = T)
@@ -1225,7 +1453,7 @@ tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA,
 #' plot(result$regime, type = "l", xlab = "Day", ylab = "Regime", main = "Estimated Regime")
 #' plot(result$Seasonality$averageSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Average Seasonality")
 #' plot(result$Seasonality$varyingSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Varying Seasonality")
-#'
+#'@importFrom pracma interp1
 #' @export
 tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWindow, peaks = T) {
   avgYearLength <- 365.2425
@@ -1323,9 +1551,9 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   monthAvgVex <- c(monthAvgVex[1], monthAvgVex, monthAvgVex[length(monthAvgVex)])
   avgTmStamp <- as.numeric(avgTmStamp)
   timeStampsN <- as.numeric(timeStamps)
-  regime <- interp1(regimeTmStamp, regimeVec, c(1:365), method = "cubic")
-  averageSeasonalitySeries <- interp1(avgTmStamp, monthAvgVec, timeStampsN, method = "cubic")
-  varyingSeasonalitySeries <- interp1(avgTmStamp, monthAvgVex, timeStampsN, method = "cubic")
+  regime <- pracma::interp1(regimeTmStamp, regimeVec, c(1:365), method = "cubic")
+  averageSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVec, timeStampsN, method = "cubic")
+  varyingSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVex, timeStampsN, method = "cubic")
   return(list(regime = regime, Seasonality = data.frame(averageSeasonalitySeries = averageSeasonalitySeries, varyingSeasonalitySeries = varyingSeasonalitySeries)))
 }
 

@@ -37,7 +37,6 @@ Imports:
     scales,
     texmex,
     tsibble,
-    WGCNA,
     grDevices,
     stats
 Suggests: 
@@ -45,10 +44,11 @@ Suggests:
     ncdf4,
     rnaturalearth,
     terra,
-    testthat
+    testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
+Config/testthat/edition: 3

@@ -58,8 +58,4 @@ rlvmax, timeIndex, timeStamps, tstamps, mode = "inv", ylim = c(0, 100),
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGPD}}
-
-Other GPDplots: 
-\code{\link{tsEvaPlotReturnLevelsGPDFromAnalysisObj}()}
 }
-\concept{GPDplots}

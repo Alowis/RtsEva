@@ -35,10 +35,12 @@ trendPeak: Long-term variations of the peaks.}}
 
 \item{evdType}{The type of extreme value distribution (GEV or GPD).}
 
-\item{tail}{The average number of events per year, can be specified by the
+\item{tail}{The mode of the analysis (e.g., high for flood peaks or low for drought peaks).}
+
+\item{epy}{The average number of events per year, can be specified by the
 user or automatically set according to the tail selected.}
 
-\item{lowdt}{The temporal resultion used for low values. default is 7 days.}
+\item{lowdt}{The temporal resolultion used for low values. default is 7 days.}
 }
 \value{
 A list containing the results of the non-stationary EVA. Containing the following components:

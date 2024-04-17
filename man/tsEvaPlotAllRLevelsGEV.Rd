@@ -45,8 +45,4 @@ tsEvaPlotAllRLevelsGEV(nonStationaryEvaParams, stationaryTransformData, rlvmax, 
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGEV}}
-
-Other GEVplots: 
-\code{\link{tsEvaPlotReturnLevelsGEVFromAnalysisObj}()}
 }
-\concept{GEVplots}

@@ -29,12 +29,12 @@
 #'   \emph{Hydrology and Earth System Sciences}, 20, 3527-3547.
 #'    doi:10.5194/hess-20-3527-2016.
 #'
-#' @family GEVplots
 #' @import ggplot2
 #' @importFrom lubridate yday month
 #' @importFrom texmex pgev
 #' @docType methods
 #' @name tsEvaPlotReturnLevelsGEVFromAnalysisObj
+#' @export
 tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
                                                     stationaryTransformData,
                                                     timeIndex, trans, ...) {
@@ -145,13 +145,12 @@ tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
 #' @references
 #' Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio, G., and Alfieri, L. (2016). The transformed-stationary approach: a generic and simplified methodology for non-stationary extreme value analysis. \emph{Hydrology and Earth System Sciences}, 20, 3527-3547. doi:10.5194/hess-20-3527-2016.
 #'
-#' @family GPDplots
 #' @seealso [tsEvaPlotReturnLevelsGPD()] and [tsEvaPlotAllRLevelsGPD()]
 #' @import ggplot2
 #' @importFrom lubridate yday month
 #' @name tsEvaPlotReturnLevelsGPDFromAnalysisObj
 #' @aliases tsEvaPlotReturnLevelsGPDFromAnalysisObj
-#'
+#' @export
 tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
                                                     stationaryTransformData,
                                                     timeIndex, trans, ope = F, ...) {
@@ -259,7 +258,6 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
 #' tsEvaPlotAllRLevelsGEV(nonStationaryEvaParams, stationaryTransformData, rlvmax, timeIndex, timeStamps, tstamps, mode = "inv", ylim = c(0, 100), ax = NULL)
 #'
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}
-#' @family GEVplots
 #' @name tsEvaPlotAllRLevelsGEV
 tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformData,
                                    rlvmax, timeIndex, timeStamps, tstamps,
@@ -451,10 +449,7 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
 #'
 
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
-#'
-#' @family GPDplots
-#'
-#' @name tsEvaPlotAllRLevelsGPD
+#' @export
 tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformData,
                                    rlvmax, timeIndex, timeStamps, tstamps,
                                    trans, varargin) {
@@ -608,100 +603,7 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
 }
 
 
-#' tsEvaRLCurveSummary Function
-#'
-#' This function provides a summary of the return level curves for a non-stationary time series.
-#' It retains the highest, lowest and median RL curves.
-#'
-#' @param nonStationaryEvaParams A list containing the parameters for non-stationary evaluation.
-#' @param stationaryTransformData The transformed stationary data.
-#' @param trans The transformation used to fit the EVD, either "ori" (original) or "rev" (reverse).
-#'
-#' @importFrom WGCNA pquantile.fromList
-#' @return A data frame containing the return periods and the corresponding highest, lowest, and median return levels.
-#'
-#' @examples
-#' tsEvaRLCurveSummary(nonStationaryEvaParams, stationaryTransformData, trans)
-tsEvaRLCurveSummary <- function(nonStationaryEvaParams, stationaryTransformData, trans) {
-  # Define default values for arguments
-  epsilon <- nonStationaryEvaParams[[2]]$parameters$epsilon
-  sigmao <- nonStationaryEvaParams[[2]]$parameters$sigma
-  thresholdv <- nonStationaryEvaParams[[2]]$parameters$threshold
-  thStart <- nonStationaryEvaParams[[2]]$parameters$timeHorizonStart
-  thEnd <- nonStationaryEvaParams[[2]]$parameters$timeHorizonEnd
-  timeHorizonInYears <- round(as.numeric((thEnd - thStart) / 365.2425))
-  nPeaks <- nonStationaryEvaParams[[2]]$parameters$nPeaks
-  npy <- nPeaks / timeHorizonInYears
-  timeStamps <- stationaryTransformData$timeStamps
-  dt1 <- min(diff(timeStamps), na.rm = T)
-  dt <- as.numeric(dt1)
-
-
-  args <- list(
-    minReturnPeriodYears = 2,
-    maxReturnPeriodYears = 1000,
-    confidenceAreaColor = "lightgreen",
-    confidenceBarColor = "darkgreen",
-    returnLevelColor = "black",
-    xlabel = "return period (years)",
-    ylabel = "return levels (m3/s)",
-    ylim = NULL,
-    ax = NULL
-  )
-
-  minReturnPeriodYears <- args$minReturnPeriodYears
-  maxReturnPeriodYears <- args$maxReturnPeriodYears
-
-  # Compute return periods and levels
-  returnPeriodsInYears <- 10^(seq(log10(minReturnPeriodYears), log10(maxReturnPeriodYears), by = 0.01))
-  if (npy > 5) {
-    lts <- seq(1, length(sigmao), by = 32)
-  }
-  if (npy <= 5) {
-    lts <- seq(1, length(sigmao), by = 365.25 / dt)
-    lts <- round(lts)
-  }
-  rLevAll <- data.frame(matrix(ncol = 3, nrow = length(lts) * length(returnPeriodsInYears)))
-  i <- 0
-  lrp <- length(returnPeriodsInYears)
-  highest_curve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = rep(-9999, (length(returnPeriodsInYears))))
-  lowest_curve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = rep(9999, (length(returnPeriodsInYears))))
-  median_curve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = rep(-9999, (length(returnPeriodsInYears))))
-
-  rLevList <- list()
-  for (ic in lts) {
-    sigmax <- sigmao[ic]
-    thresholdx <- thresholdv[ic]
-    returnLevels <- tsEvaComputeReturnLevelsGPD(epsilon, sigmax, thresholdx, epsilon, sigmax, thresholdx, nPeaks = nPeaks, sampleTimeHorizon = timeHorizonInYears, returnPeriodsInYears)$returnLevels
-    if (trans == "inv") {
-      returnLevels <- 1 / returnLevels
-    } else if (trans == "rev") {
-      returnLevels <- -returnLevels
-    } else if (trans == "lninv") {
-      returnLevels <- 1 / exp(returnLevels)
-    }
-
-    # Update highest curve
-    highest_curve$returnLevels <- pmax(highest_curve$returnLevels, returnLevels)
-    # Update lowest curve
-    lowest_curve$returnLevels <- pmin(lowest_curve$returnLevels, returnLevels)
-
-    tic <- rep(as.Date(timeStamps[ic]), length(returnPeriodsInYears))
-    Rper <- returnPeriodsInYears
-    rLev <- data.frame(tic, Rper, returnLevels)
-    rLevList <- c(rLevList, list(rLev$returnLevels))
-    i <- i + 1
-  }
-
-  # Update median curve
-  median_curve$returnLevels <- WGCNA::pquantile.fromList(prob = 0.5, rLevList)
-  return(data.frame(
-    Rper = Rper, highest = highest_curve$returnLevels,
-    lowest = lowest_curve$returnLevels, median = median_curve$returnLevels
-  ))
-}
-
-#' tsEvaPlotReturnLevelsGEV Function Plot Return Levels using Generalized Extreme Value (GEV) distribution
+#' tsEvaPlotReturnLevelsGEV Function
 #'
 #' This function plots the return levels using the Generalized Extreme Value (GEV) distribution.
 #'
@@ -723,9 +625,10 @@ tsEvaRLCurveSummary <- function(nonStationaryEvaParams, stationaryTransformData,
 #' tsEvaPlotReturnLevelsGEV(
 #'   epsilon = 0.1, sigma = 1, mu = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1, muStdErr = 0.05,
 #'   rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-#'   tstamps = "Return Levels", trans = "inv"
-#' )
-tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr, rlvmax, tstamps, trans, ...) {
+#'   tstamps = "Return Levels", trans = "inv")
+#'   @export
+tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr,
+                                     muStdErr, rlvmax, tstamps, trans, ...) {
   varargin <- NULL
   varagin <- list(...)
   # Define default values for arguments
@@ -861,8 +764,8 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
 #'   epsilon = 0.1, sigma = 1, threshold = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1,
 #'   thresholdStdErr = 0.05, nPeaks = 10, timeHorizonInYears = 50,
 #'   rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-#'   tstamps = "Return Levels", trans = "inv"
-#' )
+#'   tstamps = "Return Levels", trans = "inv")
+#'   @export
 tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, timeHorizonInYears, rlvmax, tstamps, trans, ...) {
   varargin <- list(...)
 

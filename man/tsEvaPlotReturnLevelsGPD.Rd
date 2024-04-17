@@ -55,8 +55,8 @@ tsEvaPlotReturnLevelsGPD(
   epsilon = 0.1, sigma = 1, threshold = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1,
   thresholdStdErr = 0.05, nPeaks = 10, timeHorizonInYears = 50,
   rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-  tstamps = "Return Levels", trans = "inv"
-)
+  tstamps = "Return Levels", trans = "inv")
+  @export
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGPD}} \code{\link{tsEvaPlorReturnLevelsGPDFromAnalysisObj}}
