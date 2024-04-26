@@ -5,7 +5,7 @@
 \alias{tsEvaComputeReturnPeriodsGEV}
 \title{tsEvaComputeReturnPeriodsGEV}
 \usage{
-tsEvaComputeReturnPeriodsGEV(epsilon, sigma, mu, BlockMax, MaxID)
+tsEvaComputeReturnPeriodsGEV(epsilon, sigma, mu, BlockMax)
 }
 \arguments{
 \item{epsilon}{The shape parameter of the GEV distribution.}
@@ -15,8 +15,6 @@ tsEvaComputeReturnPeriodsGEV(epsilon, sigma, mu, BlockMax, MaxID)
 \item{mu}{The location parameter of the GEV distribution.}
 
 \item{BlockMax}{A vector containing the block maxima data.}
-
-\item{MaxID}{An identifier for the maximum value used in the computation.}
 }
 \value{
 A list containing the following components:
@@ -27,7 +25,8 @@ A list containing the following components:
 }
 }
 \description{
-This function computes the return levels and return periods for a Generalized Extreme Value (GEV) distribution,
+This function computes the return periods of a set of observations
+(can be Annual maxima or others) for a Generalized Extreme Value (GEV) distribution,
 given the GEV parameters and their standard error. The return levels represent the values of annual maxima
 with a certain probability, while the return periods indicate the average time between
 exceedances of those threshold values.

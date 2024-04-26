@@ -57,7 +57,7 @@
 
 TsEvaNs<- function(timeAndSeries, timeWindow, ...){
   ota=list(...)
-  args <- list(transfType = 'trendCIPercentile',
+  args <- list(transfType = 'trendPeaks',
                minPeakDistanceInDays = -1,
                seasonalityVar = F,
                potEventsPerYear = -1,
@@ -84,7 +84,6 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
   lowdt=args$lowdt
   minPeakDistanceInDays<-args$minPeakDistanceInDays
   trans=args$trans
-  mode=args$mode
 
 
   timeStamps=as.POSIXct(timeAndSeries$timestamp)
@@ -175,6 +174,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
   }else if (transfType == 'trendPeaks') {
     cat(paste0('\nevaluating long term variations of the peaks'))
     TrendTh=try(tsEvaFindTrendThreshold(series, timeStamps, timeWindow),T)
+    print(TrendTh)
     if(length(TrendTh)==0){
       TrendTh=NA
     }
@@ -204,8 +204,12 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
   if (args$potEventsPerYear != -1) potEventsPerYear = args$potEventsPerYear
   if (args$minEventsPerYear != -1) minEventsPerYear = args$minEventsPerYear
 
-  if (dt<1) {
-    pace=1/dt
+
+  dtn=min(diff(trasfData$timeStamps),na.rm=T)
+  dtn=as.numeric(dtn)
+  tdim=attributes(dtn)$units
+  if (dtn<1) {
+    pace=1/dtn
     tsDaily=seq(1,length(trasfData$timeStamps),by=pace)
     trasfData$stdDevSeriesOr=trasfData$stdDevSeries
     trasfData$trendSeriesOr=trasfData$trendSeries
@@ -220,7 +224,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
 
   #estimating the non stationary EVA parameters
   cat('\nExecuting stationary eva')
-  pointData = tsEvaSampleData(ms, potEventsPerYear, minEventsPerYear, minPeakDistanceInDays,mode);
+  pointData = tsEvaSampleData(ms, potEventsPerYear, minEventsPerYear, minPeakDistanceInDays,tail);
   evaAlphaCI = .68; # in a gaussian approximation alphaCI~68% corresponds to 1 sigma confidence
   eva = tsEVstatistics(pointData, evaAlphaCI, gevMaxima, gevType, evdType,shape_bnd);
 

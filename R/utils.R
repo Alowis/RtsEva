@@ -1,4 +1,4 @@
-
+#Utilities used in other RTSEVA functions
 
 #' Fill missing values in a time series using a moving average approach.
 #'
@@ -102,3 +102,20 @@ check_timeseries <- function(timeseries, yro) {
   }
 }
 
+#' Max Daily Value Function
+#'
+#' This function converts a 6-hourly time series to a daily time series and
+#' calculates the maximum value for each day.
+#'
+#' @param timeseries A time series with a 6-hourly resolution.
+#' @return A data frame containing the daily maximum values.
+#' @export
+#' @examples
+#' # Example usage:
+#' max_daily_value(timeseries)
+max_daily_value <- function(timeseries) {
+  # Convert the 6-hourly time series to daily time series
+  daily_timeseries <- apply.daily(timeseries, max)
+  tday=unique(as.Date(timeseries$time+3600))
+  return(data.frame(date=tday,Qmd=daily_timeseries))
+}

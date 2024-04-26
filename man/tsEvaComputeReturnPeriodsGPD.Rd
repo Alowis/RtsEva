@@ -39,7 +39,7 @@ A list containing the following components:
 }
 }
 \description{
-This function computes the return periods and pseudo observations for a
+This function computes the return periods of a set of observations (peaks) for a
 Generalized Pareto Distribution (GPD), given the GPD parameters,
 threshold, peaks data, and sample time horizon.
 }

@@ -9,16 +9,12 @@ computeAnnualMaxima(timeAndSeries)
 \arguments{
 \item{timeAndSeries}{A matrix or data frame containing the time stamps and series values.
 The first column should contain the time stamps and the second column should contain the series values.}
-
-\item{subIndxs}{A numeric vector representing the subset of indices to consider.}
 }
 \value{
 A list containing the annual maximum values, their corresponding dates, and their indices.
 - \code{annualMax}: A numeric vector of annual maximum values.
 - \code{annualMaxDate}: A vector of dates corresponding to the annual maximum values.
 - \code{annualMaxIndx}: A vector of indices indicating the positions of the annual maximum values in the original time series.
-
-The index of the maximum value in the subset.
 }
 \description{
 This function computes the annual maxima of a time series.
@@ -27,8 +23,4 @@ This function computes the annual maxima of a time series.
 timeAndSeries <- data.frame(timeStamps = c("2021-01-01", "2021-01-02", "2021-01-03"),
                             series = c(10, 15, 8))
 computeAnnualMaxima(timeAndSeries)
-
-srs <- c(10, 20, 30, 40, 50)
-findYMax(c(1, 3, 5))
-# Output: 5
 }

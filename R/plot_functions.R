@@ -375,7 +375,7 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
     legendx <- "Time"
     spc <- "darkblue"
   }
-  rLevAll$group <- yearmonth(rLevAll$timeStamps, origin = "1970-01-01")
+  rLevAll$group <- tsibble::yearmonth(rLevAll$timeStamps, origin = "1970-01-01")
 
   IndexCurve <- tsEvaComputeReturnLevelsGEV(epsilon, sigmav[timeIndex], muv[timeIndex], epsilon, sigmav[timeIndex], muv[timeIndex], returnPeriodsInDts)$returnLevels
   IndexCurve <- as.vector(IndexCurve)
@@ -481,7 +481,6 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
   )
 
   # Update args with passed in arguments
-  varargin <- list(...)
   args <- tsEasyParseNamedArgs(varargin, args)
   # print(args)
   minReturnPeriodYears <- args$minReturnPeriodYears
@@ -568,7 +567,7 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
     legendx <- "Time"
   }
 
-  rLevAll$group <- as.numeric(yearmonth(rLevAll$timeStamps))
+  rLevAll$group <- as.numeric(tsibble::yearmonth(rLevAll$timeStamps))
   IndexCurve <- tsEvaComputeReturnLevelsGPD(epsilon, sigmao[timeIndex], thresholdv[timeIndex], epsilon, sigmao[timeIndex], thresholdv[timeIndex], nPeaks = nPeaks, sampleTimeHorizon = timeHorizonInYears, returnPeriodsInYears)$returnLevels
   if (trans == "inv") {
     IndexCurve <- 1 / IndexCurve
@@ -998,6 +997,7 @@ tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, statio
   } else {
     timeStamps <- stationaryTransformData$timeStampsDay
   }
+  timeStamps=as.Date(timeStamps)
   serix <- stationaryTransformData$nonStatSeries
   epsilon <- nonStationaryEvaParams[[2]]$parameters$epsilon
   sigma <- nonStationaryEvaParams[[2]]$parameters$sigma
@@ -1065,7 +1065,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
   serie <- data.frame(timeStamps, serix)
 
   L <- length(timeStamps)
-  minTS <- as.Date(timeStamps[1])
+  minTS <- as.Date(timeStamps[1]+3600)
   maxTS <- as.Date(timeStamps[length(timeStamps)])
   npdf <- as.numeric(ceiling(((maxTS - minTS) / avgYearLength) * args$nPlottedTimesByYear))
   navg <- 1
@@ -1158,6 +1158,11 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
   tbi <- round(lubridate::year(minTS) / 5) * 5
   tbf <- round(lubridate::year(maxTS) / 5) * 5
 
+  xy=(tbf-tbi)
+  if(xy>=20) {tic=5; tac =12}
+  if(xy<10) {tic =1; tac=1; tbi=year(minTS)}
+  if(xy>=10 & xy<20) {tic =2; tac=6}
+
   ttbi <- as.Date(paste(tbi, "-01-01", sep = ""))
   ttbf <- as.Date(paste(tbf, "-01-01", sep = ""))
 
@@ -1186,9 +1191,10 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
   }
 
   datap$npdf <- datap$pdf / max(datap$pdf)
+  datap$timeStamps=as.Date(datap$timeStamps)
   plo <- ggplot(datap, aes(x = as.Date(timeStamps), y = extremeValues)) +
     geom_segment(data = serie, aes(x = timeStamps, xend = timeStamps, y = ey, yend = serio), col = "black", alpha = .5) +
-    geom_raster(alpha = (datap$npdf)^0.2, aes(fill = pdf), interpolate = TRUE) +
+    geom_raster(data=datap,alpha = (datap$npdf)^0.2, aes(fill = pdf), interpolate = TRUE) +
     scale_fill_gradientn(
       colours = rgb.palette(100),
       n.breaks = 10, guide = "coloursteps", trans = scales::modulus_trans(0.7), na.value = "transparent"

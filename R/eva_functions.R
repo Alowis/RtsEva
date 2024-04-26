@@ -1,8 +1,45 @@
 # EVA functions to compute relturn levels / returtn periods from Nonstationary EVD parameters-----------------
 
+
+#' tsEvaComputeTimeRP Function Documentation
+#'
+#' This function calculates the return period of a given event for GEV and GPD distributions
+#' at a given time index.
+#'
+#' @param params A data frame containing the following parameters:
+#' - epsilonGEV: Shape parameter for the Generalized Extreme Value (GEV) distribution.
+#' - muGEV: Location parameter for the GEV distribution.
+#' - sigmaGEV: Scale parameter for the GEV distribution.
+#' - epsilonGPD: Shape parameter for the Generalized Pareto (GPD) distribution.
+#' - thresholdGPD: Threshold parameter for the GPD distribution.
+#' - sigmaGPD: Scale parameter for the GPD distribution.
+#' - nPeaks: Number of peaks in the sample time horizon.
+#' - SampleTimeHorizon: Total sample time horizon.
+#' @param RPiGEV Value of RP for the GEV distribution.
+#' @param RPiGPD Value of RP for the GPD distribution.
+#' @return A vector with the calculated return period for GEV and GPD distributions.
+#' @export
+#' @examples
+#' # Example usage:
+#' params <- data.frame(epsilonGEV = 0.2, muGEV = 3, sigmaGEV = 1,
+#'                    epsilonGPD = 0.5, thresholdGPD = 2, sigmaGPD = 0.5,
+#'                    nPeaks = 5, SampleTimeHorizon = 10)
+#' RPcalc(params, RPiGEV = 10, RPiGPD = 20)
+tsEvaComputeTimeRP <- function(params, RPiGEV, RPiGPD){
+  paramx <- data.frame(t(params))
+  qxV <- 1 - exp(-(1 + paramx$epsilonGEV * (RPiGEV - paramx$muGEV) / paramx$sigmaGEV)^(-1 / paramx$epsilonGEV))
+  returnPeriodGEV <- 1 / qxV
+  X0 <- paramx$nPeaks/paramx$SampleTimeHorizon
+  qxD <- ((1 + paramx$epsilonGPD * (RPiGPD - paramx$thresholdGPD) / paramx$sigmaGPD)^(-1 / paramx$epsilonGPD))
+  returnPeriodGPD <- 1 / (X0 * qxD)
+
+  return(c(GEV = returnPeriodGEV, GPD = returnPeriodGPD))
+}
+
 #' tsEvaComputeReturnPeriodsGEV
 #'
-#' This function computes the return levels and return periods for a Generalized Extreme Value (GEV) distribution,
+#' This function computes the return periods of a set of observations
+#'  (can be Annual maxima or others) for a Generalized Extreme Value (GEV) distribution,
 #' given the GEV parameters and their standard error. The return levels represent the values of annual maxima
 #' with a certain probability, while the return periods indicate the average time between
 #' exceedances of those threshold values.
@@ -11,7 +48,6 @@
 #' @param sigma The scale parameter of the GEV distribution.
 #' @param mu The location parameter of the GEV distribution.
 #' @param BlockMax A vector containing the block maxima data.
-#' @param MaxID An identifier for the maximum value used in the computation.
 #'
 #' @return A list containing the following components:
 #' \itemize{
@@ -27,7 +63,7 @@
 #' @docType methods
 #' @name tsEvaComputeReturnPeriodsGEV
 #' @export
-tsEvaComputeReturnPeriodsGEV <- function(epsilon, sigma, mu, BlockMax, MaxID) {
+tsEvaComputeReturnPeriodsGEV <- function(epsilon, sigma, mu, BlockMax) {
   # tsEvaComputeReturnLevelsGEV:
   # returns the return levels given the gev parameters and their standard
   # error.
@@ -61,7 +97,7 @@ tsEvaComputeReturnPeriodsGEV <- function(epsilon, sigma, mu, BlockMax, MaxID) {
 
 #' tsEvaComputeReturnPeriodsGPD
 #'
-#' This function computes the return periods and pseudo observations for a
+#' This function computes the return periods of a set of observations (peaks) for a
 #' Generalized Pareto Distribution (GPD), given the GPD parameters,
 #' threshold, peaks data, and sample time horizon.
 #'
@@ -364,6 +400,7 @@ tsEvaComputeReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr
 #' @name tsEvaComputeReturnLevelsGPDFromAnalysisObj
 #' @rdname tsEvaComputeReturnLevelsGPDFromAnalysisObj
 #' @aliases tsEvaComputeReturnLevelsGPDFromAnalysisObj
+
 tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, returnPeriodsInYears, ...) {
   args <- list(timeIndex = -1)
   varargin <- list(...)
@@ -411,6 +448,70 @@ tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, r
     returnLevelsErrTransf <- rep(0, length(returnLevelsErr))
   }
   return(list(returnLevels = returnLevels$returnLevels, returnLevelsErr = returnLevelsErr, returnLevelsErrFit = returnLevelsErrFit, returnLevelsErrTransf = returnLevelsErrTransf))
+}
+
+
+tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=NA){
+
+  #GEV
+  epsilonGEV <- nonStationaryEvaParams[[1]]$parameters$epsilon
+  sigmaGEV <- mean(nonStationaryEvaParams[[1]]$parameters$sigma[timeIndex])
+  muGEV <- mean(nonStationaryEvaParams[[1]]$parameters$mu[timeIndex])
+  dtSampleYears <- nonStationaryEvaParams[[1]]$parameters$timeDeltaYears
+
+  #GPD
+  epsilonGPD <- nonStationaryEvaParams[[2]]$parameters$epsilon
+  sigmaGPD <- mean(nonStationaryEvaParams[[2]]$parameters$sigma[timeIndex])
+  thresholdGPD <- mean(nonStationaryEvaParams[[2]]$parameters$threshold[timeIndex])
+  nPeaks <- nonStationaryEvaParams[[2]]$parameters$nPeaks
+  thStart <- nonStationaryEvaParams[[2]]$parameters$timeHorizonStart
+  thEnd <- nonStationaryEvaParams[[2]]$parameters$timeHorizonEnd
+  sampleTimeHorizon <- as.numeric((thEnd - thStart)/365.2425)
+
+  if (nonStationaryEvaParams[[1]]$method=="No fit"){
+    print("could not fit EVD to this pixel")
+    ParamGEV=c(epsilonGEV,sigmaGEV,muGEV,NA, NA, NA)
+    names(ParamGEV)=c("epsilonGEV","sigmaGEV","muGEV","epsilonStdErrGEV","sigmaStdErrGEV","muStdErrGEV")
+
+    ParamGPD=c(epsilonGPD,sigmaGPD,thresholdGPD,NA,NA, NA,nPeaks,sampleTimeHorizon)
+    names(ParamGPD)=c("epsilonGPD","sigmaGPD","thresholdGPD","epsilonStdErrGPD","sigmaStdErrGPD","thresholdStdErrGPD","nPeaks","SampleTimeHorizon")
+    return(list(Fit="No fit",Params=c(ParamGEV,ParamGPD)))
+  }else{
+    #GEV
+    epsilonStdErrGEV <- nonStationaryEvaParams[[1]]$paramErr$epsilonErr
+    sigmaStdErrGEV <- mean(nonStationaryEvaParams[[1]]$paramErr$sigmaErr[timeIndex])
+    muStdErrGEV <- mean(nonStationaryEvaParams[[1]]$paramErr$muErr[timeIndex])
+
+    #GPD
+    epsilonStdErrGPD <- nonStationaryEvaParams[[2]]$paramErr$epsilonErr
+    sigmaStdErrGPD <- mean(nonStationaryEvaParams[[2]]$paramErr$sigmaErr[timeIndex])
+    thresholdStdErrGPD <- mean(nonStationaryEvaParams[[2]]$paramErr$thresholdErr[timeIndex])
+
+    if (trans=="rev"){
+      sigmaGEV=-sigmaGEV
+      muGEV=-muGEV
+      sigmaGPD=-sigmaGPD
+      thresholdGPD=-thresholdGPD
+    }
+    returnLevelsGEV <- tsEvaComputeReturnLevelsGEV(epsilonGEV, sigmaGEV, muGEV, epsilonStdErrGEV, sigmaStdErrGEV, muStdErrGEV, RPgoal)
+
+    returnLevelsGPD <- tsEvaComputeReturnLevelsGPD(epsilonGPD, sigmaGPD, thresholdGPD, epsilonStdErrGPD, sigmaStdErrGPD, thresholdStdErrGPD,
+                                                   nPeaks, sampleTimeHorizon, RPgoal)
+    rlevGEV=returnLevelsGEV$returnLevels
+    rlevGPD=returnLevelsGPD$returnLevels
+
+    errGEV=returnLevelsGEV$returnLevelsErr
+    errGPD=returnLevelsGPD$returnLevelsErr
+
+    ParamGEV=c(epsilonGEV,sigmaGEV,muGEV,epsilonStdErrGEV, sigmaStdErrGEV, muStdErrGEV)
+    names(ParamGEV)=c("epsilonGEV","sigmaGEV","muGEV","epsilonStdErrGEV","sigmaStdErrGEV","muStdErrGEV")
+
+    ParamGPD=c(epsilonGPD,sigmaGPD,thresholdGPD,epsilonStdErrGPD,sigmaStdErrGPD, thresholdStdErrGPD,nPeaks,sampleTimeHorizon)
+    names(ParamGPD)=c("epsilonGPD","sigmaGPD","thresholdGPD","epsilonStdErrGPD","sigmaStdErrGPD","thresholdStdErrGPD","nPeaks","SampleTimeHorizon")
+    return(list(Fit="Fitted",ReturnLevels=c(ReturnPeriod=RPgoal, GEV=as.numeric(rlevGEV),GPD=as.numeric(rlevGPD),errGEV=as.numeric(errGEV),errGPD=as.numeric(errGPD)),Params=c(ParamGEV,ParamGPD)))
+  }
+
+
 }
 
 
@@ -612,7 +713,7 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
     #discard the fits that provide negative values
     while(isok==F){
       trip=which.min(devpx)
-      isok=between(gpp[trip], shape_bnd[1], shape_bnd[2])
+      isok=dplyr::between(gpp[trip], shape_bnd[1], shape_bnd[2])
       count=count+1
       if(isok==F)devpx[trip]=devpx[trip]+9999
       if(count>(length(devpx)-1)){
@@ -980,6 +1081,21 @@ tsGetNumberPerYear <- function(ms, locs){
 }
 
 
+#' Find the index of the yearly maximum value in a subset of a vector
+#'
+#' This function takes a subset of a vector and returns the index of the maximum value in that subset.
+#'
+#' @param subIndxs A numeric vector representing the subset of indices to consider.
+#' @return The index of the maximum value in the subset.
+#' @examples
+#' srs <- c(10, 20, 30, 40, 50)
+#' findYMax(c(1, 3, 5))
+#' # Output: 5
+findMax <- function(subIndxs,srs) {
+  subIndxMaxIndx <- which.max(srs[subIndxs])
+  return(subIndxs[subIndxMaxIndx])
+}
+
 #' Compute Annual Maxima
 #'
 #' This function computes the annual maxima of a time series.
@@ -996,7 +1112,6 @@ tsGetNumberPerYear <- function(ms, locs){
 #' timeAndSeries <- data.frame(timeStamps = c("2021-01-01", "2021-01-02", "2021-01-03"),
 #'                             series = c(10, 15, 8))
 #' computeAnnualMaxima(timeAndSeries)
-#'
 #' @export
 computeAnnualMaxima <- function(timeAndSeries) {
   timeStamps <- timeAndSeries[,1]
@@ -1007,22 +1122,9 @@ computeAnnualMaxima <- function(timeAndSeries) {
   if (tdim!="days")   tmvec <- as.Date(timeStamps+3600)
   srs <- timeAndSeries[,2]
   years <- year(tmvec)
-
-  #' Find the index of the yearly maximum value in a subset of a vector
-  #'
-  #' This function takes a subset of a vector and returns the index of the maximum value in that subset.
-  #'
-  #' @param subIndxs A numeric vector representing the subset of indices to consider.
-  #' @return The index of the maximum value in the subset.
-  #' @examples
-  #' srs <- c(10, 20, 30, 40, 50)
-  #' findYMax(c(1, 3, 5))
-  #' # Output: 5
-  findYMax <- function(subIndxs) {
-    subIndxMaxIndx <- which.max(srs[subIndxs])
-    subIndxs[subIndxMaxIndx]
-  }
-  annualMaxIndx <- tapply(1:length(srs), years, findYMax)
+  annualMaxIndx <- tapply(1:length(srs), years, function(x) {
+    findMax(x, srs)
+  })
   annualMaxInx <- annualMaxIndx[!is.na(annualMaxIndx)]
   annualMaxIndx=as.vector(unlist((annualMaxIndx)))
   annualMax <- srs[annualMaxIndx]
@@ -1030,8 +1132,6 @@ computeAnnualMaxima <- function(timeAndSeries) {
 
   return(list(annualMax = annualMax, annualMaxDate = annualMaxDate, annualMaxIndx = annualMaxIndx))
 }
-
-
 
 
 #' Compute Monthly Maxima
@@ -1050,7 +1150,6 @@ computeAnnualMaxima <- function(timeAndSeries) {
 #' timeAndSeries <- data.frame(timeStamps = c("2022-01-01", "2022-01-02", "2022-02-01", "2022-02-02"),
 #'                             series = c(10, 15, 5, 20))
 #' computeMonthlyMaxima(timeAndSeries)
-#'
 #' @export
 computeMonthlyMaxima<- function(timeAndSeries) {
   timeStamps <- timeAndSeries[,1]
@@ -1061,22 +1160,9 @@ computeMonthlyMaxima<- function(timeAndSeries) {
   mnts <- as.integer(format(tmvec, "%m"))
   mnttmvec <- data.frame(yrs, mnts)
   valsIndxs <- 1:length(srs)
-  #' Find the index of the monthly maximum value in a given subset of a vector.
-  #'
-  #' This function takes a vector and a subset of indices and returns the index of the maximum value within that subset.
-  #'
-  #' @param indxs A numeric vector specifying the subset of indices.
-  #' @return The index of the maximum value within the specified subset.
-  #' @examples
-  #' srs <- c(10, 20, 30, 40, 50)
-  #' findMMax(c(1, 3, 5))
-  #' # Output: 5
-  findMMax <- function(indxs) {
-    maxVal <- max(srs[indxs])
-    maxIndx <- indxs[which.max(srs[indxs])]
-    return(maxIndx)
-  }
-  monthlyMaxIndx <- aggregate(valsIndxs ~ yrs + mnts, data = mnttmvec, findMMax)
+  monthlyMaxIndx <- aggregate(valsIndxs ~ yrs + mnts, data = mnttmvec, function(x) {
+    findMax(x,srs)
+  })
   monthlyMaxIndx$valsIndxs=as.numeric(monthlyMaxIndx$valsIndxs)
   monthlyMaxIndx <- monthlyMaxIndx[order(monthlyMaxIndx$yrs, monthlyMaxIndx$mnts), "valsIndxs"]
   monthlyMax <- srs[monthlyMaxIndx]

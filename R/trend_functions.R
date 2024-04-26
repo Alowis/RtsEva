@@ -797,6 +797,7 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
 #' @param timeWindow The time window for detrending the time series.
 #'
 #' @import stats
+#' @importFrom changepoint cpt.var
 #' @return The trend threshold value.
 #'
 #' @details This function iterates over different percentiles and calculates the threshold based on each percentile. It then removes data points below the threshold and detrends the time series using the specified time window. The function calculates the correlation between the normalized trend and the time series and stores the correlation coefficient for each percentile. It performs a changepoint analysis to determine if there is a significant change in the correlation coefficients. If a change point is found, the function returns the percentile corresponding to the change point. If no change point is found, the function returns the percentile with the highest correlation coefficient. If there are negative values in the detrended time series, the function returns the percentile with the fewest negative values.
@@ -810,7 +811,7 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
 #' @export
 tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
   # Initialize variables
-  ptn=timeStamps[which(!is.na(timeAndSeries$data))]
+  ptn=timeStamps[which(!is.na(series))]
   bounds=unique(lubridate::year(ptn))
   nr <- rep(1, length(series))
   sts <- c()
@@ -896,7 +897,7 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
 #'   \item{changepoints}{A vector of timestamps at which change points were detected.}
 #' }
 #'
-#' @import changepoint
+#' @importFrom changepoint cpt.meanvar
 #' @examples
 #' \dontrun{
 #' series <- rnorm(100)
@@ -1364,6 +1365,18 @@ tsEvaRunningMeanTrend <- function(timeStamps, series, timeWindow) {
   return(list(trendSeries = trendSeries, nRunMn = nRunMn))
 }
 
+
+
+methods::setClass(
+  Class = "tsTrend",
+  representation(
+    originSeries = "numeric",
+    detrendSeries = "numeric",
+    trendSeries = "numeric",
+    nRunMn = "numeric"
+  )
+)
+
 #' Detrend a Time Series
 #'
 #' This function detrends a time series by subtracting the trend component from the original series.
@@ -1392,16 +1405,6 @@ tsEvaRunningMeanTrend <- function(timeStamps, series, timeWindow) {
 #' @export
 tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA, fast = F) {
   extremeLowThreshold <- -Inf
-  methods::setClass(
-    Class = "tsTrend",
-    representation(
-      originSeries = "numeric",
-      detrendSeries = "numeric",
-      trendSeries = "numeric",
-      nRunMn = "numeric"
-    )
-  )
-
   trendSeries <- tsEvaRunningMeanTrend(timeStamps, series, timeWindow)
   statSeries <- series
   dt1 <- min(diff(timeStamps), na.rm = T)
