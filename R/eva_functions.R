@@ -1,30 +1,36 @@
 # EVA functions to compute relturn levels / returtn periods from Nonstationary EVD parameters-----------------
 
 
-#' tsEvaComputeTimeRP Function Documentation
+#' tsEvaComputeTimeRP
 #'
-#' This function calculates the return period of a given event for GEV and GPD distributions
-#' at a given time index.
+#' \code{tsEvaComputeTimeRP}is a function that calculates the return period
+#' of a given event for GEV and GPD distributions at a given time index.
 #'
 #' @param params A data frame containing the following parameters:
-#' - epsilonGEV: Shape parameter for the Generalized Extreme Value (GEV) distribution.
-#' - muGEV: Location parameter for the GEV distribution.
-#' - sigmaGEV: Scale parameter for the GEV distribution.
-#' - epsilonGPD: Shape parameter for the Generalized Pareto (GPD) distribution.
-#' - thresholdGPD: Threshold parameter for the GPD distribution.
-#' - sigmaGPD: Scale parameter for the GPD distribution.
-#' - nPeaks: Number of peaks in the sample time horizon.
-#' - SampleTimeHorizon: Total sample time horizon.
+#' \itemize{
+#' \item \code{epsilonGEV}: Shape parameter for the Generalized Extreme Value
+#' (GEV) distribution.
+#' \item \code{muGEV}: Location parameter for the GEV distribution.
+#' \item \code{sigmaGEV}: Scale parameter for the GEV distribution.
+#' \item \code{epsilonGPD}: Shape parameter for the Generalized Pareto
+#' (GPD) distribution.
+#' \item \code{thresholdGPD}:Threshold parameter for the GPD distribution.
+#' \item \code{sigmaGPD}: Scale parameter for the GPD distribution.
+#' \item \code{nPeaks}: Number of peaks in the sample time horizon.
+#' \item \code{SampleTimeHorizon}: Total number of years in the data sample.
+#' }
 #' @param RPiGEV Value of RP for the GEV distribution.
 #' @param RPiGPD Value of RP for the GPD distribution.
 #' @return A vector with the calculated return period for GEV and GPD distributions.
 #' @export
 #' @examples
-#' # Example usage:
-#' params <- data.frame(epsilonGEV = 0.2, muGEV = 3, sigmaGEV = 1,
-#'                    epsilonGPD = 0.5, thresholdGPD = 2, sigmaGPD = 0.5,
-#'                    nPeaks = 5, SampleTimeHorizon = 10)
-#' RPcalc(params, RPiGEV = 10, RPiGPD = 20)
+#'#Parameter vector:
+#'params <- t(data.frame(epsilonGEV = 0.2, muGEV = 3, sigmaGEV = 1,
+#'                   epsilonGPD = 0.2, thresholdGPD = 3, sigmaGPD = 1,
+#'                   nPeaks = 70, SampleTimeHorizon = 70))
+#'
+#'tsEvaComputeTimeRP(params, RPiGEV = 10, RPiGPD = 10)
+
 tsEvaComputeTimeRP <- function(params, RPiGEV, RPiGPD){
   paramx <- data.frame(t(params))
   qxV <- 1 - exp(-(1 + paramx$epsilonGEV * (RPiGEV - paramx$muGEV) / paramx$sigmaGEV)^(-1 / paramx$epsilonGEV))
@@ -38,11 +44,13 @@ tsEvaComputeTimeRP <- function(params, RPiGEV, RPiGPD){
 
 #' tsEvaComputeReturnPeriodsGEV
 #'
-#' This function computes the return periods of a set of observations
-#'  (can be Annual maxima or others) for a Generalized Extreme Value (GEV) distribution,
-#' given the GEV parameters and their standard error. The return levels represent the values of annual maxima
-#' with a certain probability, while the return periods indicate the average time between
-#' exceedances of those threshold values.
+#' \code{tsEvaComputeReturnPeriodsGEV}is a function that computes the return
+#' periods of a set of observations (can be Annual maxima or others)
+#' for a Generalized Extreme Value (GEV)
+#' distribution, given the GEV parameters and their standard error.
+#' The return levels represent the values of annual maxima
+#' with a certain probability, while the return periods indicate the average
+#' time between exceedances of those threshold values.
 #'
 #' @param epsilon The shape parameter of the GEV distribution.
 #' @param sigma The scale parameter of the GEV distribution.
@@ -51,29 +59,29 @@ tsEvaComputeTimeRP <- function(params, RPiGEV, RPiGPD){
 #'
 #' @return A list containing the following components:
 #' \itemize{
-#' \item \code{GevPseudo}: A matrix of pseudo observations obtained from the GEV distribution for each annual extreme at every time step.
-#' \item \code{returnPeriods}: A matrix of return periods corresponding to the pseudo observations.
-#' \item \code{PseudoObs}: The pseudo observation corresponding to the maximum value used in the computation.
+#' \item \code{GevPseudo}: A matrix of pseudo observations obtained from
+#' the GEV distribution for each annual extreme at every time step.
+#' \item \code{returnPeriods}: A matrix of return periods corresponding to
+#' the pseudo observations.
+#' \item \code{PseudoObs}: The pseudo observation corresponding to
+#' the maximum value used in the computation.
 #' }
 #'
 #' @seealso \code{\link{empdis}}
+#' @examples
 #'
-#' @family MyPackage functions
+#' # Example usage with some sample data
+#' epsilon <- 0.1
+#' sigma <- 2.2
+#' mu <- 1.3
+#' BlockMax <- c(10, 20, 30, 40, 50)
 #'
-#' @docType methods
-#' @name tsEvaComputeReturnPeriodsGEV
+#' results <- tsEvaComputeReturnPeriodsGEV(epsilon, sigma, mu, BlockMax)
+#' head(results$GevPseudo)
+#' head(results$returnPeriods)
+#' head(results$PseudoObs)
 #' @export
 tsEvaComputeReturnPeriodsGEV <- function(epsilon, sigma, mu, BlockMax) {
-  # tsEvaComputeReturnLevelsGEV:
-  # returns the return levels given the gev parameters and their standard
-  # error.
-  # The parameter returnPeriodsInDts contains the return period expressed in
-  # a time unit that corresponds to the size of the time segments where we
-  # are evaluating the maxima. For example, if we are working on yearly
-  # maxima, returnPeriodsInDts must be expressed in years. If we are working
-  # on monthly maxima returnPeriodsInDts must be expressed in months.
-
-
   nyr <- length(BlockMax)
   # Compute the empirical return period:
   empval <- empdis(BlockMax, nyr)
@@ -97,7 +105,8 @@ tsEvaComputeReturnPeriodsGEV <- function(epsilon, sigma, mu, BlockMax) {
 
 #' tsEvaComputeReturnPeriodsGPD
 #'
-#' This function computes the return periods of a set of observations (peaks) for a
+#' \code{tsEvaComputeReturnPeriodsGPD}is a function that computes the return
+#' periods of a set of observations (peaks) for a
 #' Generalized Pareto Distribution (GPD), given the GPD parameters,
 #' threshold, peaks data, and sample time horizon.
 #'
@@ -111,20 +120,30 @@ tsEvaComputeReturnPeriodsGEV <- function(epsilon, sigma, mu, BlockMax) {
 #'
 #' @return A list containing the following components:
 #'   \itemize{
-#'     \item \code{GpdPseudo}: A matrix of pseudo observations obtained from the GPD for each peak value at every time step.
-#'     \item \code{returnPeriods}: A matrix of return periods corresponding to the pseudo observations.
-#'     \item \code{PseudoObs}: A data frame containing the pseudo observations and their corresponding identifiers.
+#'     \item \code{GpdPseudo}: A matrix of pseudo observations obtained from
+#'      the GPD for each peak value at every time step.
+#'     \item \code{returnPeriods}: A matrix of return periods
+#'     corresponding to the pseudo observations.
+#'     \item \code{PseudoObs}: A data frame containing the pseudo
+#'     observations and their corresponding identifiers.
 #'   }
 #'
-#' @references
-#' Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio, G., and Alfieri, L. (2016). The transformed-stationary approach: a generic and simplified methodology for non-stationary extreme value analysis. \emph{Hydrology and Earth System Sciences}, \strong{20}(9), 3527-3547. doi:10.5194/hess-20-3527-2016.
-#'
-#' @keywords function, computation, GPD, return periods, pseudo observations
 #' @seealso \code{\link{empdis}}
+#' @examples
+#' # Example usage with some sample data
+#' epsilon <- 0.1
+#' sigma <- 2.2
+#' threshold <- 1.3
+#' peaks <- c(10, 20, 30, 40, 50)
+#' nPeaks=5
+#' peaksID=c(230,550,999,1540,3012)
+#' SampleTimeHorizon = 70
 #'
-#'
-#' @docType methods
-#' @name tsEvaComputeReturnPeriodsGPD
+#' results <- tsEvaComputeReturnPeriodsGPD(epsilon, sigma, threshold, peaks,
+#' nPeaks, peaksID, SampleTimeHorizon)
+#' head(results$GpdPseudo)
+#' head(results$returnPeriods)
+#' head(results$PseudoObs)
 #' @export
 tsEvaComputeReturnPeriodsGPD <- function(epsilon, sigma, threshold, peaks, nPeaks, peaksID, sampleTimeHorizon) {
   X0 <- nPeaks / sampleTimeHorizon
@@ -158,10 +177,11 @@ tsEvaComputeReturnPeriodsGPD <- function(epsilon, sigma, threshold, peaks, nPeak
 
 #' tsEvaComputeReturnLevelsGEV
 #'
-#' This function calculates the return levels for a Generalized Extreme Value (GEV)
-#' distribution given the GEV parameters and their standard errors.
-#' The return periods are specified in a time unit that corresponds
-#' to the size of the time segments for evaluating the maxima.
+#' \code{tsEvaComputeReturnPeriodsGPD}is a function that calculates the return
+#' levels for a Generalized Extreme Value (GEV) distribution given the GEV
+#' parameters and their standard errors. The return periods are specified in a
+#' time unit that corresponds to the size of the time segments for
+#' evaluating the maxima.
 #'
 #' @param epsilon The shape parameter of the GEV distribution.
 #' @param sigma The scale parameter of the GEV distribution.
@@ -169,7 +189,10 @@ tsEvaComputeReturnPeriodsGPD <- function(epsilon, sigma, threshold, peaks, nPeak
 #' @param epsilonStdErr The standard error of the shape parameter.
 #' @param sigmaStdErr The standard error of the scale parameter.
 #' @param muStdErr The standard error of the location parameter.
-#' @param returnPeriodsInDts The return periods expressed in the corresponding time unit (e.g., years for yearly maxima).
+#' @param returnPeriodsInDts The return periods expressed in the
+#' corresponding time unit. For example, while working on yearly
+# maxima, returnPeriodsInDts must be expressed in years. For
+# monthly maxima returnPeriodsInDts must be expressed in months.
 #'
 #' @return A list containing the following components:
 #'   \itemize{
@@ -177,31 +200,22 @@ tsEvaComputeReturnPeriodsGPD <- function(epsilon, sigma, threshold, peaks, nPeak
 #'     \item \code{returnLevelsErr}: A matrix of standard errors for the return levels.
 #'   }
 #'
-#' @references
-#' Stuart Coles (2001). \emph{An Introduction to Statistical Modeling of Extreme Values}. Springer.
-#' Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L.,
-#' Besio, G., and Alfieri, L. (2016). The transformed-stationary approach:
-#' a generic and simplified methodology for non-stationary extreme value analysis.
-#' \emph{Hydrology and Earth System Sciences}, \strong{20}(9), 3527-3547.
-#'  doi:10.5194/hess-20-3527-2016.
-#'
-#' @keywords function, computation, GEV, return levels, standard errors
 #' @seealso \code{\link{empdis}}
-#'
-#'
-#' @docType methods
-#' @name tsEvaComputeReturnLevelsGEV
+#' @examples
+#' # Example usage with some sample data
+#' epsilon <- c(0.1)
+#' sigma <- c(2.3)
+#' mu <- c(1.3)
+#' epsilonStdErr <- c(0.01)
+#' sigmaStdErr <- c(0.11)
+#' muStdErr <- c(0.011)
+#' returnPeriodsInDts <- c( 5, 10, 20, 50)
+
+#' results <- tsEvaComputeReturnLevelsGEV(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr, returnPeriodsInDts)
+#' head(results$returnLevels)
+#' head(results$returnLevelsErr)
 #' @export
 tsEvaComputeReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr, returnPeriodsInDts) {
-  # tsEvaComputeReturnLevelsGEV:
-  # returns the return levels given the gev parameters and their standard
-  # error.
-  # The parameter returnPeriodsInDts contains the return period expressed in
-  # a time unit that corresponds to the size of the time segments where we
-  # are evaluating the maxima. For example, if we are working on yearly
-  # maxima, returnPeriodsInDts must be expressed in years. If we are working
-  # on monthly maxima returnPeriodsInDts must be expressed in months.
-
   returnPeriodsInDts <- as.vector(returnPeriodsInDts)
   returnPeriodsInDtsSize <- length(returnPeriodsInDts)
   if (returnPeriodsInDtsSize[1] > 1) {
@@ -240,11 +254,11 @@ tsEvaComputeReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigma
 
 #' tsEvaComputeReturnLevelsGEVFromAnalysisObj
 #'
-#' This function calculates the return levels for a Generalized Extreme Value (GEV) distribution using the parameters obtained from a non-stationary extreme value analysis. It supports non-stationary analysis by considering different parameters for each time index.
+#' \code{tsEvaComputeReturnLevelsGEVFromAnalysisObj}is a function that calculates the return levels for a Generalized Extreme Value (GEV) distribution using the parameters obtained from a non-stationary extreme value analysis. It supports non-stationary analysis by considering different parameters for each time index.
 #'
 #' @param nonStationaryEvaParams The parameters obtained from a non-stationary extreme value analysis.
 #' @param returnPeriodsInYears The return periods expressed in years.
-#' @param ... Additional arguments.
+#' @param timeIndex Temporal index corresponding to the time step on which compute the GEV RLs.
 #'
 #' @return A list containing the following components:
 #'   \itemize{
@@ -253,20 +267,30 @@ tsEvaComputeReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigma
 #'     \item \code{returnLevelsErrFit}: A matrix of standard errors for the return levels obtained from fitting the non-stationary model.
 #'     \item \code{returnLevelsErrTransf}: A matrix of standard errors for the return levels obtained from the transformed data.
 #'   }
-#'
+#' @examples
+#' # Example usage with some sample data
+#' nonStationaryEvaParams <- list(
+#'   parameters = list(
+#'     epsilon = 0.1,
+#'     sigma = c(2.1, 2.2, 2.3),
+#'     mu = c(1.1, 1.2, 1.3)
+#'   ),
+#'   paramErr = list(
+#'     epsilonErr = 0.01,
+#'     sigmaErr = c(0.11, 0.12, 0.13),
+#'     muErr = c(0.011, 0.012, 0.013)
+#'   )
+#' )
+#' returnPeriodsInYears <- c(1, 5, 10, 20, 50)
+#' timeIndex=1
+#' results <- tsEvaComputeReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
+#' head(results$returnLevels)
+#' head(results$returnLevelsErr)
+#' head(results$returnLevelsErrFit)
+#' head(results$returnLevelsErrTransf)
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}
-#'
-#' @family MyPackage functions
-#'
-#' @docType methods
-#' @name tsEvaComputeReturnLevelsGEVFromAnalysisObj
 #' @export
-tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, returnPeriodsInYears, ...) {
-  args <- list(timeIndex = -1)
-  varargin <- list(...)
-  args <- tsEasyParseNamedArgs(varargin, args)
-  timeIndex <- args$timeIndex
-
+tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, returnPeriodsInYears, timeIndex=-1) {
   epsilon <- nonStationaryEvaParams[[1]]$parameters$epsilon
   epsilonStdErr <- nonStationaryEvaParams[[1]]$paramErr$epsilonErr
   epsilonStdErrFit <- epsilonStdErr
@@ -310,7 +334,9 @@ tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, r
 
 #' tsEvaComputeReturnLevelsGPD
 #'
-#' This function calculates the return levels for a Generalized Pareto Distribution (GPD) using the parameters of the distribution and their standard errors.
+#' #' \code{tsEvaComputeReturnLevelsGPD}is a function that
+#'  compute the return levels for a Generalized Pareto Distribution (GPD)
+#'  using the parameters of the distribution and their standard errors.
 #'
 #' @param epsilon The shape parameter of the GPD.
 #' @param sigma The scale parameter of the GPD.
@@ -327,17 +353,23 @@ tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, r
 #'     \item \code{returnLevels}: A vector of return levels corresponding to the specified return periods.
 #'     \item \code{returnLevelsErr}: A vector of standard errors for the return levels.
 #'   }
-#' @references
-#' Stuart Coles (2001). \emph{An Introduction to Statistical Modeling of Extreme Values}. Springer.
+#'
 #' @details
 #' sampleTimeHorizon and returnPeriods must be in the same units, e.g. years
-#'
-#' @seealso \code{\link{tsEasyParseNamedArgs}}
-#'
-#' @family MyPackage functions
-#'
-#' @docType methods
-#' @name tsEvaComputeReturnLevelsGPD
+#' @examples
+#' # Example usage with some sample data
+#' epsilon <- c(0.1)
+#' sigma <- c(2.3)
+#' threshold <- c(1.3)
+#' epsilonStdErr <- c(0.01)
+#' sigmaStdErr <- c(0.11)
+#' thresholdStdErr <- c(0.011)
+#' returnPeriodsInDts <- c( 5, 10, 20, 50)
+#' nPeaks=70
+#' SampleTimeHorizon=70
+#' results <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, SampleTimeHorizon, returnPeriodsInDts)
+#' head(results$returnLevels)
+#' head(results$returnLevelsErr)
 #' @export
 tsEvaComputeReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, sampleTimeHorizon, returnPeriods) {
 
@@ -382,7 +414,7 @@ tsEvaComputeReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr
 #'
 #' @param nonStationaryEvaParams The non-stationary parameters obtained from the analysis object.
 #' @param returnPeriodsInYears The return periods for which to compute the return levels, expressed in years.
-#' @param ... Additional arguments to be passed to the function.
+#' @param timeIndex Temporal index corresponding to the time step on which compute the GEV RLs.
 #'
 #' @return A list with the following components:
 #'   \itemize{
@@ -391,21 +423,28 @@ tsEvaComputeReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr
 #'     \item \code{returnLevelsErrTransf} A vector of standard errors for the return levels estimated based on the transformed parameters.
 #'   }
 #'
-#' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}, \code{\link{tsEasyParseNamedArgs}}
-#'
-#'
-#' @family MyPackage functions
-#'
-#' @docType methods
-#' @name tsEvaComputeReturnLevelsGPDFromAnalysisObj
-#' @rdname tsEvaComputeReturnLevelsGPDFromAnalysisObj
-#' @aliases tsEvaComputeReturnLevelsGPDFromAnalysisObj
+#' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
+#' @examples
+#' Example usage with some sample data
+#' nonStationaryEvaParams <- list(
+#'   parameters = list(
+#'     epsilon = 0.1,
+#'     sigma = c(2.1, 2.2, 2.3),
+#'     threshold = c(1.1, 1.2, 1.3)
+#'   ),
+#'   paramErr = list(
+#'     epsilonErr = 0.01,
+#'     sigmaErr = c(0.11, 0.12, 0.13),
+#'     thresholdErr = c(0.011, 0.012, 0.013)
+#'   )
+#' )
+#' returnPeriodsInYears <- c(1, 5, 10, 20, 50)
+#' timeIndex=1
+#' results <- tsEvaComputeReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
+#' head(results$returnLevels)
+#' @export
 
-tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, returnPeriodsInYears, ...) {
-  args <- list(timeIndex = -1)
-  varargin <- list(...)
-  args <- tsEasyParseNamedArgs(varargin, args)
-  timeIndex <- args$timeIndex
+tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, returnPeriodsInYears, timeIndex=-1) {
   epsilon <- nonStationaryEvaParams[[2]]$parameters$epsilon
   epsilonStdErr <- nonStationaryEvaParams[[2]]$paramErr$epsilonErr
   epsilonStdErrFit <- epsilonStdErr
@@ -450,7 +489,33 @@ tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, r
   return(list(returnLevels = returnLevels$returnLevels, returnLevelsErr = returnLevelsErr, returnLevelsErrFit = returnLevelsErrFit, returnLevelsErrTransf = returnLevelsErrTransf))
 }
 
-
+#' tsEvaComputeRLsGEVGPD
+#'
+#' \code{tsEvaComputeRLsGEVGPD} is a function that calculates the return levels
+#'  and their associated errors for a Generalized Extreme Value (GEV)
+#'  and Generalized Pareto (GPD) distribution using the parameters obtained
+#'  from a non-stationary extreme value analysis.
+#'  It supports non-stationary analysis by considering different parameters
+#'  for each time index.
+#'
+#' @param nonStationaryEvaParams The parameters obtained from a non-stationary
+#' extreme value analysis.
+#' @param RPgoal The target return period for which the return levels are computed.
+#' @param timeIndex The index at which the time-varying analysis should be estimated.
+#' @param trans A character string indicating the transformation to be applied
+#' to the data before fitting the EVD. default value is NA, corresponding
+#' to no transformation. Currently only the "rev" for reverse transformation is
+#' implemented.
+#'
+#' @return A list containing the following components:
+#'   \itemize{
+#'     \item \code{Fit}: A character string indicating whether the EVD could be fitted to the data ("No fit") or the EVD was successfully fitted to the data ("Fitted").
+#'     \item \code{ReturnLevels}: A data frame containing the target return period (`ReturnPeriod`), GEV return level (`GEV`), GPD return level (`GPD`), GEV return level error (`errGEV`), and GPD return level error (`errGPD`) for the specified time index.
+#'     \item \code{Params}: A list containing the GEV and GPD parameters for the specified time index, including their standard errors.
+#'   }
+#'
+#' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}, \code{\link{tsEvaComputeReturnLevelsGPD}}
+#' @export
 tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=NA){
 
   #GEV
@@ -513,11 +578,10 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
 
 
 }
-
-
 #' tsEvaSampleData Function
 #'
-#' This function calculates various statistics and data for time series evaluation.
+#' \code{tsEvaSampleData} is a function that calculates various statistics
+#'  and data for time series evaluation.
 #'
 #' @param ms A matrix containing the time series data.
 #' @param meanEventsPerYear The mean number of events per year.
@@ -538,23 +602,20 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
 #'     \item \code{monthlyMaxDate}: The dates corresponding to the monthly maximum values.
 #'     \item \code{monthlyMaxIndx}: The indices of the monthly maximum values.
 #'   }
-#' @seealso [tsGetPot()]
+#' @seealso [tsGetPOT()]
 #' @import stats
 #' @examples
 #' # Generate sample data
-#' data <- matrix(c(1:100, 101:200), ncol = 2)
+#' data <- ArdecheStMartin
 #' colnames(data) <- c("Date", "Value")
 #' # Calculate statistics and data
 #' result <- tsEvaSampleData(data, 10, 5, 7, "high")
-#'
 #' # View the result
 #' print(result)
-#'
 #' @export
 tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDistanceInDays,tail=NA) {
 
   pctsDesired = c(90, 95, 99, 99.9)
-
   args <- list(meanEventsPerYear = meanEventsPerYear,
                minEventsPerYear = minEventsPerYear,
                potPercentiles = c(seq(70,90,by=1), seq(91,99.5,by=0.5)))
@@ -571,7 +632,6 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
   pointData <- list()
   pointData$completeSeries <- ms
   pointData$POT <- POTData
-
   pointDataA <- computeAnnualMaxima(ms)
   pointDataM <- computeMonthlyMaxima(ms)
 
@@ -594,17 +654,20 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 
 #' tsGetPOT Function
 #'
-#' This function calculates the Peaks Over Threshold (POT) for a given time series data.
+#' \code{tsGetPOT} is a function that calculates the Peaks Over Threshold (POT)
+#' for a given time series data.
 #'
-#' @param ms A matrix containing the time series data with two columns: the first column represents the time and the second column represents the values.
-#' @param pcts A numeric vector specifying the percentiles to be used as thresholds for identifying peaks.
+#' @param ms A matrix containing the time series data with two columns:
+#' the first column represents the time and the second column represents the values.
+#' @param pcts A numeric vector specifying the percentiles to be used as
+#' thresholds for identifying peaks.
 #' @param desiredEventsPerYear The desired number of events per year.
 #' @param minEventsPerYear The minimum number of events per year.
 #' @param minPeakDistanceInDays The minimum distance between two peaks in days.
 #' @param tail The tail to be studied for POT selection, either 'high' or 'low'.
 #'
 #' @return A list containing the following fields:
-#' \describe{
+#' \itemize{
 #'   \item{threshold}{The threshold value used for identifying peaks.}
 #'   \item{thresholdError}{The error associated with the threshold value.}
 #'   \item{percentile}{The percentile value used as the threshold.}
@@ -613,26 +676,24 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 #'   \item{endpeaks}{The end indices of the identified peaks.}
 #'   \item{ipeaks}{The indices of the identified peaks.}
 #'   \item{time}{The time values corresponding to the identified peaks.}
-#'   \item{pars}{The parameters of the Generalized Pareto Distribution (GPD) fitted to the peaks.}
+#'   \item{pars}{The parameters of the Generalized Pareto Distribution (GPD)
+#'   fitted to the peaks.}
 #' }
 #'
 #' @import stats
 #' @importFrom POT fitgpd
-#' @seealso [tsSampleData()]
+#' @seealso [tsEvaSampleData()]
 #' @examples
 #' # Create a sample time series data
-#' time <- seq(as.Date("2000-01-01"), as.Date("2000-12-31"), by = "day")
-#' values <- rnorm(length(time))
-#' ms <- cbind(time, values)
+#' ms <- ArdecheStMartin
 #'
 #' # Calculate the POT using the tsGetPOT function
 #' pcts <- c(90, 95, 99)
 #' desiredEventsPerYear <- 5
 #' minEventsPerYear <- 2
 #' minPeakDistanceInDays <- 10
-#' mode <- "flood"
-#' POTdata <- tsGetPOT(ms, pcts, desiredEventsPerYear, minEventsPerYear, minPeakDistanceInDays, mode)
-#'
+#' tail <- "high"
+#' POTdata <- tsGetPOT(ms, pcts, desiredEventsPerYear, minEventsPerYear, minPeakDistanceInDays, tail)
 #' # Print the results
 #' print(POTdata)
 #'
@@ -770,14 +831,14 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
   return(POTdata)
 }
 
-#' Calculate GEV and GPD statistics and return levels
+#' tsEVstatistics
 #'
-#' This function calculates the Generalized Extreme Value (GEV) and
-#' Generalized Pareto Distribution (GPD) statistics and return levels
-#' for a given dataset of extreme values.
+#' \code{tsEvstatistics} is a function that calculates the Generalized Extreme
+#' Value (GEV) and Generalized Pareto Distribution (GPD) statistics
+#' and return levels for a given dataset of extreme values.
 #'
 #' @param pointData A list containing the dataset of extreme values. It should include the following components:
-#'   \describe{
+#'   \itemize{
 #'     \item{annualMax}{A vector of annual maximum values.}
 #'     \item{annualMaxDate}{A vector of dates corresponding to the annual maximum values.}
 #'     \item{monthlyMax}{A matrix of monthly maximum values.}
@@ -790,28 +851,27 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #'
 #' @importFrom evd fgev
 #' @return A list containing the following components:
-#'   \describe{
-#'     \item{EVmeta}{A list containing metadata about the analysis. It includes the following components:
-#'       \describe{
-#'         \item{Tr}{A vector of return periods for which return levels are calculated.}
+#'   \itemize{
+#'     \item{EVmeta: A list containing metadata about the analysis.
+#'     It includes Tr, A vector of return periods for which
+#'     return levels are calculated.
 #'       }
-#'     }
 #'     \item{EVdata}{A list containing the calculated statistics and return levels. It includes the following components:
 #'       \describe{
 #'         \item{GEVstat}{A list containing the GEV statistics and return levels. It includes the following components:
 #'           \describe{
-#'             \item{method}{The method used for fitting the GEV distribution.}
-#'             \item{values}{A vector of return levels calculated using the GEV distribution.}
-#'             \item{parameters}{A vector of parameter estimates for the GEV distribution.}
-#'             \item{paramCIs}{A matrix of confidence intervals for the parameter estimates.}
+#'             \item{method: The method used for fitting the GEV distribution.}
+#'             \item{values: A vector of return levels calculated using the GEV distribution.}
+#'             \item{parameters: A vector of parameter estimates for the GEV distribution.}
+#'             \item{paramCIs: A matrix of confidence intervals for the parameter estimates.}
 #'           }
 #'         }
 #'         \item{GPDstat}{A list containing the GPD statistics and return levels. It includes the following components:
 #'           \describe{
-#'             \item{method}{The method used for fitting the GPD distribution.}
-#'             \item{values}{A vector of return levels calculated using the GPD distribution.}
-#'             \item{parameters}{A vector of parameter estimates for the GPD distribution.}
-#'             \item{paramCIs}{A matrix of confidence intervals for the parameter estimates.}
+#'             \item{method: The method used for fitting the GPD distribution.}
+#'             \item{values: A vector of return levels calculated using the GPD distribution.}
+#'             \item{parameters: A vector of parameter estimates for the GPD distribution.}
+#'             \item{paramCIs: A matrix of confidence intervals for the parameter estimates.}
 #'           }
 #'         }
 #'       }
@@ -821,16 +881,14 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #'
 #' @examples
 #' # Create a sample dataset
-#' pointData <- list(
-#'   annualMax = c(10, 15, 12, 18, 20),
-#'   annualMaxDate = c("2010-01-01", "2011-01-01", "2012-01-01", "2013-01-01", "2014-01-01"),
-#'   monthlyMax = matrix(c(5, 8, 6, 10, 7, 12, 9, 14, 11, 16, 13, 18), ncol = 3)
-#' )
-#'
-#' # Calculate GEV and GPD statistics
-#' result <- tsEVstatistics(pointData)
-#' result$EVdata$GEVstat$values
-#' result$EVdata$GPDstat$values
+#' data <- ArdecheStMartin
+#'colnames(data) <- c("Date", "Value")
+# Calculate statistics and data
+#'pointData <- tsEvaSampleData(data, 10, 5, 7, "high")
+# Calculate GEV and GPD statistics
+#'result <- tsEVstatistics(pointData)
+#'result$EVdata$GEVstat$values
+#'result$EVdata$GPDstat$values
 #'
 #' @export
 tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevType = 'GEV', evdType = c('GEV', 'GPD'),shape_bnd=c(-0.5,1)) {
@@ -840,7 +898,6 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
   isValid <- TRUE
 
   minGEVSample <- 7
-
   if(is.null(alphaCI)){alphaCI <- .95}
   if(is.null(gevMaxima)){gevMaxima <- 'annual'}
   if(is.null(gevType)){gevType <- 'GEV'}
@@ -867,7 +924,6 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
       stop(paste0('Invalid gevMaxima type: ', gevMaxima))
     }
     iIN <- length(tmpmat)
-
     if (sum(iIN) >= minGEVSample) {
       tmp <- data.frame(yr=year(pointData$annualMaxDate),dt=tmpmat)
       # Perform GEV/Gumbel fitting and computation of return levels
@@ -945,8 +1001,6 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
                          paramCIs = paramCIs)
 
   # Create output structures for GEV statistics
-
-
   # GPD statistics
   imethod <- 2
   methodname <- 'GPDstat'
@@ -1024,9 +1078,9 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
 
 # Helpers for main functions----------------
 
-#' Get the number of events per year
+#' tsGetNumberPerYear
 #'
-#' This function calculates the number of events per year based on a given time series and a set of locations.
+#' \code{tsGetNumberPerYear} is a function that calculates the number of events per year based on a given time series and a set of locations.
 #'
 #' @param ms A data frame representing the time series data, where the first column contains the dates of the events.
 #' @param locs A vector of indices representing the locations of interest in the time series.
@@ -1046,6 +1100,17 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
 #'
 #' @importFrom dplyr full_join
 #' @importFrom lubridate year
+#' @examples
+#' # Create a sample time series data frame
+#'set.seed(123)
+#' ms <- data.frame(date = seq(as.Date("2000-01-01"), as.Date("2022-12-31"), by = "day"),
+#'                 values=rnorm(8401))
+
+#'# Generate random events
+#'events <- match(sample(ms$date, 100),ms$date)
+#'# Get the number of events per year
+#'tsGetNumberPerYear(ms, events)
+
 #' @export
 tsGetNumberPerYear <- function(ms, locs){
 
@@ -1081,36 +1146,42 @@ tsGetNumberPerYear <- function(ms, locs){
 }
 
 
-#' Find the index of the yearly maximum value in a subset of a vector
+#' findMax
 #'
-#' This function takes a subset of a vector and returns the index of the maximum value in that subset.
+#' \code{findMax} is a function that takes a subset of a vector
+#' and returns the index of the maximum value in that subset.
 #'
 #' @param subIndxs A numeric vector representing the subset of indices to consider.
+#' @param srs A vector of numerical data
 #' @return The index of the maximum value in the subset.
 #' @examples
 #' srs <- c(10, 20, 30, 40, 50)
-#' findYMax(c(1, 3, 5))
-#' # Output: 5
+#' findMax(c(1, 3, 5),srs)
+#' #result is 5.
 findMax <- function(subIndxs,srs) {
   subIndxMaxIndx <- which.max(srs[subIndxs])
   return(subIndxs[subIndxMaxIndx])
 }
 
-#' Compute Annual Maxima
+#' computeAnnualMaxima
 #'
-#' This function computes the annual maxima of a time series.
+#' \code{computeAnnualMaxima} is a function that computes the annual maxima of
+#' a time series.
 #'
-#' @param timeAndSeries A matrix or data frame containing the time stamps and series values.
-#'                      The first column should contain the time stamps and the second column should contain the series values.
+#' @param timeAndSeries A matrix or data frame containing the time stamps and
+#' series values. The first column should contain the time stamps and the
+#' second column should contain the series values.
 #'
-#' @return A list containing the annual maximum values, their corresponding dates, and their indices.
+#' @return A list containing the annual maximum values, their corresponding dates,
+#'  and their indices.
 #'         - \code{annualMax}: A numeric vector of annual maximum values.
-#'         - \code{annualMaxDate}: A vector of dates corresponding to the annual maximum values.
-#'         - \code{annualMaxIndx}: A vector of indices indicating the positions of the annual maximum values in the original time series.
+#'         - \code{annualMaxDate}: A vector of dates corresponding to the annual
+#'          maximum values.
+#'         - \code{annualMaxIndx}: A vector of indices indicating the positions
+#'         of the annual maximum values in the original time series.
 #'
 #' @examples
-#' timeAndSeries <- data.frame(timeStamps = c("2021-01-01", "2021-01-02", "2021-01-03"),
-#'                             series = c(10, 15, 8))
+#' timeAndSeries <- ArdecheStMartin
 #' computeAnnualMaxima(timeAndSeries)
 #' @export
 computeAnnualMaxima <- function(timeAndSeries) {
@@ -1134,12 +1205,14 @@ computeAnnualMaxima <- function(timeAndSeries) {
 }
 
 
-#' Compute Monthly Maxima
+#' computeMonthlyMaxima
 #'
-#' This function computes the monthly maxima of a time series.
+#' \code{computeMonthlyMaxima} is a function that computes the monthly maxima
+#' of a time series.
 #'
 #' @param timeAndSeries A data frame containing the time stamps and series values.
-#'                      The first column should contain the time stamps, and the second column should contain the series values.
+#'                      The first column should contain the time stamps,
+#'                      and the second column should contain the series values.
 #'
 #' @return A list containing the monthly maxima, corresponding dates, and indices.
 #'         - \code{monthlyMax}: A vector of the monthly maximum values.
@@ -1147,8 +1220,7 @@ computeAnnualMaxima <- function(timeAndSeries) {
 #'         - \code{monthlyMaxIndx}: A vector of the indices of the monthly maximum values in the original series.
 #'
 #' @examples
-#' timeAndSeries <- data.frame(timeStamps = c("2022-01-01", "2022-01-02", "2022-02-01", "2022-02-02"),
-#'                             series = c(10, 15, 5, 20))
+#' timeAndSeries <- ArdecheStMartin
 #' computeMonthlyMaxima(timeAndSeries)
 #' @export
 computeMonthlyMaxima<- function(timeAndSeries) {
@@ -1172,9 +1244,9 @@ computeMonthlyMaxima<- function(timeAndSeries) {
 }
 
 
-#' declustpeaks Function
+#' declustpeaks
 #'
-#' This function takes in a data vector, minimum peak distance, minimum run distance, and a threshold value.
+#' \code{declustpeaks} is a function that takes in a data vector, minimum peak distance, minimum run distance, and a threshold value.
 #' It finds peaks in the data vector based on the minimum peak distance and threshold value.
 #' It then declusters the peaks based on the minimum run distance and threshold value.
 #' The function returns a data frame with information about the peaks, including the peak value,
@@ -1184,11 +1256,15 @@ computeMonthlyMaxima<- function(timeAndSeries) {
 #' @param minpeakdistance An integer specifying the minimum distance between peaks.
 #' @param minrundistance An integer specifying the minimum distance between runs.
 #' @param qt A numeric value representing the threshold for peak detection.
-#'
 #' @import texmex stats
-#' @return A data frame with information about the peaks, including the peak value,
-#' start and end indices, duration, and cluster information.
-#'
+#' @return A data frame with information about the peaks, including:
+#' \itemize{
+#'   \item{Q: the peak value},
+#'   \item{max: max time index},
+#'   \item{start: start time index},
+#'   \item{end: end time index},
+#'   \item{dur: duration},
+#'   \item{cluster:cluster information }}
 #' @examples
 #' data <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
 #' declustpeaks(data, minpeakdistance = 2, minrundistance = 2, qt = 3)
@@ -1221,23 +1297,26 @@ declustpeaks<-function(data,minpeakdistance = 10 ,minrundistance = 7, qt){
   return(peakdt)
 }
 
-
-
-
-
-
-# empirical probability for return level plots
-#' Empirical Distribution Function
+#' empdis: Empirical Distribution Function
 #'
-#' This function calculates the empirical distribution function for a given dataset.
+#' \code{empdis} is a function that calculates the empirical
+#'distribution function for a given dataset.
 #'
 #' @param x A numeric vector representing the dataset.
 #' @param nyr An integer representing the number of years in the dataset.
 #'
-#' @return A data frame containing the empirical return periods, hazard return periods,
-#' Cunnane return periods, Gumbel values, empirical probabilities, hazard probabilities,
-#' Cunnane probabilities, the original dataset, and the timestamp.
-#'
+#' @return A data frame containing:
+#' \itemize{
+#'   \item{emp.RP: empirical return period},
+#'   \item{haz.RP: Hazen return period},
+#'   \item{cun.RP: Cunnane return period},
+#'   \item{gumbel: Gumbel values},
+#'   \item{emp.f: empirical cumulative density},
+#'   \item{emp.hazen:Hazen cumulative density},
+#'   \item{emp.cunnan: Cunnane cumulative density},
+#'   \item{Q: original data},
+#'   \item{timestamp: time component}
+#'   }
 #' @examples
 #' x <- c(1, 2, 3, 4, 5)
 #' nyr <- 5
@@ -1257,8 +1336,10 @@ empdis <- function(x, nyr) {
   rpc <- (1 / (1 - (1:n) / (n + 1))) / 12
   nasmp <- apply(x, 2, function(x) sum(!is.na(x)))
   epdp <- rank / rep(nasmp + 1, each = nrow(rank))
-  empip <- data.frame(1 / (epyp * (1 - epdp)), 1 / (epyp * (1 - hazen)), 1 / (epyp * (1 - cunnane)), gumbel, epdp, hazen, cunnane, x, ts)
-  names(empip) <- c("emp.RP", "haz.RP", "cun.RP", "gumbel", "emp.f", "emp.hazen", "emp.cunnane", "Q", "timestamp")
+  empip <- data.frame(1 / (epyp * (1 - epdp)), 1 / (epyp * (1 - hazen)),
+                      1 / (epyp * (1 - cunnane)), gumbel, epdp, hazen, cunnane, x, ts)
+  names(empip) <- c("emp.RP", "haz.RP", "cun.RP", "gumbel", "emp.f",
+                    "emp.hazen", "emp.cunnane", "Q", "timestamp")
   return(empip)
 }
 
@@ -1266,19 +1347,19 @@ empdis <- function(x, nyr) {
 #' Empirical Distribution Function
 #'
 #' This function calculates the empirical distribution function for a given dataset,
-#'  with a focus on low values
+#' with a focus on low values
 #'
 #' @param x A numeric vector or matrix representing the discharge values.
 #' @param nyr An integer representing the number of years.
 #'
 #' @return A data frame containing the following columns:
-#'   \describe{
-#'     \item{emp.RP}{Empirical return period.}
-#'     \item{haz.RP}{Hazen return period.}
-#'     \item{gumbel}{Gumbel frequency.}
-#'     \item{emp.f}{Empirical frequency.}
-#'     \item{emp.hazen}{Empirical Hazen frequency.}
-#'     \item{Q}{Discharge values.}
+#'   \itemize{
+#'     \item{emp.RP: Empirical return period},
+#'     \item{haz.RP: Hazen return period},
+#'     \item{gumbel: Gumbel frequency},
+#'     \item{emp.f: Empirical frequency},
+#'     \item{emp.hazen: Empirical Hazen frequency},
+#'     \item{Q: Discharge values}
 #'   }
 #'
 #' @examples

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotGPDImageScFromAnalysisObj}
 \alias{tsEvaPlotGPDImageScFromAnalysisObj}
-\title{Plot GPD Image Score from Analysis Object}
+\title{tsEvaPlotGPDImageScFromAnalysisObj}
 \usage{
 tsEvaPlotGPDImageScFromAnalysisObj(
   Y,
@@ -27,7 +27,9 @@ tsEvaPlotGPDImageScFromAnalysisObj(
 The plot object.
 }
 \description{
-This function plots the GPD (Generalized Pareto Distribution) image score from an analysis object.
+\code{tsEvaPlotGPDImageScFromAnalysisObj}is a function that plots the GPD
+(Generalized Pareto Distribution) time-varying distribution through time as
+and show the evolution of exceedance probabilities.
 }
 \details{
 This function takes the input data \code{Y}, non-stationary evaluation parameters \code{nonStationaryEvaParams},
@@ -35,15 +37,6 @@ stationary transform data \code{stationaryTransformData}, transformation method 
 It then updates the arguments with the passed-in values, calculates the time stamps, and performs necessary transformations.
 Finally, it plots the GPD image score using the \code{\link{tsEvaPlotGPDImageSc}} function and returns the plot object.
 }
-\examples{
-# Example usage of tsEvaPlotGPDImageScFromAnalysisObj
-tsEvaPlotGPDImageScFromAnalysisObj(Y, nonStationaryEvaParams, stationaryTransformData, trans)
-
-}
 \seealso{
 \code{\link{tsEvaPlotGPDImageSc}}
-
-\code{\link{stationaryTransformData}}
-
-\code{\link{nonStationaryEvaParams}}
 }

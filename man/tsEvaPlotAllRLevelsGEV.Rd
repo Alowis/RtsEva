@@ -36,12 +36,12 @@ tsEvaPlotAllRLevelsGEV(
 A plot object showing the relationship between return periods and return levels for the GEV distribution at different timesteps.
 }
 \description{
-This function generates a beam plot of return levels for a Generalized Extreme Value (GEV) distribution based on the provided parameters and data.
-The plot showcases the evolving relationship between return periods and return levels through time, allowing for visual analysis of extreme events and their probabilities.
-}
-\examples{
-tsEvaPlotAllRLevelsGEV(nonStationaryEvaParams, stationaryTransformData, rlvmax, timeIndex, timeStamps, tstamps, mode = "inv", ylim = c(0, 100), ax = NULL)
-
+\code{tsEvaPlotAllRLevelsGEV} is a function that generates
+a beam plot of return levels for a Generalized Extreme Value (GEV)
+distribution based on the provided parameters and data.
+The plot showcases the evolving relationship between return periods and
+return levels through time, allowing for visual analysis of extreme events
+and their probabilities.
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGEV}}

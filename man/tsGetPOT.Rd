@@ -14,9 +14,11 @@ tsGetPOT(
 )
 }
 \arguments{
-\item{ms}{A matrix containing the time series data with two columns: the first column represents the time and the second column represents the values.}
+\item{ms}{A matrix containing the time series data with two columns:
+the first column represents the time and the second column represents the values.}
 
-\item{pcts}{A numeric vector specifying the percentiles to be used as thresholds for identifying peaks.}
+\item{pcts}{A numeric vector specifying the percentiles to be used as
+thresholds for identifying peaks.}
 
 \item{desiredEventsPerYear}{The desired number of events per year.}
 
@@ -28,7 +30,7 @@ tsGetPOT(
 }
 \value{
 A list containing the following fields:
-\describe{
+\itemize{
 \item{threshold}{The threshold value used for identifying peaks.}
 \item{thresholdError}{The error associated with the threshold value.}
 \item{percentile}{The percentile value used as the threshold.}
@@ -37,30 +39,29 @@ A list containing the following fields:
 \item{endpeaks}{The end indices of the identified peaks.}
 \item{ipeaks}{The indices of the identified peaks.}
 \item{time}{The time values corresponding to the identified peaks.}
-\item{pars}{The parameters of the Generalized Pareto Distribution (GPD) fitted to the peaks.}
+\item{pars}{The parameters of the Generalized Pareto Distribution (GPD)
+fitted to the peaks.}
 }
 }
 \description{
-This function calculates the Peaks Over Threshold (POT) for a given time series data.
+\code{tsGetPOT} is a function that calculates the Peaks Over Threshold (POT)
+for a given time series data.
 }
 \examples{
 # Create a sample time series data
-time <- seq(as.Date("2000-01-01"), as.Date("2000-12-31"), by = "day")
-values <- rnorm(length(time))
-ms <- cbind(time, values)
+ms <- ArdecheStMartin
 
 # Calculate the POT using the tsGetPOT function
 pcts <- c(90, 95, 99)
 desiredEventsPerYear <- 5
 minEventsPerYear <- 2
 minPeakDistanceInDays <- 10
-mode <- "flood"
-POTdata <- tsGetPOT(ms, pcts, desiredEventsPerYear, minEventsPerYear, minPeakDistanceInDays, mode)
-
+tail <- "high"
+POTdata <- tsGetPOT(ms, pcts, desiredEventsPerYear, minEventsPerYear, minPeakDistanceInDays, tail)
 # Print the results
 print(POTdata)
 
 }
 \seealso{
-\code{\link[=tsSampleData]{tsSampleData()}}
+\code{\link[=tsEvaSampleData]{tsEvaSampleData()}}
 }

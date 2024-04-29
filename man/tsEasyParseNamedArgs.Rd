@@ -21,7 +21,7 @@ If an argument is present in the list of named arguments, its value is assigned 
 If an argument is not present, its value in the argument structure remains unchanged.
 }
 \examples{
-args <- list(arg1 = 10, arg2 = "hello")
+args <- list(arg1 = 10, arg2 = "tanargue")
 argStruct <- list(arg1 = 0, arg2 = "", arg3 = TRUE)
 modifiedArgStruct <- tsEasyParseNamedArgs(args, argStruct)
 modifiedArgStruct

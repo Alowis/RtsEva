@@ -40,7 +40,7 @@ tsEvaFillSeries <- function(timeStamps, series) {
 #' @return A modified argument structure with values assigned from the list of named arguments.
 #'
 #' @examples
-#' args <- list(arg1 = 10, arg2 = "hello")
+#' args <- list(arg1 = 10, arg2 = "tanargue")
 #' argStruct <- list(arg1 = 0, arg2 = "", arg3 = TRUE)
 #' modifiedArgStruct <- tsEasyParseNamedArgs(args, argStruct)
 #' modifiedArgStruct
@@ -110,6 +110,7 @@ check_timeseries <- function(timeseries, yro) {
 #' @param timeseries A time series with a 6-hourly resolution.
 #' @return A data frame containing the daily maximum values.
 #' @export
+#' @importFrom xts apply.daily
 #' @examples
 #' # Example usage:
 #' max_daily_value(timeseries)

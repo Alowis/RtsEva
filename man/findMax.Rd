@@ -2,21 +2,24 @@
 % Please edit documentation in R/eva_functions.R
 \name{findMax}
 \alias{findMax}
-\title{Find the index of the yearly maximum value in a subset of a vector}
+\title{findMax}
 \usage{
 findMax(subIndxs, srs)
 }
 \arguments{
 \item{subIndxs}{A numeric vector representing the subset of indices to consider.}
+
+\item{srs}{A vector of numerical data}
 }
 \value{
 The index of the maximum value in the subset.
 }
 \description{
-This function takes a subset of a vector and returns the index of the maximum value in that subset.
+\code{findMax} is a function that takes a subset of a vector
+and returns the index of the maximum value in that subset.
 }
 \examples{
 srs <- c(10, 20, 30, 40, 50)
-findYMax(c(1, 3, 5))
-# Output: 5
+findMax(c(1, 3, 5),srs)
+#result is 5.
 }

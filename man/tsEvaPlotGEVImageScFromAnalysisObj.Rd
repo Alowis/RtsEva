@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotGEVImageScFromAnalysisObj}
 \alias{tsEvaPlotGEVImageScFromAnalysisObj}
-\title{Generate GEV Image Scatter Plot from Analysis Object}
+\title{tsEvaPlotGEVImageScFromAnalysisObj}
 \usage{
 tsEvaPlotGEVImageScFromAnalysisObj(
   Y,
@@ -27,10 +27,10 @@ tsEvaPlotGEVImageScFromAnalysisObj(
 The GEV image scatter plot.
 }
 \description{
-This function generates a GEV (Generalized Extreme Value) image scatter plot from an analysis object.
+\code{tsEvaPlotGEVImageScFromAnalysisObj}is a function that generates a GEV
+(Generalized Extreme Value) time-varying distribution through time as
+and show the evolution of exceedance probabilities.
 }
-\examples{
-# Example usage of tsEvaPlotGEVImageScFromAnalysisObj function
-tsEvaPlotGEVImageScFromAnalysisObj(Y, nonStationaryEvaParams, stationaryTransformData, trans)
-
+\seealso{
+\code{\link{tsEvaPlotGEVImageSc}}
 }

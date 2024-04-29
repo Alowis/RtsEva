@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotReturnLevelsGEV}
 \alias{tsEvaPlotReturnLevelsGEV}
-\title{tsEvaPlotReturnLevelsGEV Function}
+\title{tsEvaPlotReturnLevelsGEV}
 \usage{
 tsEvaPlotReturnLevelsGEV(
   epsilon,
@@ -34,7 +34,9 @@ tsEvaPlotReturnLevelsGEV(
 
 \item{tstamps}{The title for the plot.}
 
-\item{trans}{The transformation used to fit the EVD, either "ori" (original) or "rev" (reverse).}
+\item{trans}{The transformation used to fit the EVD, either "ori" (original)
+or "rev" (reverse). "inv" and "lninv" are also available
+but in development phase.}
 
 \item{...}{Additional arguments to be passed to the function.}
 }
@@ -42,15 +44,10 @@ tsEvaPlotReturnLevelsGEV(
 A ggplot object representing the plot of return levels.
 }
 \description{
-This function plots the return levels using the Generalized Extreme Value (GEV) distribution.
-}
-\examples{
-tsEvaPlotReturnLevelsGEV(
-  epsilon = 0.1, sigma = 1, mu = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1, muStdErr = 0.05,
-  rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-  tstamps = "Return Levels", trans = "inv")
-  @export
+\code{tsEvaPlotReturnLevelsGEV} is a function that plots the return levels
+using the Generalized Extreme Value (GEV) distribution.
 }
 \seealso{
-\code{\link{tsEvaComputeReturnLevelsGEV}} \code{\link{tsEvaPlorReturnLevelsGEVFromAnalysisObj}}
+\code{\link{tsEvaComputeReturnLevelsGEV}}
+\code{\link{tsEvaPlotReturnLevelsGEVFromAnalysisObj}}
 }

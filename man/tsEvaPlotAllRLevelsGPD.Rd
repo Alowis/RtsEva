@@ -41,20 +41,14 @@ the analysis.}
 }
 \value{
 A plot object showing the relationship between return periods and
-return levels for the GPD distribution at different timesteps.
+return levels for the GPD distribution at different timest
 }
 \description{
-This function generates a plot of return levels for a Generalized Pareto
-Distribution (GPD) based on the provided parameters and data.
-The plot showcases the evolving relationship between return periods and
-return levels, allowing for visual analysis of extreme events
-and their probabilities.
-}
-\examples{
-tsEvaPlotAllRLevelsGPD(nonStationaryEvaParams, stationaryTransformData,
-rlvmax, timeIndex, timeStamps, tstamps, mode = "inv", ylim = c(0, 100),
- ax = NULL)
-
+\code{tsEvaPlotAllRLevelsGPD} is a function that generates a plot of
+return levels for a Generalized Pareto Distribution (GPD) based on the
+provided parameters and data. The plot showcases the evolving relationship
+between return periods and return levels, allowing for visual analysis of
+extreme events and their probabilities.
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGPD}}

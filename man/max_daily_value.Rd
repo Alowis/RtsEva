@@ -2,13 +2,21 @@
 % Please edit documentation in R/utils.R
 \name{max_daily_value}
 \alias{max_daily_value}
-\title{max_daily_value}
+\title{Max Daily Value Function}
 \usage{
 max_daily_value(timeseries)
 }
 \arguments{
-\item{timeseries}{}
+\item{timeseries}{A time series with a 6-hourly resolution.}
+}
+\value{
+A data frame containing the daily maximum values.
 }
 \description{
-max_daily_value
+This function converts a 6-hourly time series to a daily time series and
+calculates the maximum value for each day.
+}
+\examples{
+# Example usage:
+max_daily_value(timeseries)
 }

@@ -2,21 +2,23 @@
 % Please edit documentation in R/eva_functions.R
 \name{tsEvaComputeTimeRP}
 \alias{tsEvaComputeTimeRP}
-\title{tsEvaComputeTimeRP Function Documentation}
+\title{tsEvaComputeTimeRP}
 \usage{
 tsEvaComputeTimeRP(params, RPiGEV, RPiGPD)
 }
 \arguments{
 \item{params}{A data frame containing the following parameters:
 \itemize{
-\item epsilonGEV: Shape parameter for the Generalized Extreme Value (GEV) distribution.
-\item muGEV: Location parameter for the GEV distribution.
-\item sigmaGEV: Scale parameter for the GEV distribution.
-\item epsilonGPD: Shape parameter for the Generalized Pareto (GPD) distribution.
-\item thresholdGPD: Threshold parameter for the GPD distribution.
-\item sigmaGPD: Scale parameter for the GPD distribution.
-\item nPeaks: Number of peaks in the sample time horizon.
-\item SampleTimeHorizon: Total sample time horizon.
+\item \code{epsilonGEV}: Shape parameter for the Generalized Extreme Value
+(GEV) distribution.
+\item \code{muGEV}: Location parameter for the GEV distribution.
+\item \code{sigmaGEV}: Scale parameter for the GEV distribution.
+\item \code{epsilonGPD}: Shape parameter for the Generalized Pareto
+(GPD) distribution.
+\item \code{thresholdGPD}:Threshold parameter for the GPD distribution.
+\item \code{sigmaGPD}: Scale parameter for the GPD distribution.
+\item \code{nPeaks}: Number of peaks in the sample time horizon.
+\item \code{SampleTimeHorizon}: Total number of years in the data sample.
 }}
 
 \item{RPiGEV}{Value of RP for the GEV distribution.}
@@ -27,13 +29,14 @@ tsEvaComputeTimeRP(params, RPiGEV, RPiGPD)
 A vector with the calculated return period for GEV and GPD distributions.
 }
 \description{
-This function calculates the return period of a given event for GEV and GPD distributions
-at a given time index.
+\code{tsEvaComputeTimeRP}is a function that calculates the return period
+of a given event for GEV and GPD distributions at a given time index.
 }
 \examples{
-# Example usage:
-params <- data.frame(epsilonGEV = 0.2, muGEV = 3, sigmaGEV = 1,
-                   epsilonGPD = 0.5, thresholdGPD = 2, sigmaGPD = 0.5,
-                   nPeaks = 5, SampleTimeHorizon = 10)
-RPcalc(params, RPiGEV = 10, RPiGPD = 20)
+#Parameter vector:
+params <- t(data.frame(epsilonGEV = 0.2, muGEV = 3, sigmaGEV = 1,
+                  epsilonGPD = 0.2, thresholdGPD = 3, sigmaGPD = 1,
+                  nPeaks = 70, SampleTimeHorizon = 70))
+
+tsEvaComputeTimeRP(params, RPiGEV = 10, RPiGPD = 10)
 }

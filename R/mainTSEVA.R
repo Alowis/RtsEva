@@ -15,52 +15,96 @@
 #Main function for non-stationary analysis
 #' TsEvaNs Function
 #'
-#' This function performs non-stationary extreme value analysis (EVA) on a time series data.
+#' This function performs non-stationary extreme value analysis (EVA) on a
+#' time series data.
 #'
-#' @param timeAndSeries A data frame containing the timestamp and corresponding series data.
+#' @param timeAndSeries A data frame containing the timestamp and
+#' corresponding series data.
 #' @param timeWindow The time window for analysis.
-#' @param ... Additional arguments for customization.
-#' @param transfType The transformation type for non-stationary EVA. It can be one of the following:
-#' \itemize{trend: Long-term variations of the timeseries.
-#' seasonal: Long-term and seasonal variations of extremes.
-#' trendCIPercentile: Long-term variations of extremes using a specified percentile.
-#' trendPeak: Long-term variations of the peaks.}
+#' @param transfType The transformation type for non-stationary EVA.
+#' It can be one of the following:
+#' \itemize{trend: Long-term variations of the timeseries.}
+#' \itemize{seasonal: Long-term and seasonal variations of extremes.}
+#' \itemize{trendCIPercentile: Long-term variations of extremes using
+#' a specified percentile.}
+#' \itemize{trendPeak: Long-term variations of the peaks.}
 #' @param minPeakDistanceInDays The minimum peak distance in days.
-#' @param seasonalityVar A logical value indicating whether to consider seasonality in the analysis.
-#' @param potEventsPerYear The number of potential events per year.
+#' @param seasonalityVar A logical value indicating whether to consider
+#' seasonality in the analysis.
 #' @param minEventsPerYear The minimum number of events per year.
-#' @param gevMaxima The type of maxima for the GEV distribution (annual or monthly).
+#' @param gevMaxima The type of maxima for the GEV distribution
+#' (annual or monthly, default is annual).
 #' @param ciPercentile The percentile value for confidence intervals.
 #' @param gevType The type of GEV distribution (GEV or GPD).
 #' @param evdType The type of extreme value distribution (GEV or GPD).
-#' @param tail The mode of the analysis (e.g., high for flood peaks or low for drought peaks).
+#' @param tail The mode of the analysis
+#' (e.g., high for flood peaks or low for drought peaks).
 #' @param epy The average number of events per year, can be specified by the
 #' user or automatically set according to the tail selected.
+#' @param trans The transformation used to fit the EVD. Can be:
+#'  \itemize{
+#'  \item \code{ori}: use of original data.
+#'  \item \code{rev}: Reversing the data (used for low extremes).
+#'  \item \code{inv}: inversing the data (used for low extreme, can lead to unstabilities).
+#'  \item \code{lninv}: log of inverse the data (used for low extreme, under development).
+#'  }
 #' @param lowdt The temporal resolultion used for low values. default is 7 days.
 #'
-#' @return A list containing the results of the non-stationary EVA. Containing the following components:
-#' \itemize{nonStationaryEvaParams: The estimated parameters for non-stationary EVA.
-#' Parameters include GEV and GPD parameters for each timestep, confidence intervals, and other statistical measures.
-#' stationaryTransformData: The transformed data for stationary EVA.Includes the stationary series, trend, and standard deviation series.}
+#' @return A list containing the results of the non-stationary EVA.
+#' Containing the following components:
+#' \itemize{nonStationaryEvaParams: The estimated parameters
+#' for non-stationary EVA.
+#' Parameters include GEV and GPD parameters for each timestep,
+#' confidence intervals, and other statistical measures.}
+#' \itemize{stationaryTransformData: The transformed data for stationary EVA.
+#' Includes the stationary series, trend, and standard deviation series.}
 #'
-#' @details The function takes a time series data and performs non-stationary EVA using various transformation types and parameters depending on the input data provided.
-#' Results are returned as a list containing the non-stationary EVA parameters and the transformed data for stationary EVA and can be used as input for further analysis.
+#' @references
+#' Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L.,
+#' Besio, G., and Alfieri, L. (2016). The transformed-stationary approach:
+#' a generic and simplified methodology for non-stationary extreme value analysis.
+#'  \emph{Hydrology and Earth System Sciences}, \strong{20}(9), 3527-3547.
+#'  doi:10.5194/hess-20-3527-2016.
+#'
+#' @details The function takes a time series data and performs non-stationary
+#' EVA using various transformation types and parameters depending
+#' on the input data provided.
+#' Results are returned as a list containing the non-stationary EVA parameters
+#' and the transformed data for stationary EVA
+#' and can be used as input for further analysis.
 #' In particular for the following function
 #'
 #' @examples
 #' # Example usage of TsEvaNs function
-#' TimeAndSeries <- data.frame(timestamp = seq(as.POSIXct("2000-01-01"), as.POSIXct("2020-12-31"), by = "day",data = rnorm(7671))
+#' TimeAndSeries <- data.frame(timestamp = seq(as.POSIXct("2000-01-01"),
+#' as.POSIXct("2020-12-31")), by = "day",data = rnorm(7671))
 #' timeWindow <- 365
-#' result <- TsEvaNs(timeAndSeries, timeWindow, transfType = 'trendPeaks', ciPercentile = 90, mode = 'drought')
+#' result <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks', ciPercentile = 90, mode = 'drought')
 #'
 #' @export
 
-TsEvaNs<- function(timeAndSeries, timeWindow, ...){
-  ota=list(...)
+TsEvaNs<- function(timeAndSeries, timeWindow, transfType,minPeakDistanceInDays,
+                   seasonalityVar=NA,minEventsPerYear=-1, gevMaxima='annual',
+                   ciPercentile, gevType = 'GEV', evdType = c('GEV', 'GPD'),
+                   tail, epy=-1, lowdt, trans){
+
+  ota=list(transfType = transfType,
+           minPeakDistanceInDays = minPeakDistanceInDays,
+           seasonalityVar = seasonalityVar,
+           minEventsPerYear = minEventsPerYear,
+           gevMaxima = gevMaxima,
+           ciPercentile = ciPercentile,
+           gevType = gevType,
+           evdType =evdType,
+           tail= tail,
+           epy= epy,
+           lowdt=lowdt,
+           trans=trans
+           )
   args <- list(transfType = 'trendPeaks',
                minPeakDistanceInDays = -1,
                seasonalityVar = F,
-               potEventsPerYear = -1,
                minEventsPerYear = -1,
                gevMaxima = 'annual',
                ciPercentile = 90,
@@ -69,8 +113,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
                tail="low",
                epy=-1,
                trans=NULL,
-               lowdt=7,
-               TrendTh=0.75)
+               lowdt=7)
 
   args <- tsEasyParseNamedArgs(ota, args)
   seasonalityVar<-args$seasonalityVar
@@ -201,8 +244,6 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
     potEventsPerYear = 12
     minEventsPerYear = 6
   }
-  if (args$potEventsPerYear != -1) potEventsPerYear = args$potEventsPerYear
-  if (args$minEventsPerYear != -1) minEventsPerYear = args$minEventsPerYear
 
 
   dtn=min(diff(trasfData$timeStamps),na.rm=T)
@@ -220,7 +261,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
   }
 
   ms = data.frame(trasfData$timeStamps, trasfData$stationarySeries)
-  minPeakDistance = minPeakDistanceInDays/dt;
+  minPeakDistance = minPeakDistanceInDays/dtn;
 
   #estimating the non stationary EVA parameters
   cat('\nExecuting stationary eva')
@@ -347,6 +388,9 @@ TsEvaNs<- function(timeAndSeries, timeWindow, ...){
 
     dtPeaks = minPeakDistance;
     timeStamps=as.Date(timeStamps)
+    print(length(timeStamps))
+    print(length(series))
+    print(dtPeaks)
     dtPotX = as.numeric(timeStamps[length(timeStamps)] - timeStamps[1])/length(series)*dtPeaks;
     epsilonPotNS = epsilonPotX;
     errEpsilonPotNS = errEpsilonPotX;

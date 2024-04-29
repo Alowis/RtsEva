@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotGEVImageSc}
 \alias{tsEvaPlotGEVImageSc}
-\title{Generate a GEV (Generalized Extreme Value) plot with raster image}
+\title{tsEvaPlotGEVImageSc}
 \usage{
 tsEvaPlotGEVImageSc(
   Y,
@@ -42,15 +42,7 @@ tsEvaPlotGEVImageSc(
 A ggplot object representing the GEV plot with a raster image.
 }
 \description{
-This function generates a GEV plot with a raster image using the Generalized Extreme Value (GEV) distribution.
-}
-\examples{
-# Generate a GEV plot with raster image
-tsEvaPlotGEVImageSc(
-  Y = c(1, 2, 3), timeStamps = c("2021-01-01", "2021-01-02", "2021-01-03"),
-  serix = 2, epsilon = 0.1, sigma = c(0.5, 0.6, 0.7),
-  mu = c(1, 2, 3), returnPeriodInDts = 1, maxObs = data.frame(time = "2021-01-01", value = 2),
-  mode = "normal"
-)
-
+\code{tsEvaPlotGEVImageSc}is a function that generates a plot of the
+Generalized Extreme Value (GEV) distribution with evolving parameters
+using the provided data.
 }

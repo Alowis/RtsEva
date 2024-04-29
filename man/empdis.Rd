@@ -2,7 +2,7 @@
 % Please edit documentation in R/eva_functions.R
 \name{empdis}
 \alias{empdis}
-\title{Empirical Distribution Function}
+\title{empdis: Empirical Distribution Function}
 \usage{
 empdis(x, nyr)
 }
@@ -12,12 +12,22 @@ empdis(x, nyr)
 \item{nyr}{An integer representing the number of years in the dataset.}
 }
 \value{
-A data frame containing the empirical return periods, hazard return periods,
-Cunnane return periods, Gumbel values, empirical probabilities, hazard probabilities,
-Cunnane probabilities, the original dataset, and the timestamp.
+A data frame containing:
+\itemize{
+\item{emp.RP: empirical return period},
+\item{haz.RP: Hazen return period},
+\item{cun.RP: Cunnane return period},
+\item{gumbel: Gumbel values},
+\item{emp.f: empirical cumulative density},
+\item{emp.hazen:Hazen cumulative density},
+\item{emp.cunnan: Cunnane cumulative density},
+\item{Q: original data},
+\item{timestamp: time component}
+}
 }
 \description{
-This function calculates the empirical distribution function for a given dataset.
+\code{empdis} is a function that calculates the empirical
+distribution function for a given dataset.
 }
 \examples{
 x <- c(1, 2, 3, 4, 5)

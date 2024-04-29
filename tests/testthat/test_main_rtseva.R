@@ -64,6 +64,7 @@ series=timeAndSeries[,2]
 timeWindow = 365.25*30; #time windows in days, the correction is done within the functions
 windowSize=366
 minPeakDistanceInDays=30
+lowdt=7
 timeStamps=timeAndSeries$timestamp
 transftypes=c("rev","inv","lninv")
 trendtypes=c("trend","trendPeaks")
@@ -71,7 +72,8 @@ trendtrans=expand.grid(transftypes,trendtypes)
 #choose transformation
 tt=4
 plot(timeAndSeries)
-Nonstat<-TsEvaNs(timeAndSeries, timeWindow, transfType=trendtrans[tt,2], ciPercentile= 90, minPeakDistanceInDays = minPeakDistanceInDays, tail=tail,TrendTh=0.85, trans=trendtrans[tt,1])
+Nonstat<-TsEvaNs(timeAndSeries, timeWindow, transfType=trendtrans[tt,2],
+                 ciPercentile= 90, minPeakDistanceInDays = minPeakDistanceInDays, tail=tail, lowdt=lowdt,trans=trendtrans[tt,1])
 nonStationaryEvaParams=Nonstat[[1]]
 stationaryTransformData=Nonstat[[2]]
 

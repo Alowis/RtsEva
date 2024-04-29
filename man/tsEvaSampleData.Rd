@@ -39,19 +39,18 @@ A list containing the following elements:
 }
 }
 \description{
-This function calculates various statistics and data for time series evaluation.
+\code{tsEvaSampleData} is a function that calculates various statistics
+and data for time series evaluation.
 }
 \examples{
 # Generate sample data
-data <- matrix(c(1:100, 101:200), ncol = 2)
+data <- ArdecheStMartin
 colnames(data) <- c("Date", "Value")
 # Calculate statistics and data
 result <- tsEvaSampleData(data, 10, 5, 7, "high")
-
 # View the result
 print(result)
-
 }
 \seealso{
-\code{\link[=tsGetPot]{tsGetPot()}}
+\code{\link[=tsGetPOT]{tsGetPOT()}}
 }

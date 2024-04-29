@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotTransfToStatFromAnalysisObj}
 \alias{tsEvaPlotTransfToStatFromAnalysisObj}
-\title{Convert Transformed Time Series to Stationary Series and Plot}
+\title{tsEvaPlotTransfToStatFromAnalysisObj}
 \usage{
 tsEvaPlotTransfToStatFromAnalysisObj(
   nonStationaryEvaParams,
@@ -11,25 +11,22 @@ tsEvaPlotTransfToStatFromAnalysisObj(
 )
 }
 \arguments{
-\item{nonStationaryEvaParams}{A list of parameters for non-stationary time series evaluation.}
+\item{nonStationaryEvaParams}{A list of parameters for non-stationary
+time series evaluation.}
 
 \item{stationaryTransformData}{A list containing the transformed stationary data.}
 
-\item{...}{Additional arguments to be passed to the \code{\link{tsEvaPlotTransfToStat}} function.}
+\item{...}{Additional arguments to be passed to
+the \code{\link{tsEvaPlotTransfToStat}} function.}
 }
 \value{
 The plot object representing the converted stationary series.
 }
 \description{
-This function takes the parameters of a non-stationary time series evaluation,
-along with the transformed stationary data, and plots the converted stationary series.
-}
-\examples{
-# Example usage
-nonStationaryParams <- list(param1 = 1, param2 = 2)
-stationaryData <- list(timeStamps = c(1, 2, 3), stationarySeries = c(0.1, 0.2, 0.3), statSer3Mom = c(0.01, 0.02, 0.03), statSer4Mom = c(0.001, 0.002, 0.003))
-tsEvaPlotTransfToStatFromAnalysisObj(nonStationaryParams, stationaryData)
-
+\code{tsEvaPlotTransfToStatFromAnalysisObj}is a function that takes the
+parameters of a non-stationary time series evaluation,
+along with the transformed stationary data,
+and plots the converted stationary series.
 }
 \seealso{
 \code{\link{tsEvaPlotTransfToStat}}

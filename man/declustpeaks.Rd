@@ -2,7 +2,7 @@
 % Please edit documentation in R/eva_functions.R
 \name{declustpeaks}
 \alias{declustpeaks}
-\title{declustpeaks Function}
+\title{declustpeaks}
 \usage{
 declustpeaks(data, minpeakdistance = 10, minrundistance = 7, qt)
 }
@@ -16,11 +16,17 @@ declustpeaks(data, minpeakdistance = 10, minrundistance = 7, qt)
 \item{qt}{A numeric value representing the threshold for peak detection.}
 }
 \value{
-A data frame with information about the peaks, including the peak value,
-start and end indices, duration, and cluster information.
+A data frame with information about the peaks, including:
+\itemize{
+\item{Q: the peak value},
+\item{max: max time index},
+\item{start: start time index},
+\item{end: end time index},
+\item{dur: duration},
+\item{cluster:cluster information }}
 }
 \description{
-This function takes in a data vector, minimum peak distance, minimum run distance, and a threshold value.
+\code{declustpeaks} is a function that takes in a data vector, minimum peak distance, minimum run distance, and a threshold value.
 It finds peaks in the data vector based on the minimum peak distance and threshold value.
 It then declusters the peaks based on the minimum run distance and threshold value.
 The function returns a data frame with information about the peaks, including the peak value,

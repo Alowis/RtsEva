@@ -2,7 +2,7 @@
 % Please edit documentation in R/eva_functions.R
 \name{tsEVstatistics}
 \alias{tsEVstatistics}
-\title{Calculate GEV and GPD statistics and return levels}
+\title{tsEVstatistics}
 \usage{
 tsEVstatistics(
   pointData,
@@ -15,7 +15,7 @@ tsEVstatistics(
 }
 \arguments{
 \item{pointData}{A list containing the dataset of extreme values. It should include the following components:
-\describe{
+\itemize{
 \item{annualMax}{A vector of annual maximum values.}
 \item{annualMaxDate}{A vector of dates corresponding to the annual maximum values.}
 \item{monthlyMax}{A matrix of monthly maximum values.}
@@ -33,7 +33,7 @@ tsEVstatistics(
 }
 \value{
 A list containing the following components:
-\describe{
+\itemize{
 \item{EVmeta}{A list containing metadata about the analysis. It includes the following components:
 \describe{
 \item{Tr}{A vector of return periods for which return levels are calculated.}
@@ -63,19 +63,15 @@ A list containing the following components:
 }
 }
 \description{
-This function calculates the Generalized Extreme Value (GEV) and
-Generalized Pareto Distribution (GPD) statistics and return levels
-for a given dataset of extreme values.
+\code{tsEvstatistics} is a function that calculates the Generalized Extreme
+Value (GEV) and Generalized Pareto Distribution (GPD) statistics
+and return levels for a given dataset of extreme values.
 }
 \examples{
 # Create a sample dataset
-pointData <- list(
-  annualMax = c(10, 15, 12, 18, 20),
-  annualMaxDate = c("2010-01-01", "2011-01-01", "2012-01-01", "2013-01-01", "2014-01-01"),
-  monthlyMax = matrix(c(5, 8, 6, 10, 7, 12, 9, 14, 11, 16, 13, 18), ncol = 3)
-)
-
-# Calculate GEV and GPD statistics
+data <- ArdecheStMartin
+colnames(data) <- c("Date", "Value")
+pointData <- tsEvaSampleData(data, 10, 5, 7, "high")
 result <- tsEVstatistics(pointData)
 result$EVdata$GEVstat$values
 result$EVdata$GPDstat$values

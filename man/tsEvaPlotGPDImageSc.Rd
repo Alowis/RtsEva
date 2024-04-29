@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotGPDImageSc}
 \alias{tsEvaPlotGPDImageSc}
-\title{tsEvaPlotGPDImageSc function}
+\title{tsEvaPlotGPDImageSc}
 \usage{
 tsEvaPlotGPDImageSc(
   Y,
@@ -39,11 +39,10 @@ tsEvaPlotGPDImageSc(
 A ggplot object representing the GPD plot.
 }
 \description{
-This function generates a plot of the Generalized Pareto Distribution (GPD) using the provided data.
+\code{tsEvaPlotGPDImageSc}is a function that generates a  time series plot
+of the Generalized Pareto Distribution (GPD) with evolving parameters
+using the provided data.
 }
-\examples{
-# Example usage of tsEvaPlotGPDImageSc function
-plot <- tsEvaPlotGPDImageSc(Y, timeStamps, serix, epsilon, sigma, threshold, peakplot, trans, ...)
-print(plot)
-
+\seealso{
+\code{\link{tsEvaPlotGPDImageScFromAnalysisObj}}
 }

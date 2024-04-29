@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotReturnLevelsGPD}
 \alias{tsEvaPlotReturnLevelsGPD}
-\title{Plot Return Levels using Generalized Pareto Distribution (GPD)}
+\title{tsEvaPlotReturnLevelsGPD}
 \usage{
 tsEvaPlotReturnLevelsGPD(
   epsilon,
@@ -48,16 +48,10 @@ tsEvaPlotReturnLevelsGPD(
 A ggplot object representing the plot of return levels.
 }
 \description{
-This function plots the return levels using the Generalized Pareto Distribution (GPD).
-}
-\examples{
-tsEvaPlotReturnLevelsGPD(
-  epsilon = 0.1, sigma = 1, threshold = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1,
-  thresholdStdErr = 0.05, nPeaks = 10, timeHorizonInYears = 50,
-  rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-  tstamps = "Return Levels", trans = "inv")
-  @export
+\code{tsEvaPlotReturnLevelsGPD} is a function that plots the return levels
+using the Generalized Pareto Distribution (GPD).
 }
 \seealso{
-\code{\link{tsEvaComputeReturnLevelsGPD}} \code{\link{tsEvaPlorReturnLevelsGPDFromAnalysisObj}}
+\code{\link{tsEvaComputeReturnLevelsGPD}}
+\code{\link{tsEvaPlotReturnLevelsGPDFromAnalysisObj}}
 }

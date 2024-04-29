@@ -28,12 +28,10 @@
 #'  and simplified methodology for non-stationary extreme value analysis.
 #'   \emph{Hydrology and Earth System Sciences}, 20, 3527-3547.
 #'    doi:10.5194/hess-20-3527-2016.
-#'
+#' @seealso [tsEvaPlotReturnLevelsGEV()] and [tsEvaPlotAllRLevelsGEV()]
 #' @import ggplot2
 #' @importFrom lubridate yday month
 #' @importFrom texmex pgev
-#' @docType methods
-#' @name tsEvaPlotReturnLevelsGEVFromAnalysisObj
 #' @export
 tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
                                                     stationaryTransformData,
@@ -148,8 +146,6 @@ tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
 #' @seealso [tsEvaPlotReturnLevelsGPD()] and [tsEvaPlotAllRLevelsGPD()]
 #' @import ggplot2
 #' @importFrom lubridate yday month
-#' @name tsEvaPlotReturnLevelsGPDFromAnalysisObj
-#' @aliases tsEvaPlotReturnLevelsGPDFromAnalysisObj
 #' @export
 tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
                                                     stationaryTransformData,
@@ -239,8 +235,12 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
 
 #' tsEvaPlotAllRLevelsGEV
 #'
-#' This function generates a beam plot of return levels for a Generalized Extreme Value (GEV) distribution based on the provided parameters and data.
-#' The plot showcases the evolving relationship between return periods and return levels through time, allowing for visual analysis of extreme events and their probabilities.
+#' \code{tsEvaPlotAllRLevelsGEV} is a function that generates
+#' a beam plot of return levels for a Generalized Extreme Value (GEV)
+#' distribution based on the provided parameters and data.
+#' The plot showcases the evolving relationship between return periods and
+#' return levels through time, allowing for visual analysis of extreme events
+#' and their probabilities.
 #'
 #' @param nonStationaryEvaParams A list of non-stationary evaluation parameters containing the GEV distribution parameters (epsilon, sigma, mu) and the time delta in years (dtSampleYears).
 #' @param stationaryTransformData The stationary transformed data used for the analysis.
@@ -252,13 +252,11 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
 #' @param ... Additional optional arguments for customizing the plot.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @return A plot object showing the relationship between return periods and return levels for the GEV distribution at different timesteps.
-#'
-#' @examples
-#' tsEvaPlotAllRLevelsGEV(nonStationaryEvaParams, stationaryTransformData, rlvmax, timeIndex, timeStamps, tstamps, mode = "inv", ylim = c(0, 100), ax = NULL)
-#'
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}
-#' @name tsEvaPlotAllRLevelsGEV
+#' @export
 tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformData,
                                    rlvmax, timeIndex, timeStamps, tstamps,
                                    trans, varargin) {
@@ -391,18 +389,20 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
   }
   IndexCurve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = IndexCurve)
 
-  f <- ggplot2::ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = ts, group = group)) +
+  f <- ggplot2::ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = ts, group = .data$group)) +
     ggtitle(title) +
     geom_line(lwd = 1.5, alpha = 0.2) +
     geom_line(data = IndexCurve, aes(x = returnPeriodsInYears, y = returnLevels, group = 1), colour = spc, lwd = 1.5, alpha = 1) +
-    geom_point(data = rlvmax, aes(x = haz.RP, y = Qreal, fill = cg, group = cg), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
+    geom_point(data = rlvmax, aes(x = .data$haz.RP, y = .data$Qreal, fill = .data$cg, group = .data$cg), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
     scale_colour_gradientn(guide = "colourbar", colours = gpd.palette(100), legendx) +
     scale_fill_gradientn(guide = "none", colours = gpd.palette(100), legendx) +
     annotate("label", x = , minReturnPeriodYears * 2, y = 0.9 * maxRL, label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
-    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel, limits = c(minReturnPeriodYears, maxReturnPeriodYears)) +
+    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel) +
     scale_y_continuous(
-      n.breaks = 10, limit = c(minRL, maxRL), args$ylabel
+      n.breaks = 10, args$ylabel
     ) +
+    coord_cartesian(ylim= c(minRL, maxRL),
+                    xlim= c(minReturnPeriodYears, maxReturnPeriodYears))+
     theme_bw() +
     theme(
       axis.text = element_text(size = 20),
@@ -415,11 +415,11 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
 
 #' tsEvaPlotAllRLevelsGPD
 #'
-#' This function generates a plot of return levels for a Generalized Pareto
-#' Distribution (GPD) based on the provided parameters and data.
-#' The plot showcases the evolving relationship between return periods and
-#' return levels, allowing for visual analysis of extreme events
-#'  and their probabilities.
+#' \code{tsEvaPlotAllRLevelsGPD} is a function that generates a plot of
+#' return levels for a Generalized Pareto Distribution (GPD) based on the
+#' provided parameters and data. The plot showcases the evolving relationship
+#' between return periods and return levels, allowing for visual analysis of
+#' extreme events and their probabilities.
 #'
 #' @param nonStationaryEvaParams A list of non-stationary evaluation parameters
 #'  containing the GPD distribution parameters (epsilon, sigma, threshold),
@@ -438,16 +438,10 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
 #' @param ... Additional optional arguments for customizing the plot.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @return A plot object showing the relationship between return periods and
-#' return levels for the GPD distribution at different timesteps.
-#'
-#'
-#' @examples
-#' tsEvaPlotAllRLevelsGPD(nonStationaryEvaParams, stationaryTransformData,
-#' rlvmax, timeIndex, timeStamps, tstamps, mode = "inv", ylim = c(0, 100),
-#'  ax = NULL)
-#'
-
+#' return levels for the GPD distribution at different timest
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
 #' @export
 tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformData,
@@ -550,7 +544,7 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
   if (npy > 6) {
     rLevAll$ts <- month(as.Date(rLevAll$timeStamps, origin = "1970-01-01"))
     rlvmax$cg <- month(as.Date(rlvmax$Idt, origin = "1970-01-01"))
-    gpd.palette <- colorRampPalette(c("#2E22EA", "#9E3DFB", "#F86BE2", "#FCCE7B", "#C4E416", "#4BBA0F", "#447D87", "#2C24E9"),
+    gpd.palette <- grDevices::colorRampPalette(c("#2E22EA", "#9E3DFB", "#F86BE2", "#FCCE7B", "#C4E416", "#4BBA0F", "#447D87", "#2C24E9"),
       interpolate = "linear", bias = 1
     )
     title <- "seasonal GPD curve beam"
@@ -559,7 +553,7 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
   if (npy <= 6) {
     rLevAll$ti <- lubridate::year(rLevAll$timeStamps)
     rlvmax$cg <- lubridate::year(as.Date(rlvmax$Idt, origin = "1970-01-01"))
-    gpd.palette <- colorRampPalette(c(
+    gpd.palette <- grDevices::colorRampPalette(c(
       "#F6FF33", "#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc4e2a",
       "#e31a1c", "#bd0026", "#800026", "#2C110B"
     ), interpolate = "linear", bias = 1)
@@ -579,18 +573,20 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
   IndexCurve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = IndexCurve)
   IndexCurve$returnLevels[which(IndexCurve$returnLevels < 0)] <- 0
 
-  f <- ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = ti, group = group)) +
+  f <- ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = .data$ti, group = .data$group)) +
     ggtitle(title) +
     geom_line(lwd = 1.5, alpha = 0.5) +
     geom_line(data = IndexCurve, aes(x = returnPeriodsInYears, y = returnLevels, group = 1), colour = "darkblue", lwd = 1.5, alpha = 1) +
-    geom_point(data = rlvmax, aes(x = haz.RP, y = Qreal, fill = cg, group = cg), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
+    geom_point(data = rlvmax, aes(x = .data$haz.RP, y = .data$Qreal, fill = .data$cg, group = .data$cg), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
     scale_colour_gradientn(guide = "colourbar", colours = gpd.palette(100), legendx) +
     scale_fill_gradientn(guide = "none", colours = gpd.palette(100), "Time") +
     annotate("label", x = , maxReturnPeriodYears / 2, y = maxRL, label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
-    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel, limits = c(minReturnPeriodYears, maxReturnPeriodYears)) +
+    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel) +
     scale_y_continuous(
-      n.breaks = 10, limit = c(minRL, maxRL), args$ylabel
+      n.breaks = 10, args$ylabel
     ) +
+    coord_cartesian(ylim= c(minRL, maxRL),
+                    xlim= c(minReturnPeriodYears, maxReturnPeriodYears))+
     theme_bw() +
     theme(
       axis.text = element_text(size = 20),
@@ -602,9 +598,10 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
 }
 
 
-#' tsEvaPlotReturnLevelsGEV Function
+#' tsEvaPlotReturnLevelsGEV
 #'
-#' This function plots the return levels using the Generalized Extreme Value (GEV) distribution.
+#' \code{tsEvaPlotReturnLevelsGEV} is a function that plots the return levels
+#' using the Generalized Extreme Value (GEV) distribution.
 #'
 #' @param epsilon The shape parameter of the GEV distribution.
 #' @param sigma The scale parameter of the GEV distribution.
@@ -614,18 +611,18 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
 #' @param muStdErr The standard error of the location parameter.
 #' @param rlvmax A data frame containing the return levels of annual maxima.
 #' @param tstamps The title for the plot.
-#' @param trans The transformation used to fit the EVD, either "ori" (original) or "rev" (reverse).
+#' @param trans The transformation used to fit the EVD, either "ori" (original)
+#' or "rev" (reverse). "inv" and "lninv" are also available
+#' but in development phase.
 #' @param ... Additional arguments to be passed to the function.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @return A ggplot object representing the plot of return levels.
-#' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}} \code{\link{tsEvaPlorReturnLevelsGEVFromAnalysisObj}}
-#' @examples
-#' tsEvaPlotReturnLevelsGEV(
-#'   epsilon = 0.1, sigma = 1, mu = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1, muStdErr = 0.05,
-#'   rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-#'   tstamps = "Return Levels", trans = "inv")
-#'   @export
+#' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}
+#' \code{\link{tsEvaPlotReturnLevelsGEVFromAnalysisObj}}
+#' @export
 tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr,
                                      muStdErr, rlvmax, tstamps, trans, ...) {
   varargin <- NULL
@@ -703,7 +700,7 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
   breaks <- 10^(-10:10)
   minor_breaks <- rep(1:9, 21) * (10^rep(-10:10, each = 9))
 
-  gpd.palette <- colorRampPalette(c(
+  gpd.palette <- grDevices::colorRampPalette(c(
     "#F6FF33", "#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc4e2a",
     "#e31a1c", "#bd0026", "#800026", "#2C110B"
   ), interpolate = "linear", bias = 1)
@@ -719,12 +716,14 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
     geom_line(color = args$returnLevelColor, lwd = 1.5) +
     geom_line(aes(y = supRLCI), color = args$confidenceBarColor, lwd = 1.2) +
     geom_line(aes(y = infRLCI), color = args$confidenceBarColor, lwd = 1.2) +
-    geom_point(data = rlvmax, aes(x = haz.RP, y = Qreal, fill = lubridate::year(Idt)), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
+    geom_point(data = rlvmax, aes(x = .data$haz.RP, y = .data$Qreal, fill = lubridate::year(.data$Idt)), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
     scale_fill_gradientn(guide = "colourbar", colours = gpd.palette(100), "Time") +
-    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel, limits = c(minReturnPeriodYears, maxReturnPeriodYears)) +
+    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel) +
     scale_y_continuous(
-      n.breaks = 10, limit = c(minRL, maxRL), args$ylabel
+      n.breaks = 10, args$ylabel
     ) +
+    coord_cartesian(ylim= c(minRL, maxRL),
+                    xlim= c(minReturnPeriodYears, maxReturnPeriodYears))+
     theme_bw() +
     theme(
       axis.text = element_text(size = 20),
@@ -737,9 +736,10 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
   return(f)
 }
 
-#' Plot Return Levels using Generalized Pareto Distribution (GPD)
+#' tsEvaPlotReturnLevelsGPD
 #'
-#' This function plots the return levels using the Generalized Pareto Distribution (GPD).
+#' \code{tsEvaPlotReturnLevelsGPD} is a function that plots the return levels
+#' using the Generalized Pareto Distribution (GPD).
 #'
 #' @param epsilon The shape parameter of the GPD.
 #' @param sigma The scale parameter of the GPD.
@@ -755,17 +755,16 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
 #' @param ... Additional arguments to be passed to the function.
 #'
 #' @import ggplot2
-#' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}} \code{\link{tsEvaPlorReturnLevelsGPDFromAnalysisObj}}
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
+#' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
+#' \code{\link{tsEvaPlotReturnLevelsGPDFromAnalysisObj}}
 #' @return A ggplot object representing the plot of return levels.
-#'
-#' @examples
-#' tsEvaPlotReturnLevelsGPD(
-#'   epsilon = 0.1, sigma = 1, threshold = 0, epsilonStdErr = 0.05, sigmaStdErr = 0.1,
-#'   thresholdStdErr = 0.05, nPeaks = 10, timeHorizonInYears = 50,
-#'   rlvmax = data.frame(QNS = c(1, 2, 3), Qreal = c(10, 20, 30)),
-#'   tstamps = "Return Levels", trans = "inv")
-#'   @export
-tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, timeHorizonInYears, rlvmax, tstamps, trans, ...) {
+#' @export
+tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
+                                     sigmaStdErr, thresholdStdErr, nPeaks,
+                                     timeHorizonInYears, rlvmax, tstamps,
+                                     trans, ...) {
   varargin <- list(...)
 
   # Define default values for arguments
@@ -838,7 +837,7 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr, s
     maxRL <- round(max(supRLCI) / 5) * 5 + 5
     minRL <- round(min(infRLCI) / 5) * 5 - 5
   }
-  gpd.palette <- colorRampPalette(c(
+  gpd.palette <- grDevices::colorRampPalette(c(
     "#F6FF33", "#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc4e2a",
     "#e31a1c", "#bd0026", "#800026", "#2C110B"
   ), interpolate = "linear", bias = 1)
@@ -863,12 +862,14 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr, s
     geom_line(color = args$returnLevelColor, lwd = 1.5) +
     geom_line(aes(y = supRLCI), color = args$confidenceBarColor, lwd = 1.2) +
     geom_line(aes(y = infRLCI), color = args$confidenceBarColor, lwd = 1.2) +
-    geom_point(data = rlvmax, aes(x = haz.RP, y = Qreal, fill = lubridate::year(Idt)), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
+    geom_point(data = rlvmax, aes(x = .data$haz.RP, y = .data$Qreal, fill = lubridate::year(.data$Idt)), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
     scale_fill_gradientn(guide = "colourbar", colours = gpd.palette(100), "Years") +
-    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel, limits = c(minReturnPeriodYears, maxReturnPeriodYears)) +
+    scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel) +
     scale_y_continuous(
-      n.breaks = 10, limit = c(minRL, maxRL), args$ylabel
+      n.breaks = 10, args$ylabel
     ) +
+    coord_cartesian(ylim= c(minRL, maxRL),
+                    xlim= c(minReturnPeriodYears, maxReturnPeriodYears))+
     theme_bw() +
     theme(
       axis.text = element_text(size = 20),
@@ -891,9 +892,11 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr, s
 
 
 
-#' Generate GEV Image Scatter Plot from Analysis Object
+#' tsEvaPlotGEVImageScFromAnalysisObj
 #'
-#' This function generates a GEV (Generalized Extreme Value) image scatter plot from an analysis object.
+#' \code{tsEvaPlotGEVImageScFromAnalysisObj}is a function that generates a GEV
+#' (Generalized Extreme Value) time-varying distribution through time as
+#' and show the evolution of exceedance probabilities.
 #'
 #' @param Y The input data.
 #' @param nonStationaryEvaParams A list of non-stationary evaluation parameters.
@@ -902,14 +905,12 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr, s
 #' @param ... Additional arguments.
 #'
 #' @import ggplot2
+#' @seealso \code{\link{tsEvaPlotGEVImageSc}}
 #' @return The GEV image scatter plot.
-#'
-#' @examples
-#' # Example usage of tsEvaPlotGEVImageScFromAnalysisObj function
-#' tsEvaPlotGEVImageScFromAnalysisObj(Y, nonStationaryEvaParams, stationaryTransformData, trans)
-#'
 #' @export
-tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, stationaryTransformData, trans, ...) {
+tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
+                                               stationaryTransformData,
+                                               trans, ...) {
   varargin <- NULL
   varargin <- list(...)
 
@@ -949,15 +950,18 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, statio
     maxObs <- monmaxplot
   }
 
-  plotbg <- tsEvaPlotGEVImageSc(Y, timeStamps, serix, epsilon, sigma, mu, returnPeriodsInDts, maxObs, mode, varargin)
+  plotbg <- tsEvaPlotGEVImageSc(Y, timeStamps, serix, epsilon, sigma, mu,
+                                returnPeriodsInDts, maxObs, mode, varargin)
   print(plotbg)
   return(plotbg)
 }
 
 
-#' Plot GPD Image Score from Analysis Object
+#' tsEvaPlotGPDImageScFromAnalysisObj
 #'
-#' This function plots the GPD (Generalized Pareto Distribution) image score from an analysis object.
+#' \code{tsEvaPlotGPDImageScFromAnalysisObj}is a function that plots the GPD
+#' (Generalized Pareto Distribution) time-varying distribution through time as
+#' and show the evolution of exceedance probabilities.
 #'
 #' @param Y The input data.
 #' @param nonStationaryEvaParams A list containing non-stationary evaluation parameters.
@@ -966,6 +970,8 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, statio
 #' @param ... Additional arguments to be passed to the \code{\link{tsEvaPlotGPDImageSc}} function.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @return The plot object.
 #'
 #' @details This function takes the input data \code{Y}, non-stationary evaluation parameters \code{nonStationaryEvaParams},
@@ -974,15 +980,10 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, statio
 #' Finally, it plots the GPD image score using the \code{\link{tsEvaPlotGPDImageSc}} function and returns the plot object.
 #'
 #' @seealso \code{\link{tsEvaPlotGPDImageSc}}
-#' @seealso \code{\link{stationaryTransformData}}
-#' @seealso \code{\link{nonStationaryEvaParams}}
-#'
-#' @examples
-#' # Example usage of tsEvaPlotGPDImageScFromAnalysisObj
-#' tsEvaPlotGPDImageScFromAnalysisObj(Y, nonStationaryEvaParams, stationaryTransformData, trans)
-#'
 #' @export
-tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, stationaryTransformData, trans, ...) {
+tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
+                                               stationaryTransformData,
+                                               trans, ...) {
   varargin <- NULL
   varargin <- list(...)
 
@@ -1016,9 +1017,11 @@ tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, statio
 
 
 
-#' tsEvaPlotGPDImageSc function
+#' tsEvaPlotGPDImageSc
 #'
-#' This function generates a plot of the Generalized Pareto Distribution (GPD) using the provided data.
+#' \code{tsEvaPlotGPDImageSc}is a function that generates a  time series plot
+#'  of the Generalized Pareto Distribution (GPD) with evolving parameters
+#'  using the provided data.
 #'
 #' @param Y A vector of values.
 #' @param timeStamps A vector of timestamps corresponding to the values.
@@ -1031,15 +1034,13 @@ tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams, statio
 #' @param varargin Additional optional arguments.
 #'
 #' @import ggplot2 scales
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @return A ggplot object representing the GPD plot.
-#'
-#' @examples
-#' # Example usage of tsEvaPlotGPDImageSc function
-#' plot <- tsEvaPlotGPDImageSc(Y, timeStamps, serix, epsilon, sigma, threshold, peakplot, trans, ...)
-#' print(plot)
-#'
+#' @seealso \code{\link{tsEvaPlotGPDImageScFromAnalysisObj}}
 #' @export
-tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold, peakplot, trans, varargin) {
+tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
+                                threshold, peakplot, trans, varargin) {
   avgYearLength <- 365.2425
   nyears <- as.numeric(round((max(timeStamps) - min(timeStamps)) / avgYearLength))
   nelmPerYear <- length(timeStamps) / nyears
@@ -1140,19 +1141,11 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
       pdf = pdf
     )
   }
-  # ggplot is really too slow
 
-
-  # rgb.palette=colorRampPalette(c("F6FF33","#ffeda0", "#fed976", "#feb24c","#fd8d3c","#fc4e2a",
-  #                                "#e31a1c","#bd0026","#800026",'#2C110B'),interpolate="linear",bias=1)
-
-  rgb.palette <- colorRampPalette(rev(c(
+  rgb.palette <- grDevices::colorRampPalette(rev(c(
     "#2C110B", "#8B0000", "#FF0000", "#FF4500", "#FFA500",
     "#FFD700", "#FFFF00", "#FFFFE0"
   )), interpolate = "linear", bias = 1)
-
-  # datap <- data.frame(timeStamps = gridTime$Var2, extremeValues = Y,
-  #                     pdf = pdf)
 
   # time breaks
   tbi <- round(lubridate::year(minTS) / 5) * 5
@@ -1192,8 +1185,8 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
 
   datap$npdf <- datap$pdf / max(datap$pdf)
   datap$timeStamps=as.Date(datap$timeStamps)
-  plo <- ggplot(datap, aes(x = as.Date(timeStamps), y = extremeValues)) +
-    geom_segment(data = serie, aes(x = timeStamps, xend = timeStamps, y = ey, yend = serio), col = "black", alpha = .5) +
+  plo <- ggplot(datap, aes(x = as.Date(timeStamps), y = .data$extremeValues)) +
+    geom_segment(data = serie, aes(x = timeStamps, xend = timeStamps, y = ey, yend = .data$serio), col = "black", alpha = .5) +
     geom_raster(data=datap,alpha = (datap$npdf)^0.2, aes(fill = pdf), interpolate = TRUE) +
     scale_fill_gradientn(
       colours = rgb.palette(100),
@@ -1201,18 +1194,19 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
     ) +
     ggtitle(paste0("GPD - ", args$Title)) +
     geom_point(
-      data = peakplot, aes(x = as.Date(time), y = value), shape = 21, fill = "white",
+      data = peakplot, aes(x = as.Date(time), y = .data$value), shape = 21, fill = "white",
       color = "black", size = 2, stroke = 2
     ) +
     scale_y_continuous(
-      n.breaks = 10,
-      limit = c(ylims[1], ylims[2]), args$ylabel, expand = c(0, 0)
+      n.breaks = 10, args$ylabel, expand = c(0, 0)
     ) +
     scale_x_date(
-      labels = scales::date_format("%Y"), args$xlabel, breaks = seq(ttbi, ttbf, by = paste0(tic, " years")),
-      minor_breaks = scales::date_breaks(paste0(tac, " months")), expand = c(0, 0), limits = c(minTS, maxTS)
-    ) +
-    annotate("label", x = maxTS - 36 * xy, y = 0.95 * ylims[2], label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+      labels = scales::date_format("%Y"), args$xlabel,
+      breaks = seq(ttbi, ttbf, by = paste0(tic, " years")),
+      minor_breaks = scales::date_breaks(paste0(tac, " months")), expand = c(0, 0)) +
+    annotate("label", x = maxTS - 36 * xy, y = 0.95 * ylims[2],
+             label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+    coord_cartesian(ylim= c(ylims[1], ylims[2]),xlim= c(minTS, maxTS))+
     theme_bw() +
     theme(
       axis.text.x = element_text(size = args$axisFontSize - 6),
@@ -1225,9 +1219,11 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
   return(plo)
 }
 
-#' Generate a GEV (Generalized Extreme Value) plot with raster image
+#' tsEvaPlotGEVImageSc
 #'
-#' This function generates a GEV plot with a raster image using the Generalized Extreme Value (GEV) distribution.
+#' \code{tsEvaPlotGEVImageSc}is a function that generates a plot of the
+#' Generalized Extreme Value (GEV) distribution with evolving parameters
+#' using the provided data.
 #'
 #' @param Y A vector of extreme values.
 #' @param timeStamps A vector of timestamps corresponding to the extreme values.
@@ -1241,19 +1237,10 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma, threshold,
 #' @param ... Additional arguments to customize the plot.
 #'
 #' @return A ggplot object representing the GEV plot with a raster image.
-#'
-#' @examples
-#' # Generate a GEV plot with raster image
-#' tsEvaPlotGEVImageSc(
-#'   Y = c(1, 2, 3), timeStamps = c("2021-01-01", "2021-01-02", "2021-01-03"),
-#'   serix = 2, epsilon = 0.1, sigma = c(0.5, 0.6, 0.7),
-#'   mu = c(1, 2, 3), returnPeriodInDts = 1, maxObs = data.frame(time = "2021-01-01", value = 2),
-#'   mode = "normal"
-#' )
-#'
 #' @import ggplot2 scales
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @importFrom texmex dgev
-#'
 #' @export
 tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, returnPeriodInDts, maxObs, mode, varargin) {
   avgYearLength <- 365.2425
@@ -1340,13 +1327,8 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
       pdf = pdf
     )
   }
-  # ggplot is really too slow
 
-
-  # rgb.palette=colorRampPalette(c("#EBFE00","#F6FF33","#ffeda0", "#fed976", "#feb24c","#fd8d3c","#fc4e2a",
-  #                                "#e31a1c","#bd0026","#800026",'#2C110B'),interpolate="linear",bias=1)
-
-  rgb.palette <- colorRampPalette(rev(c(
+  rgb.palette <- grDevices::colorRampPalette(rev(c(
     "#2C110B", "#8B0000", "#FF0000", "#FFA500",
     "#FFF700", "#FFFFF6"
   )), interpolate = "linear", bias = 1)
@@ -1388,23 +1370,24 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 
   datapsub <- datap
   datapsub$npdf <- datapsub$pdf / max(datapsub$pdf, na.rm = T)
-
-  plo <- ggplot(datapsub, aes(x = timeStamps, y = extremeValues)) +
+  plo <- ggplot(datapsub, aes(x = timeStamps, y = .data$extremeValues)) +
     geom_raster(alpha = (datapsub$npdf)^0.2, aes(fill = pdf), interpolate = T) +
     scale_fill_gradientn(
       colours = rgb.palette(100),
-      n.breaks = 10, guide = "coloursteps", trans = scales::modulus_trans(1.1), na.value = "transparent"
+      n.breaks = 10, guide = "coloursteps", trans = scales::modulus_trans(1.1),
+      na.value = "transparent"
     ) +
     ggtitle(paste0("GEV - ", args$Title)) +
     geom_point(
-      data = maxObs, aes(x = as.Date(time), y = value), shape = 21, fill = "white",
+      data = maxObs, aes(x = as.Date(time), y = .data$value), shape = 21, fill = "white",
       color = "black", size = 1, stroke = 2
     ) +
     scale_y_continuous(
-      n.breaks = 10,
-      limit = c(ylims[1], ylims[2]), args$ylabel, expand = c(0, 0)
+      n.breaks = 10, args$ylabel, expand = c(0, 0)
     ) +
-    annotate("label", x = maxTS - 36 * xy, y = 0.9 * ylims[2], label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+    annotate("label", x = maxTS - 36 * xy, y = 0.9 * ylims[2],
+             label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+    coord_cartesian(ylim= c(ylims[1], ylims[2]))+
     theme_bw() +
     theme(
       axis.text.x = element_text(size = args$axisFontSize),
@@ -1419,29 +1402,27 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 }
 
 
-
-
-#' Convert Transformed Time Series to Stationary Series and Plot
+#' tsEvaPlotTransfToStatFromAnalysisObj
 #'
-#' This function takes the parameters of a non-stationary time series evaluation,
-#'  along with the transformed stationary data, and plots the converted stationary series.
+#' \code{tsEvaPlotTransfToStatFromAnalysisObj}is a function that takes the
+#' parameters of a non-stationary time series evaluation,
+#' along with the transformed stationary data,
+#' and plots the converted stationary series.
 #'
-#' @param nonStationaryEvaParams A list of parameters for non-stationary time series evaluation.
+#' @param nonStationaryEvaParams A list of parameters for non-stationary
+#' time series evaluation.
 #' @param stationaryTransformData A list containing the transformed stationary data.
-#' @param ... Additional arguments to be passed to the \code{\link{tsEvaPlotTransfToStat}} function.
+#' @param ... Additional arguments to be passed to
+#' the \code{\link{tsEvaPlotTransfToStat}} function.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @seealso \code{\link{tsEvaPlotTransfToStat}}
 #' @return The plot object representing the converted stationary series.
-#'
-#' @examples
-#' # Example usage
-#' nonStationaryParams <- list(param1 = 1, param2 = 2)
-#' stationaryData <- list(timeStamps = c(1, 2, 3), stationarySeries = c(0.1, 0.2, 0.3), statSer3Mom = c(0.01, 0.02, 0.03), statSer4Mom = c(0.001, 0.002, 0.003))
-#' tsEvaPlotTransfToStatFromAnalysisObj(nonStationaryParams, stationaryData)
-#'
 #' @export
-tsEvaPlotTransfToStatFromAnalysisObj <- function(nonStationaryEvaParams, stationaryTransformData, ...) {
+tsEvaPlotTransfToStatFromAnalysisObj <- function(nonStationaryEvaParams,
+                                                 stationaryTransformData, ...) {
   varargin <- NULL
   varargin <- list(...)
   # print(varargin)
@@ -1460,25 +1441,24 @@ tsEvaPlotTransfToStatFromAnalysisObj <- function(nonStationaryEvaParams, station
   return(plotbg)
 }
 
-
-#' Plot Time Series with Trend and Standard Deviation
+#' tsEvaPlotSeriesTrendStdDevFromAnalyisObj
 #'
-#' This function plots a time series along with its trend and standard deviation.
+#' \code{tsEvaPlotTrendStdDevFromAnalysisObj}is a function that plots a
+#' time series along with its trend and standard deviation.
 #'
 #' @param nonStationaryEvaParams The non-stationary evaluation parameters.
 #' @param stationaryTransformData The stationary transformed data.
 #' @param mode The mode of the plot (optional).
 #' @param ... Additional arguments to customize the plot (optional).
 #'
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @import ggplot2
-#' @seealso \code{\link{trans}}
-#' @return A ggplot object representing the plot.
 #'
-#' @examples
-#' # Example usage
-#' tsEvaPlotSeriesTrendStdDevFromAnalyisObj(nonStationaryEvaParams, stationaryTransformData, mode = "inv")
+#' @return A ggplot object representing the plot.
 #' @export
-tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams, stationaryTransformData, mode, ...) {
+tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams,
+                                                     stationaryTransformData, mode, ...) {
   varargin <- list(...)
   args <- list(
     plotPercentile = -1,
@@ -1534,9 +1514,9 @@ tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams, sta
   # Create the plot
   plotz <- ggplot(data, aes(x = as.Date(timeStamps), y = series)) +
     geom_line(aes(color = "Series"), size = 1) +
-    geom_ribbon(aes(ymin = infCI, ymax = supCI), fill = "lightgreen", alpha = 0.6) +
-    geom_line(aes(y = infCI, color = "Std.Dev"), size = 1, lty = 2) +
-    geom_line(aes(y = supCI, color = "Std.Dev"), size = 1, lty = 2) +
+    geom_ribbon(aes(ymin = .data$infCI, ymax = .data$supCI), fill = "lightgreen", alpha = 0.6) +
+    geom_line(aes(y = .data$infCI, color = "Std.Dev"), size = 1, lty = 2) +
+    geom_line(aes(y = .data$supCI, color = "Std.Dev"), size = 1, lty = 2) +
     geom_line(aes(y = trend, color = "Trend"), size = 1) +
     ggtitle("Trend") +
     scale_color_manual(name = "", values = c("Trend" = "black", "Std.Dev" = "darkgreen", "Series" = "red")) +
@@ -1544,8 +1524,10 @@ tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams, sta
       n.breaks = 5, args$ylabel
     ) +
     scale_x_date(
-      labels = scales::date_format("%Y"), args$xlabel, breaks = seq(ttbi, ttbf, by = "5 years"), expand = c(0, 0)
+      labels = scales::date_format("%Y"), args$xlabel,
+      breaks = seq(ttbi, ttbf, by = "5 years"), expand = c(0, 0)
     ) +
+        # coord_cartesian(ylim= c(ylims[1], ylims[2]),xlim= c(minTS, maxTS))+
     theme_bw() +
     theme(
       axis.text.x = element_text(size = args$axisFontSize),
@@ -1561,9 +1543,10 @@ tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams, sta
 }
 
 
-#' tsEvaPlotTransfToStat Function
+#' tsEvaPlotTransfToStat
 #'
-#' This function creates a line plot of time series data along with statistical measures.
+#' \code{tsEvaPlotTransfToStat}is a function that creates a
+#' line plot of time series data along with statistical measures.
 #'
 #' @param timeStamps A vector of time stamps for the data points.
 #' @param statSeries A vector of the main time series data.
@@ -1574,21 +1557,10 @@ tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams, sta
 #' @param varargin Additional optional arguments to customize the plot.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
 #' @return A ggplot object representing the line plot.
-#'
-#' @examples
-#' # Example usage of tsEvaPlotTransfToStat function
-#' data <- data.frame(
-#'   timeStamps = c("2021-01-01", "2021-01-02", "2021-01-03"),
-#'   statSeries = c(1, 2, 3),
-#'   srsmean = c(1.5, 2.5, 3.5),
-#'   stdDev = c(0.5, 0.6, 0.7),
-#'   st3mom = c(0.1, 0.2, 0.3),
-#'   st4mom = c(0.01, 0.02, 0.03)
-#' )
-#' plot <- tsEvaPlotTransfToStat(data$timeStamps, data$statSeries, data$srsmean, data$stdDev, data$st3mom, data$st4mom)
-#' print(plot)
-#'
+#' @seealso \code{\link{tsEvaPlotTransfToStatFromAnalysisObj}}
 #' @export
 tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mom, st4mom, varargin) {
   data <- data.frame(timeStamps, statSeries, srsmean, stdDev, st3mom, st4mom)
@@ -1629,15 +1601,16 @@ tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mo
     geom_line(aes(y = statSeries, color = "Normalized series"), color = "royalblue") +
     geom_line(aes(y = srsmean, color = "Mean"), linetype = "dashed", size = 1.5) +
     geom_line(aes(y = stdDev, color = "Std.Dev"), linetype = "dashed", size = 1.5) +
-    geom_line(aes(y = thirdMom, color = "Skewness"), color = "purple", size = 1.5) +
-    geom_line(aes(y = fourthMom, color = "Kurtosis"), color = "darkgreen", size = 1.5) +
+    geom_line(aes(y = .data$thirdMom, color = "Skewness"), color = "purple", size = 1.5) +
+    geom_line(aes(y = .data$fourthMom, color = "Kurtosis"), color = "darkgreen", size = 1.5) +
     scale_color_manual(name = "", values = c("Normalized series" = "royalblue", "Mean" = "black", "Std.Dev" = "red", "Skewness" = "purple", "Kurtosis" = "darkgreen")) +
     scale_y_continuous(
       breaks = seq(round(ylims[1] / 10) * 10, ylims[2], by = 5),
-      limit = c(ylims[1], ylims[2] + 1), args$ylabel
+      limits = c(ylims[1], ylims[2] + 1), args$ylabel
     ) +
     scale_x_date(
-      labels = scales::date_format("%Y"), args$xlabel, breaks = seq(ttbi, ttbf, by = "5 years"), expand = c(0, 0)
+      labels = scales::date_format("%Y"), args$xlabel,
+      breaks = seq(ttbi, ttbf, by = "5 years"), expand = c(0, 0)
     ) +
     theme_bw() +
     theme(

@@ -39,6 +39,7 @@ Imports:
     xts,
     grDevices,
     stats,
+    rlang,
     changepoint
 Suggests: 
     knitr,

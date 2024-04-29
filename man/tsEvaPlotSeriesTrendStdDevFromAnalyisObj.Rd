@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotSeriesTrendStdDevFromAnalyisObj}
 \alias{tsEvaPlotSeriesTrendStdDevFromAnalyisObj}
-\title{Plot Time Series with Trend and Standard Deviation}
+\title{tsEvaPlotSeriesTrendStdDevFromAnalyisObj}
 \usage{
 tsEvaPlotSeriesTrendStdDevFromAnalyisObj(
   nonStationaryEvaParams,
@@ -24,12 +24,6 @@ tsEvaPlotSeriesTrendStdDevFromAnalyisObj(
 A ggplot object representing the plot.
 }
 \description{
-This function plots a time series along with its trend and standard deviation.
-}
-\examples{
-# Example usage
-tsEvaPlotSeriesTrendStdDevFromAnalyisObj(nonStationaryEvaParams, stationaryTransformData, mode = "inv")
-}
-\seealso{
-\code{\link{trans}}
+\code{tsEvaPlotTrendStdDevFromAnalysisObj}is a function that plots a
+time series along with its trend and standard deviation.
 }

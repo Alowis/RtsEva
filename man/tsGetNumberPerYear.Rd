@@ -2,7 +2,7 @@
 % Please edit documentation in R/eva_functions.R
 \name{tsGetNumberPerYear}
 \alias{tsGetNumberPerYear}
-\title{Get the number of events per year}
+\title{tsGetNumberPerYear}
 \usage{
 tsGetNumberPerYear(ms, locs)
 }
@@ -15,7 +15,7 @@ tsGetNumberPerYear(ms, locs)
 A data frame with two columns: "year" and "Freq". The "year" column contains the years, and the "Freq" column contains the number of events per year.
 }
 \description{
-This function calculates the number of events per year based on a given time series and a set of locations.
+\code{tsGetNumberPerYear} is a function that calculates the number of events per year based on a given time series and a set of locations.
 }
 \examples{
 # Create a sample time series data frame
@@ -28,4 +28,12 @@ events <- sample(ms$date, 1000)
 # Get the number of events per year
 tsGetNumberPerYear(ms, events)
 
+# Create a sample time series data frame
+set.seed(123)
+ms <- data.frame(date = seq(as.Date("2000-01-01"), as.Date("2022-12-31"), by = "day"),
+                values=rnorm(8401))
+# Generate random events
+events <- match(sample(ms$date, 100),ms$date)
+# Get the number of events per year
+tsGetNumberPerYear(ms, events)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{tsEvaPlotTransfToStat}
 \alias{tsEvaPlotTransfToStat}
-\title{tsEvaPlotTransfToStat Function}
+\title{tsEvaPlotTransfToStat}
 \usage{
 tsEvaPlotTransfToStat(
   timeStamps,
@@ -33,19 +33,9 @@ tsEvaPlotTransfToStat(
 A ggplot object representing the line plot.
 }
 \description{
-This function creates a line plot of time series data along with statistical measures.
+\code{tsEvaPlotTransfToStat}is a function that creates a
+line plot of time series data along with statistical measures.
 }
-\examples{
-# Example usage of tsEvaPlotTransfToStat function
-data <- data.frame(
-  timeStamps = c("2021-01-01", "2021-01-02", "2021-01-03"),
-  statSeries = c(1, 2, 3),
-  srsmean = c(1.5, 2.5, 3.5),
-  stdDev = c(0.5, 0.6, 0.7),
-  st3mom = c(0.1, 0.2, 0.3),
-  st4mom = c(0.01, 0.02, 0.03)
-)
-plot <- tsEvaPlotTransfToStat(data$timeStamps, data$statSeries, data$srsmean, data$stdDev, data$st3mom, data$st4mom)
-print(plot)
-
+\seealso{
+\code{\link{tsEvaPlotTransfToStatFromAnalysisObj}}
 }

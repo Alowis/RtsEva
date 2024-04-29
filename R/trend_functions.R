@@ -814,6 +814,7 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
   ptn=timeStamps[which(!is.na(series))]
   bounds=unique(lubridate::year(ptn))
   nr <- rep(1, length(series))
+  nr=nr +rnorm(length(series),0,1e-5)
   sts <- c()
   lnegs=c()
   pctd=c()
