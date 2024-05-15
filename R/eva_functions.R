@@ -856,18 +856,18 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #'     It includes Tr, A vector of return periods for which
 #'     return levels are calculated.
 #'       }
-#'     \item{EVdata}{A list containing the calculated statistics and return levels. It includes the following components:
-#'       \describe{
-#'         \item{GEVstat}{A list containing the GEV statistics and return levels. It includes the following components:
-#'           \describe{
+#'     \item{EVdata: A list containing the calculated statistics and return levels. It includes the following components:
+#'       \itemize{
+#'         \item{GEVstat: A list containing the GEV statistics and return levels:
+#'           \itemize{
 #'             \item{method: The method used for fitting the GEV distribution.}
 #'             \item{values: A vector of return levels calculated using the GEV distribution.}
 #'             \item{parameters: A vector of parameter estimates for the GEV distribution.}
 #'             \item{paramCIs: A matrix of confidence intervals for the parameter estimates.}
 #'           }
 #'         }
-#'         \item{GPDstat}{A list containing the GPD statistics and return levels. It includes the following components:
-#'           \describe{
+#'         \item{GPDstat: list containing the GPD statistics and return levels:
+#'           \itemize{
 #'             \item{method: The method used for fitting the GPD distribution.}
 #'             \item{values: A vector of return levels calculated using the GPD distribution.}
 #'             \item{parameters: A vector of parameter estimates for the GPD distribution.}
@@ -876,7 +876,7 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #'         }
 #'       }
 #'     }
-#'     \item{isValid}{A logical value indicating whether the analysis was performed or not.}
+#'     \item{isValid: A logical value indicating whether the analysis was performed or not.}
 #'   }
 #'
 #' @examples
@@ -889,7 +889,6 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #'result <- tsEVstatistics(pointData)
 #'result$EVdata$GEVstat$values
 #'result$EVdata$GPDstat$values
-#'
 #' @export
 tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevType = 'GEV', evdType = c('GEV', 'GPD'),shape_bnd=c(-0.5,1)) {
   # Create empty data structures

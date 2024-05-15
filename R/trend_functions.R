@@ -1,8 +1,9 @@
 # Detrending main functions-------------------
 
-#' Transform Time Series to Stationary Trend Only
+#' tsEvaTransformSeriesToStationaryTrendOnly
 #'
-#' This function is the original detrending function implemented in Mentaschi et al.(2016).
+#' \code{tsEvaTransformSeriesToStationaryTrendOnly} is the original detrending
+#' function implemented in Mentaschi et al.(2016).
 #' It takes a time series and transforms it into a stationary one.
 #' It computes the trend as a running average of the time series,
 #' the slowly varying amplitude as its standard deviation, and other statistical measures.
@@ -28,11 +29,12 @@
 #' }
 #'
 #' @examples
-#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "day")
-#' series <- rnorm(length(timeStamps))
-#' timeWindow <- 3
-#' result <- tsEvaTransformSeriesToStationaryTrendOnly(timeStamps, series, timeWindow)
-#'
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#'result <- tsEvaTransformSeriesToStationaryTrendOnly(timeStamps, series, timeWindow)
+#'plot(result$trendSeries)
 #' @export
 tsEvaTransformSeriesToStationaryTrendOnly <- function(timeStamps, series, timeWindow) {
   cat("computing the trend ...\n")
@@ -82,41 +84,47 @@ tsEvaTransformSeriesToStationaryTrendOnly <- function(timeStamps, series, timeWi
   return(trasfData)
 }
 
-#' Transform Time Series to Stationary using percentiles to compute the slowly varying amplitude of the distribution.
+#' tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile
 #'
-#' This function transforms a time series to a stationary ones using a moving average as the trend and a running percentiles
-#' to represent the slowly varying amplitude of the distribution
+#' \code{tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile} transforms a
+#' time series to a stationary ones using a moving average as the trend and
+#' a running percentiles to represent the slowly varying amplitude of the distribution
 #'
 #' @param timeStamps A vector of time stamps for the time series.
 #' @param series The original time series.
 #' @param timeWindow The size of the moving window used for detrending.
-#' @param percentile The percentile value used to compute the extreme trend of the stationary series.
-#' @param ... Additional arguments.
+#' @param percentile The percentile value used to compute the extreme trend
+#' of the stationary series.
 #'
 #' @return A list containing the following elements:
-#' \describe{
-#'   \item{runningStatsMulteplicity}{The running statistics multiplicity.}
-#'   \item{stationarySeries}{The transformed stationary trend only series.}
-#'   \item{trendSeries}{The trend series.}
-#'   \item{trendSeriesNonSeasonal}{The non-seasonal trend series.}
-#'   \item{trendError}{The error on the trend.}
-#'   \item{stdDevSeries}{The standard deviation series.}
-#'   \item{stdDevSeriesNonSeasonal}{The non-seasonal standard deviation series.}
-#'   \item{stdDevError}{The error on the standard deviation.}
-#'   \item{timeStamps}{The time stamps.}
-#'   \item{nonStatSeries}{The original non-stationary series.}
-#'   \item{statSer3Mom}{The running mean of the third moment of the stationary series.}
-#'   \item{statSer4Mom}{The running mean of the fourth moment of the stationary series.}
+#' \itemize{
+#'   \item{runningStatsMulteplicity: The running statistics multiplicity.}
+#'   \item{stationarySeries: The transformed stationary trend only series.}
+#'   \item{trendSeries: The trend series.}
+#'   \item{trendSeriesNonSeasonal: The non-seasonal trend series.}
+#'   \item{trendError: The error on the trend.}
+#'   \item{stdDevSeries: The standard deviation series.}
+#'   \item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
+#'   \item{stdDevError: The error on the standard deviation.}
+#'   \item{timeStamps: The time stamps.}
+#'   \item{nonStatSeries: The original non-stationary series.}
+#'   \item{statSer3Mom: The running mean of the third moment of the stationary series.}
+#'   \item{statSer4Mom: The running mean of the fourth moment of the stationary series.}
 #' }
 #'
 #' @examples
-#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-31"), by = "day")
-#' series <- rnorm(length(timeStamps))
-#' result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps, series, 7, 95, 0.5)
-#'
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#'percentile <- 90
+#'result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
+#'series, timeWindow, percentile)
+#'plot(result$trendSeries)
 #' @import stats
 #' @export
-tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps, series, timeWindow, percentile, ...) {
+tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
+  series, timeWindow, percentile) {
 
   # Removing trend from the series
   cat("\ncomputing the trend on extremes...\n")
@@ -146,11 +154,9 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps, s
   # further smoothing
   varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(nRunMn / 2))
   stdDevSeries1 <- varianceSeries^.5
-
   stdDevSeries <- percentileSeries / meanperc * stdDev
-
-
   avgStdDev <- mean(stdDevSeries)
+
   S <- 2
   # N is the size of each sample used to compute the average
   N <- nRunMn
@@ -167,7 +173,6 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps, s
 
   # the error on the trend is computed as the error on the average:
   trendError <- mean(stdDevSeries) / N^.5
-
 
   # Store the results in a list
   trasfData <- list(
@@ -187,17 +192,19 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps, s
 }
 
 
-#' Transform Time Series to Stationary only using extremes
+#' tsEvaTransformSeriesToStationaryPeakTrend
 #'
-#' This function transforms a time series to a stationary one by focusing on extremes.
+#' \code{tsEvaTransformSeriesToStationaryPeakTrend}
+#' transforms a time series to a stationary one by focusing on extremes.
 #' The trend and slowly varying amplitude are computed on values above a
-#' threshold defined by the user.
+#' threshold defined by the user or automatically
+#' with the function \code{tsEvaFindTrendThreshold}.
 #'
 #' @param timeStamps A vector of time stamps corresponding to the observations in the series.
 #' @param series A vector of the time series data.
 #' @param timeWindow The size of the time window used for detrending.
-#' @param TrendTh The threshold for fitting the trend on the means above a certain quantile. Default is 0.5.
-#' @param ... Additional arguments to be passed to other functions.
+#' @param TrendTh The threshold for fitting the trend on the means above a
+#' given quantile. Default is 0.5.
 #'
 #' @return A list containing the following components:
 #'   \itemize{
@@ -217,13 +224,18 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps, s
 #'
 #' @import stats
 #' @examples
-#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-31"), by = "day")
-#' series <- rnorm(length(timeStamps))
-#' transformedData <- tsEvaTransformSeriesToStationaryPeakTrend(timeStamps, series, timeWindow = 7)
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#'TrendTh <- NA
+#'result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
+#'series, timeWindow, percentile, TrendTh)
+#'plot(result$trendSeries)
 #'
 #' @seealso [tsEvaFindTrendThreshold()]
 #' @export
-tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWindow, TrendTh, ...) {
+tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWindow, TrendTh) {
   # Removing trend from the series
   cat("\ncomputing the trend on extremes...\n")
 
@@ -300,57 +312,64 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 }
 
 
-#' Transform Series to Stationary with Multiplicative Seasonality
+#' tsEvaTransformSeriesToStationaryMultiplicativeSeasonality
 #'
-#' This function decomposes a time series into a season-dependent trend and a season-dependent standard deviation.
-#' It performs a transformation from non-stationary to stationary.
+#' This function decomposes a time series into a season-dependent trend and a
+#' season-dependent standard deviation.It performs a transformation from
+#' non-stationary to stationary.
 #'
 #' @param timeStamps A vector of timestamps for the time series data.
 #' @param series A vector of the time series data.
 #' @param timeWindow The size of the moving window used for trend estimation.
-#' @param seasonalityVar A logical value indicating whether to consider seasonality in the transformation. Default is TRUE.
-#' @param ... Additional arguments to be passed to other functions.
+#' @param seasonalityVar A logical value indicating whether to consider
+#' a time varying seasonality (30 years moving average)  or a static
+#' seasonal cycle in the transformation. Default is TRUE.
 #'
 #' @return A list containing the transformed data and various statistics and errors.
-#' \describe{
-#'   \item{runningStatsMulteplicity}{The size of the moving window used for trend estimation.}
-#'   \item{stationarySeries}{The transformed stationary series.}
-#'   \item{trendSeries}{The trend component of the transformed series.}
-#'   \item{trendSeriesNonSeasonal}{The trend component of the original series without seasonality.}
-#'   \item{stdDevSeries}{The standard deviation component of the transformed series.}
-#'   \item{stdDevSeriesNonSeasonal}{The standard deviation component of the original series without seasonality.}
-#'   \item{trendNonSeasonalError}{The error on the non-seasonal trend component.}
-#'   \item{stdDevNonSeasonalError}{The error on the non-seasonal standard deviation component.}
-#'   \item{trendSeasonalError}{The error on the seasonal trend component.}
-#'   \item{stdDevSeasonalError}{The error on the seasonal standard deviation component.}
-#'   \item{trendError}{The overall error on the trend component.}
-#'   \item{stdDevError}{The overall error on the standard deviation component.}
-#'   \item{Regime}{The estimated regime of the trend seasonality.}
-#'   \item{timeStamps}{The input timestamps.}
-#'   \item{nonStatSeries}{The original non-stationary series.}
-#'   \item{statSer3Mom}{The third moment of the transformed stationary series.}
-#'   \item{statSer4Mom}{The fourth moment of the transformed stationary series.}
+#' \itemize{
+#'   \item{runningStatsMulteplicity: The size of the moving window used for trend estimation.}
+#'   \item{stationarySeries: The transformed stationary series.}
+#'   \item{trendSeries: The trend component of the transformed series.}
+#'   \item{trendSeriesNonSeasonal: The trend component of the original series without seasonality.}
+#'   \item{stdDevSeries: The standard deviation component of the transformed series.}
+#'   \item{stdDevSeriesNonSeasonal: The standard deviation component of the original series without seasonality.}
+#'   \item{trendNonSeasonalError: The error on the non-seasonal trend component.}
+#'   \item{stdDevNonSeasonalError: The error on the non-seasonal standard deviation component.}
+#'   \item{trendSeasonalError: The error on the seasonal trend component.}
+#'   \item{stdDevSeasonalError: The error on the seasonal standard deviation component.}
+#'   \item{trendError: The overall error on the trend component.}
+#'   \item{stdDevError: The overall error on the standard deviation component.}
+#'   \item{Regime: The estimated regime of the trend seasonality.}
+#'   \item{timeStamps: The input timestamps.}
+#'   \item{nonStatSeries: The original non-stationary series.}
+#'   \item{statSer3Mom: The third moment of the transformed stationary series.}
+#'   \item{statSer4Mom: The fourth moment of the transformed stationary series.}
 #' }
 #'
+#'@details
+#'  # transformation non stationary -> stationary
+# x(t) = [y(t) - trend(t) - ssn_trend(t)]/[stdDev(t)*ssn_stdDev(t)]
+#' transformation stationary -> non stationary
+#' y(t) = stdDev(t)*ssn_stdDev(t)*x(t) + trend(t) + ssn_trend(t)
+
+#' trasfData.trendSeries = trend(t) + ssn_trend(t)
+#' trasfData.stdDevSeries = stdDev(t)*ssn_stdDev(t)
+#'
 #' @examples
-#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "day")
-#' series <- sin(2 * pi * seq(0, 1, length.out = length(timeStamps)))
-#' transformedData <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps, series, 30)
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#'TrendTh <- NA
+#'result <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps,
+#'series, timeWindow, percentile, TrendTh, seasonalityVar=F)
+#'plot(result$trendSeries)
 #' @export
 
-tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps, series, timeWindow, seasonalityVar = T, ...) {
-  # this function decomposes the series into a season-dependent trend and a
-  # season-dependent standard deviation.
-  # The season-dependent standard deviation is given by a seasonal factor
-  # multiplied by a slowly varying standard deviation.
+tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps,
+                series, timeWindow, seasonalityVar = T) {
 
-  # transformation non stationary -> stationary
-  # x(t) = [y(t) - trend(t) - ssn_trend(t)]/[stdDev(t)*ssn_stdDev(t)]
-  # transformation stationary -> non stationary
-  # y(t) = stdDev(t)*ssn_stdDev(t)*x(t) + trend(t) + ssn_trend(t)
 
-  # trasfData.trendSeries = trend(t) + ssn_trend(t)
-  # trasfData.stdDevSeries = stdDev(t)*ssn_stdDev(t)
   svar <- 1
   if (seasonalityVar == T) svar <- 2
   seasonalityTimeWindow <- 2 * 30.4 # 2 months
@@ -427,8 +446,7 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
 }
 
 
-#' Transform Time Series to Stationary with seasonal trend and amplitude
-#' based on extreme percentile
+#' tsEvaTransformSeriesToStatSeasonal_ciPercentile
 #'
 #' This function decomposes a time series into a season-dependent trend and a season-dependent standard deviation.
 #' The season-dependent amplitude is given by a seasonal factor multiplied by a slowly varying percentile.
@@ -439,24 +457,24 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
 #' @param percentile The percentile value used for computing the slowly varying percentile.
 #'
 #' @return A list containing the following components:
-#' \describe{
-#'   \item{runningStatsMulteplicity}{The size of each sample used to compute the average.}
-#'   \item{stationarySeries}{The transformed stationary series.}
-#'   \item{trendSeries}{The trend series.}
-#'   \item{trendSeriesNonSeasonal}{The non-seasonal trend series.}
-#'   \item{stdDevSeries}{The season-dependent standard deviation series.}
-#'   \item{stdDevSeriesNonSeasonal}{The non-seasonal standard deviation series.}
-#'   \item{trendError}{The error on the trend.}
-#'   \item{stdDevError}{The error on the standard deviation.}
-#'   \item{statSer3Mom}{The 3rd moment of the transformed stationary series.}
-#'   \item{statSer4Mom}{The 4th moment of the transformed stationary series.}
-#'   \item{nonStatSeries}{The original non-stationary series.}
-#'   \item{Regime}{The regime of the trend seasonality.}
-#'   \item{timeStamps}{The time stamps.}
-#'   \item{trendNonSeasonalError}{The error on the non-seasonal trend.}
-#'   \item{stdDevNonSeasonalError}{The error on the non-seasonal standard deviation.}
-#'   \item{trendSeasonalError}{The error on the seasonal trend.}
-#'   \item{stdDevSeasonalError}{The error on the seasonal standard deviation.}
+#' \itemize{
+#'   \item{runningStatsMulteplicity: The size of each sample used to compute the average.}
+#'   \item{stationarySeries: The transformed stationary series.}
+#'   \item{trendSeries: The trend series.}
+#'   \item{trendSeriesNonSeasonal: The non-seasonal trend series.}
+#'   \item{stdDevSeries: The season-dependent standard deviation series.}
+#'   \item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
+#'   \item{trendError: The error on the trend.}
+#'   \item{stdDevError: The error on the standard deviation.}
+#'   \item{statSer3Mom: The 3rd moment of the transformed stationary series.}
+#'   \item{statSer4Mom: The 4th moment of the transformed stationary series.}
+#'   \item{nonStatSeries: The original non-stationary series.}
+#'   \item{Regime: The regime of the trend seasonality.}
+#'   \item{timeStamps: The time stamps.}
+#'   \item{trendNonSeasonalError: The error on the non-seasonal trend.}
+#'   \item{stdDevNonSeasonalError: The error on the non-seasonal standard deviation.}
+#'   \item{trendSeasonalError: The error on the seasonal trend.}
+#'   \item{stdDevSeasonalError: The error on the seasonal standard deviation.}
 #' }
 #'
 #' @examples
@@ -465,11 +483,6 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
 #' timeWindow <- 30
 #' percentile <- 90
 #' result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps, series, timeWindow, percentile)
-#'
-#' @references
-#' Mentaschi, L., Vousdoukas, M. I., Voukouvalas, E., Dosio, A., & Feyen, L. (2016).
-#' Joint effect of global sea level rise and tidal changes on the future
-#' flood risk in the Rhine-Meuse delta. Environmental Research Letters, 11(3), 035003.
 #'
 #' @export
 tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, timeWindow, percentile) {
@@ -680,22 +693,22 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series
 #' @param percentile The percentile value used for computing the running percentile of the stationary series.
 #'
 #' @return A list containing the following elements:
-#' \describe{
-#'   \item{runningStatsMulteplicity}{The running statistics multiplicity.}
-#'   \item{stationarySeries}{The transformed stationary series.}
-#'   \item{trendSeries}{The trend series.}
-#'   \item{trendonlySeries}{The trend series without the stationary component.}
-#'   \item{ChpointsSeries2}{The trend series with change points.}
-#'   \item{changePoints}{The detected change points.}
-#'   \item{trendSeriesNonSeasonal}{The trend series without the seasonal component.}
-#'   \item{trendError}{The error on the trend.}
-#'   \item{stdDevSeries}{The standard deviation series.}
-#'   \item{stdDevSeriesNonStep}{The standard deviation series without the step change component.}
-#'   \item{stdDevError}{The error on the standard deviation.}
-#'   \item{timeStamps}{The time stamps.}
-#'   \item{nonStatSeries}{The original non-stationary series.}
-#'   \item{statSer3Mom}{The running mean of the third moment of the stationary series.}
-#'   \item{statSer4Mom}{The running mean of the fourth moment of the stationary series.}
+#' \itemize{
+#'   \item{runningStatsMulteplicity: The running statistics multiplicity.}
+#'   \item{stationarySeries: The transformed stationary series.}
+#'   \item{trendSeries: The trend series.}
+#'   \item{trendonlySeries: The trend series without the stationary component.}
+#'   \item{ChpointsSeries2: The trend series with change points.}
+#'   \item{changePoints: The detected change points.}
+#'   \item{trendSeriesNonSeasonal: The trend series without the seasonal component.}
+#'   \item{trendError: The error on the trend.}
+#'   \item{stdDevSeries: The standard deviation series.}
+#'   \item{stdDevSeriesNonStep: The standard deviation series without the step change component.}
+#'   \item{stdDevError: The error on the standard deviation.}
+#'   \item{timeStamps: The time stamps.}
+#'   \item{nonStatSeries: The original non-stationary series.}
+#'   \item{statSer3Mom: The running mean of the third moment of the stationary series.}
+#'   \item{statSer4Mom: The running mean of the fourth moment of the stationary series.}
 #' }
 #'
 #' @examples
@@ -893,9 +906,9 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
 #'
 #' @return A list containing:
 #' \itemize{
-#'   \item{trend}{A numeric vector of the same length as series, with each segment between change points filled with its mean value.}
-#'   \item{variance}{A numeric vector of the same length as series, with each segment between change points filled with its variance.}
-#'   \item{changepoints}{A vector of timestamps at which change points were detected.}
+#'   \item{trend: A numeric vector of the same length as series, with each segment between change points filled with its mean value.}
+#'   \item{variance: A numeric vector of the same length as series, with each segment between change points filled with its variance.}
+#'   \item{changepoints: A vector of timestamps at which change points were detected.}
 #' }
 #'
 #' @importFrom changepoint cpt.meanvar
@@ -1093,9 +1106,9 @@ tsEvaNanRunningVariance <- function(series, windowSize) {
 #'
 #' @return A data frame containing the following running statistics:
 #' \itemize{
-#'   \item{rnvar}{running variance}
-#'   \item{rn3mom}{running third statistical momentum}
-#'   \item{rn4mom}{running fourth statistical momentum}
+#'   \item{rnvar: running variance}
+#'   \item{rn3mom: running third statistical momentum}
+#'   \item{rn4mom: running fourth statistical momentum}
 #' }
 #'
 #' @details This function calculates the running variance, running third statistical momentum, and running fourth statistical momentum for a given time series data using a moving window approach. The window size determines the number of observations used to calculate the statistics at each point.
@@ -1196,12 +1209,12 @@ tsEvaNanRunningStatistics <- function(series, windowSize) {
 #' The function also performs smoothing on the output and calculates the standard error.
 #'
 #' The function uses the following label parameters:
-#' \describe{
-#'   \item{percentDelta}{Delta for the computation of a percentile interval around the requested percentage.
+#' \itemize{
+#'   \item{percentDelta: Delta for the computation of a percentile interval around the requested percentage.
 #'                      If the windowSize is greater than 2000, percentDelta is set to 1.
 #'                      If the windowSize is between 1000 and 2000, percentDelta is set to 2.
 #'                      If the windowSize is between 100 and 1000, percentDelta is set to 5.}
-#'   \item{nLowLimit}{Minimum number of non-NA elements for a window for percentile computation.}
+#'   \item{nLowLimit: Minimum number of non-NA elements for a window for percentile computation.}
 #' }
 #'
 #' @examples
@@ -1390,11 +1403,11 @@ methods::setClass(
 #'
 #' @import methods
 #' @return An object of class "tsTrend" with the following components:
-#' \describe{
-#'   \item{originSeries}{The original time series.}
-#'   \item{detrendSeries}{The detrended time series.}
-#'   \item{trendSeries}{The trend component of the time series.}
-#'   \item{nRunMn}{The number of data points in the moving window used to calculate the trend.}
+#' \itemize{
+#'   \item{originSeries: The original time series.}
+#'   \item{detrendSeries: The detrended time series.}
+#'   \item{trendSeries: The trend component of the time series.}
+#'   \item{nRunMn: The number of data points in the moving window used to calculate the trend.}
 #' }
 #'
 #' @examples
