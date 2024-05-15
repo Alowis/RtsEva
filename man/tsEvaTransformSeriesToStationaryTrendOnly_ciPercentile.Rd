@@ -2,14 +2,13 @@
 % Please edit documentation in R/trend_functions.R
 \name{tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile}
 \alias{tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile}
-\title{Transform Time Series to Stationary using percentiles to compute the slowly varying amplitude of the distribution.}
+\title{tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile}
 \usage{
 tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(
   timeStamps,
   series,
   timeWindow,
-  percentile,
-  ...
+  percentile
 )
 }
 \arguments{
@@ -19,34 +18,38 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(
 
 \item{timeWindow}{The size of the moving window used for detrending.}
 
-\item{percentile}{The percentile value used to compute the extreme trend of the stationary series.}
-
-\item{...}{Additional arguments.}
+\item{percentile}{The percentile value used to compute the extreme trend
+of the stationary series.}
 }
 \value{
 A list containing the following elements:
-\describe{
-\item{runningStatsMulteplicity}{The running statistics multiplicity.}
-\item{stationarySeries}{The transformed stationary trend only series.}
-\item{trendSeries}{The trend series.}
-\item{trendSeriesNonSeasonal}{The non-seasonal trend series.}
-\item{trendError}{The error on the trend.}
-\item{stdDevSeries}{The standard deviation series.}
-\item{stdDevSeriesNonSeasonal}{The non-seasonal standard deviation series.}
-\item{stdDevError}{The error on the standard deviation.}
-\item{timeStamps}{The time stamps.}
-\item{nonStatSeries}{The original non-stationary series.}
-\item{statSer3Mom}{The running mean of the third moment of the stationary series.}
-\item{statSer4Mom}{The running mean of the fourth moment of the stationary series.}
+\itemize{
+\item{runningStatsMulteplicity: The running statistics multiplicity.}
+\item{stationarySeries: The transformed stationary trend only series.}
+\item{trendSeries: The trend series.}
+\item{trendSeriesNonSeasonal: The non-seasonal trend series.}
+\item{trendError: The error on the trend.}
+\item{stdDevSeries: The standard deviation series.}
+\item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
+\item{stdDevError: The error on the standard deviation.}
+\item{timeStamps: The time stamps.}
+\item{nonStatSeries: The original non-stationary series.}
+\item{statSer3Mom: The running mean of the third moment of the stationary series.}
+\item{statSer4Mom: The running mean of the fourth moment of the stationary series.}
 }
 }
 \description{
-This function transforms a time series to a stationary ones using a moving average as the trend and a running percentiles
-to represent the slowly varying amplitude of the distribution
+\code{tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile} transforms a
+time series to a stationary ones using a moving average as the trend and
+a running percentiles to represent the slowly varying amplitude of the distribution
 }
 \examples{
-timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-31"), by = "day")
-series <- rnorm(length(timeStamps))
-result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps, series, 7, 95, 0.5)
-
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
+percentile <- 90
+result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
+series, timeWindow, percentile)
+plot(result$trendSeries)
 }

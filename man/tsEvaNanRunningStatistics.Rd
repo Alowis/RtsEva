@@ -14,9 +14,9 @@ tsEvaNanRunningStatistics(series, windowSize)
 \value{
 A data frame containing the following running statistics:
 \itemize{
-\item{rnvar}{running variance}
-\item{rn3mom}{running third statistical momentum}
-\item{rn4mom}{running fourth statistical momentum}
+\item{rnvar: running variance}
+\item{rn3mom: running third statistical momentum}
+\item{rn4mom: running fourth statistical momentum}
 }
 }
 \description{

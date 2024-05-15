@@ -2,8 +2,7 @@
 % Please edit documentation in R/trend_functions.R
 \name{tsEvaTransformSeriesToStatSeasonal_ciPercentile}
 \alias{tsEvaTransformSeriesToStatSeasonal_ciPercentile}
-\title{Transform Time Series to Stationary with seasonal trend and amplitude
-based on extreme percentile}
+\title{tsEvaTransformSeriesToStatSeasonal_ciPercentile}
 \usage{
 tsEvaTransformSeriesToStatSeasonal_ciPercentile(
   timeStamps,
@@ -23,24 +22,24 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile(
 }
 \value{
 A list containing the following components:
-\describe{
-\item{runningStatsMulteplicity}{The size of each sample used to compute the average.}
-\item{stationarySeries}{The transformed stationary series.}
-\item{trendSeries}{The trend series.}
-\item{trendSeriesNonSeasonal}{The non-seasonal trend series.}
-\item{stdDevSeries}{The season-dependent standard deviation series.}
-\item{stdDevSeriesNonSeasonal}{The non-seasonal standard deviation series.}
-\item{trendError}{The error on the trend.}
-\item{stdDevError}{The error on the standard deviation.}
-\item{statSer3Mom}{The 3rd moment of the transformed stationary series.}
-\item{statSer4Mom}{The 4th moment of the transformed stationary series.}
-\item{nonStatSeries}{The original non-stationary series.}
-\item{Regime}{The regime of the trend seasonality.}
-\item{timeStamps}{The time stamps.}
-\item{trendNonSeasonalError}{The error on the non-seasonal trend.}
-\item{stdDevNonSeasonalError}{The error on the non-seasonal standard deviation.}
-\item{trendSeasonalError}{The error on the seasonal trend.}
-\item{stdDevSeasonalError}{The error on the seasonal standard deviation.}
+\itemize{
+\item{runningStatsMulteplicity: The size of each sample used to compute the average.}
+\item{stationarySeries: The transformed stationary series.}
+\item{trendSeries: The trend series.}
+\item{trendSeriesNonSeasonal: The non-seasonal trend series.}
+\item{stdDevSeries: The season-dependent standard deviation series.}
+\item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
+\item{trendError: The error on the trend.}
+\item{stdDevError: The error on the standard deviation.}
+\item{statSer3Mom: The 3rd moment of the transformed stationary series.}
+\item{statSer4Mom: The 4th moment of the transformed stationary series.}
+\item{nonStatSeries: The original non-stationary series.}
+\item{Regime: The regime of the trend seasonality.}
+\item{timeStamps: The time stamps.}
+\item{trendNonSeasonalError: The error on the non-seasonal trend.}
+\item{stdDevNonSeasonalError: The error on the non-seasonal standard deviation.}
+\item{trendSeasonalError: The error on the seasonal trend.}
+\item{stdDevSeasonalError: The error on the seasonal standard deviation.}
 }
 }
 \description{
@@ -54,9 +53,4 @@ timeWindow <- 30
 percentile <- 90
 result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps, series, timeWindow, percentile)
 
-}
-\references{
-Mentaschi, L., Vousdoukas, M. I., Voukouvalas, E., Dosio, A., & Feyen, L. (2016).
-Joint effect of global sea level rise and tidal changes on the future
-flood risk in the Rhine-Meuse delta. Environmental Research Letters, 11(3), 035003.
 }

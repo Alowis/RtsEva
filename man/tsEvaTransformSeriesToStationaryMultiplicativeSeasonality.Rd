@@ -2,14 +2,13 @@
 % Please edit documentation in R/trend_functions.R
 \name{tsEvaTransformSeriesToStationaryMultiplicativeSeasonality}
 \alias{tsEvaTransformSeriesToStationaryMultiplicativeSeasonality}
-\title{Transform Series to Stationary with Multiplicative Seasonality}
+\title{tsEvaTransformSeriesToStationaryMultiplicativeSeasonality}
 \usage{
 tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(
   timeStamps,
   series,
   timeWindow,
-  seasonalityVar = T,
-  ...
+  seasonalityVar = T
 )
 }
 \arguments{
@@ -19,38 +18,51 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(
 
 \item{timeWindow}{The size of the moving window used for trend estimation.}
 
-\item{seasonalityVar}{A logical value indicating whether to consider seasonality in the transformation. Default is TRUE.}
-
-\item{...}{Additional arguments to be passed to other functions.}
+\item{seasonalityVar}{A logical value indicating whether to consider
+a time varying seasonality (30 years moving average)  or a static
+seasonal cycle in the transformation. Default is TRUE.}
 }
 \value{
 A list containing the transformed data and various statistics and errors.
-\describe{
-\item{runningStatsMulteplicity}{The size of the moving window used for trend estimation.}
-\item{stationarySeries}{The transformed stationary series.}
-\item{trendSeries}{The trend component of the transformed series.}
-\item{trendSeriesNonSeasonal}{The trend component of the original series without seasonality.}
-\item{stdDevSeries}{The standard deviation component of the transformed series.}
-\item{stdDevSeriesNonSeasonal}{The standard deviation component of the original series without seasonality.}
-\item{trendNonSeasonalError}{The error on the non-seasonal trend component.}
-\item{stdDevNonSeasonalError}{The error on the non-seasonal standard deviation component.}
-\item{trendSeasonalError}{The error on the seasonal trend component.}
-\item{stdDevSeasonalError}{The error on the seasonal standard deviation component.}
-\item{trendError}{The overall error on the trend component.}
-\item{stdDevError}{The overall error on the standard deviation component.}
-\item{Regime}{The estimated regime of the trend seasonality.}
-\item{timeStamps}{The input timestamps.}
-\item{nonStatSeries}{The original non-stationary series.}
-\item{statSer3Mom}{The third moment of the transformed stationary series.}
-\item{statSer4Mom}{The fourth moment of the transformed stationary series.}
+\itemize{
+\item{runningStatsMulteplicity: The size of the moving window used for trend estimation.}
+\item{stationarySeries: The transformed stationary series.}
+\item{trendSeries: The trend component of the transformed series.}
+\item{trendSeriesNonSeasonal: The trend component of the original series without seasonality.}
+\item{stdDevSeries: The standard deviation component of the transformed series.}
+\item{stdDevSeriesNonSeasonal: The standard deviation component of the original series without seasonality.}
+\item{trendNonSeasonalError: The error on the non-seasonal trend component.}
+\item{stdDevNonSeasonalError: The error on the non-seasonal standard deviation component.}
+\item{trendSeasonalError: The error on the seasonal trend component.}
+\item{stdDevSeasonalError: The error on the seasonal standard deviation component.}
+\item{trendError: The overall error on the trend component.}
+\item{stdDevError: The overall error on the standard deviation component.}
+\item{Regime: The estimated regime of the trend seasonality.}
+\item{timeStamps: The input timestamps.}
+\item{nonStatSeries: The original non-stationary series.}
+\item{statSer3Mom: The third moment of the transformed stationary series.}
+\item{statSer4Mom: The fourth moment of the transformed stationary series.}
 }
 }
 \description{
-This function decomposes a time series into a season-dependent trend and a season-dependent standard deviation.
-It performs a transformation from non-stationary to stationary.
+This function decomposes a time series into a season-dependent trend and a
+season-dependent standard deviation.It performs a transformation from
+non-stationary to stationary.
 }
+\section{transformation non stationary -> stationary}{
+transformation stationary -> non stationary
+y(t) = stdDev(t)*ssn_stdDev(t)*x(t) + trend(t) + ssn_trend(t)
+trasfData.trendSeries = trend(t) + ssn_trend(t)
+trasfData.stdDevSeries = stdDev(t)*ssn_stdDev(t)
+}
+
 \examples{
-timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "day")
-series <- sin(2 * pi * seq(0, 1, length.out = length(timeStamps)))
-transformedData <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps, series, 30)
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
+TrendTh <- NA
+result <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps,
+series, timeWindow, percentile, TrendTh, seasonalityVar=F)
+plot(result$trendSeries)
 }

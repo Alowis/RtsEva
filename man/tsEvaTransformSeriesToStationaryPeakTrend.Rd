@@ -2,14 +2,13 @@
 % Please edit documentation in R/trend_functions.R
 \name{tsEvaTransformSeriesToStationaryPeakTrend}
 \alias{tsEvaTransformSeriesToStationaryPeakTrend}
-\title{Transform Time Series to Stationary only using extremes}
+\title{tsEvaTransformSeriesToStationaryPeakTrend}
 \usage{
 tsEvaTransformSeriesToStationaryPeakTrend(
   timeStamps,
   series,
   timeWindow,
-  TrendTh,
-  ...
+  TrendTh
 )
 }
 \arguments{
@@ -19,9 +18,8 @@ tsEvaTransformSeriesToStationaryPeakTrend(
 
 \item{timeWindow}{The size of the time window used for detrending.}
 
-\item{TrendTh}{The threshold for fitting the trend on the means above a certain quantile. Default is 0.5.}
-
-\item{...}{Additional arguments to be passed to other functions.}
+\item{TrendTh}{The threshold for fitting the trend on the means above a
+given quantile. Default is 0.5.}
 }
 \value{
 A list containing the following components:
@@ -41,14 +39,21 @@ A list containing the following components:
 }
 }
 \description{
-This function transforms a time series to a stationary one by focusing on extremes.
+\code{tsEvaTransformSeriesToStationaryPeakTrend}
+transforms a time series to a stationary one by focusing on extremes.
 The trend and slowly varying amplitude are computed on values above a
-threshold defined by the user.
+threshold defined by the user or automatically
+with the function \code{tsEvaFindTrendThreshold}.
 }
 \examples{
-timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-31"), by = "day")
-series <- rnorm(length(timeStamps))
-transformedData <- tsEvaTransformSeriesToStationaryPeakTrend(timeStamps, series, timeWindow = 7)
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
+TrendTh <- NA
+result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
+series, timeWindow, percentile, TrendTh)
+plot(result$trendSeries)
 
 }
 \seealso{

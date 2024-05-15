@@ -2,7 +2,7 @@
 % Please edit documentation in R/trend_functions.R
 \name{tsEvaTransformSeriesToStationaryTrendOnly}
 \alias{tsEvaTransformSeriesToStationaryTrendOnly}
-\title{Transform Time Series to Stationary Trend Only}
+\title{tsEvaTransformSeriesToStationaryTrendOnly}
 \usage{
 tsEvaTransformSeriesToStationaryTrendOnly(timeStamps, series, timeWindow)
 }
@@ -31,15 +31,17 @@ A list containing the following elements:
 }
 }
 \description{
-This function is the original detrending function implemented in Mentaschi et al.(2016).
+\code{tsEvaTransformSeriesToStationaryTrendOnly} is the original detrending
+function implemented in Mentaschi et al.(2016).
 It takes a time series and transforms it into a stationary one.
 It computes the trend as a running average of the time series,
 the slowly varying amplitude as its standard deviation, and other statistical measures.
 }
 \examples{
-timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "day")
-series <- rnorm(length(timeStamps))
-timeWindow <- 3
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
 result <- tsEvaTransformSeriesToStationaryTrendOnly(timeStamps, series, timeWindow)
-
+plot(result$trendSeries)
 }

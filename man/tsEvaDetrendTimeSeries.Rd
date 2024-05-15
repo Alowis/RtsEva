@@ -19,11 +19,11 @@ tsEvaDetrendTimeSeries(timeStamps, series, timeWindow, percent = NA, fast = F)
 }
 \value{
 An object of class "tsTrend" with the following components:
-\describe{
-\item{originSeries}{The original time series.}
-\item{detrendSeries}{The detrended time series.}
-\item{trendSeries}{The trend component of the time series.}
-\item{nRunMn}{The number of data points in the moving window used to calculate the trend.}
+\itemize{
+\item{originSeries: The original time series.}
+\item{detrendSeries: The detrended time series.}
+\item{trendSeries: The trend component of the time series.}
+\item{nRunMn: The number of data points in the moving window used to calculate the trend.}
 }
 }
 \description{

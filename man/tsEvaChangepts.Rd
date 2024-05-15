@@ -16,9 +16,9 @@ tsEvaChangepts(series, timeWindow, timeStamps)
 \value{
 A list containing:
 \itemize{
-\item{trend}{A numeric vector of the same length as series, with each segment between change points filled with its mean value.}
-\item{variance}{A numeric vector of the same length as series, with each segment between change points filled with its variance.}
-\item{changepoints}{A vector of timestamps at which change points were detected.}
+\item{trend: A numeric vector of the same length as series, with each segment between change points filled with its mean value.}
+\item{variance: A numeric vector of the same length as series, with each segment between change points filled with its variance.}
+\item{changepoints: A vector of timestamps at which change points were detected.}
 }
 }
 \description{
