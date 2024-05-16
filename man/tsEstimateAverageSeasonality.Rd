@@ -4,12 +4,7 @@
 \alias{tsEstimateAverageSeasonality}
 \title{Estimate Average Seasonality}
 \usage{
-tsEstimateAverageSeasonality(
-  timeStamps,
-  seasonalitySeries,
-  timeWindow,
-  peaks = T
-)
+tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow)
 }
 \arguments{
 \item{timeStamps}{The time stamps of the time series.}
@@ -17,8 +12,6 @@ tsEstimateAverageSeasonality(
 \item{seasonalitySeries}{The series representing the seasonality.}
 
 \item{timeWindow}{The time window used for averaging the seasonality.}
-
-\item{peaks}{A logical value indicating whether to consider peaks in the seasonality.}
 }
 \value{
 A list containing the estimated regime and the seasonality series.
@@ -35,9 +28,15 @@ A list containing the estimated regime and the seasonality series.
 This function estimates the average seasonality of a time series based on the given parameters.
 }
 \examples{
-timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "day")
-seasonalitySeries <- sin(2 * pi * seq(0, 1, length.out = length(timeStamps)))
-result <- tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow = 30, peaks = TRUE)
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series  <- ArdecheStMartin[,2]
+timeWindow <- 30*365  # 30 years
+rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
+nRunMn <- rs@nRunMn
+cat("computing trend seasonality ...\n")
+seasonalitySeries <- rs@detrendSeries
+result <- tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow=rs@nRunMn)
 plot(result$regime, type = "l", xlab = "Day", ylab = "Regime", main = "Estimated Regime")
 plot(result$Seasonality$averageSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Average Seasonality")
 plot(result$Seasonality$varyingSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Varying Seasonality")

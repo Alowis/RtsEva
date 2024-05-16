@@ -12,7 +12,7 @@ tsEvaPlotAllRLevelsGPD(
   timeStamps,
   tstamps,
   trans,
-  varargin
+  ...
 )
 }
 \arguments{
@@ -49,6 +49,37 @@ return levels for a Generalized Pareto Distribution (GPD) based on the
 provided parameters and data. The plot showcases the evolving relationship
 between return periods and return levels, allowing for visual analysis of
 extreme events and their probabilities.
+}
+\examples{
+# Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+                      transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+peax <- nonStationaryEvaParams[[2]]$parameters$peaks
+peaxID <- nonStationaryEvaParams[[2]]$parameters$peakID
+timeStamps <- stationaryTransformData$timeStamps
+trendPeaks <- stationaryTransformData$trendSeries[peaxID]
+stdPeaks <- stationaryTransformData$stdDevSeries[peaxID]
+peaksCor <- (peax - trendPeaks) / stdPeaks
+nYears <- round(length(timeStamps) / 365.25 )
+rlvlmax <- empdis(peaksCor, nYears)
+rlvlmax$QNS <- peax[order(peax)]
+rlvlmax$Idt <- stationaryTransformData$timeStamps[peaxID][order(peax)]
+timeIndex <- 2
+tstamps <- "Example Timestamps"
+trans <- "ori"
+# Call the function with the defined arguments
+result <- tsEvaPlotAllRLevelsGPD(
+  nonStationaryEvaParams, stationaryTransformData,
+  rlvlmax, timeIndex, timeStamps, tstamps,
+  trans)
+# Plot the result
+result
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGPD}}

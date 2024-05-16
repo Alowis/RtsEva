@@ -47,6 +47,32 @@ A ggplot object representing the plot of return levels.
 \code{tsEvaPlotReturnLevelsGEV} is a function that plots the return levels
 using the Generalized Extreme Value (GEV) distribution.
 }
+\examples{
+# Define the required function arguments
+epsilon <- 0.2
+sigma <- 0.5
+mu <- 10
+epsilonStdErr <- 0.05
+sigmaStdErr <- 0.05
+muStdErr <- 0.1
+rlvmax <- data.frame(
+  haz.RP = c(2, 5, 10, 20, 50, 100, 200, 500, 1000),
+  Idt = as.POSIXct(as.Date("2000-01-01") + round(runif(9, 0, 21 * 365.25)),
+    origin = "1970-01-01"
+  ),
+  QNS = c(10, 12, 13, 13.2, 14, 15.7, 16, 16.2, 18)
+)
+tstamps <- "Example Timestamps"
+trans <- "ori"
+# Call the function with the defined arguments
+result <- tsEvaPlotReturnLevelsGEV(
+  epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr,
+  rlvmax, tstamps, trans
+)
+
+# Plot the result
+result
+}
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGEV}}
 \code{\link{tsEvaPlotReturnLevelsGEVFromAnalysisObj}}

@@ -20,9 +20,10 @@ A list containing the running mean trend series and the number of observations u
 This function calculates the running mean trend of a given time series using a specified time window.
 }
 \examples{
-timeStamps <- c(1, 2, 3, 4, 5)
-series <- c(10, 15, 20, 25, 30)
-timeWindow <- 2
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series  <- ArdecheStMartin[,2]
+timeWindow <- 365*30
 result <- tsEvaRunningMeanTrend(timeStamps, series, timeWindow)
 result$trendSeries
 result$nRunMn

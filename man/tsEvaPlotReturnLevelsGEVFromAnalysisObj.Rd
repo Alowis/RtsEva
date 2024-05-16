@@ -39,6 +39,23 @@ return levels for a Generalized Extreme Value (GEV) distribution using the
 parameters obtained from an analysis object. It considers non-stationarity
 by considering time-varying parameters and their associated standard errors.
 }
+\examples{
+
+ # Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+timeIndex=2
+trans='ori'
+result = tsEvaPlotReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData,
+timeIndex, trans)
+result
+}
 \references{
 Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio,
 G., and Alfieri, L. (2016). The transformed-stationary approach: a generic

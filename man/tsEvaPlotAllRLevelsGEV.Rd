@@ -12,7 +12,7 @@ tsEvaPlotAllRLevelsGEV(
   timeStamps,
   tstamps,
   trans,
-  varargin
+  ...
 )
 }
 \arguments{
@@ -42,6 +42,36 @@ distribution based on the provided parameters and data.
 The plot showcases the evolving relationship between return periods and
 return levels through time, allowing for visual analysis of extreme events
 and their probabilities.
+}
+\examples{
+ # Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+amax <- nonStationaryEvaParams[[1]]$parameters$annualMax
+amaxID <- nonStationaryEvaParams[[1]]$parameters$annualMaxIndx
+timeStamps <- stationaryTransformData$timeStamps
+trendPeaks <- stationaryTransformData$trendSeries[amaxID]
+stdPeaks <- stationaryTransformData$stdDevSeries[amaxID]
+amaxCor <- (amax - trendPeaks) / stdPeaks
+nYears <- length(amaxCor)
+rlvlmax <- empdis(amaxCor, nYears)
+rlvlmax$QNS <- amax[order(amax)]
+rlvlmax$Idt <- stationaryTransformData$timeStamps[amaxID][order(amax)]
+timeIndex <- 2
+tstamps <- "Example Timestamps"
+trans <- "ori"
+# Call the function with the defined arguments
+result <- tsEvaPlotAllRLevelsGEV(
+  nonStationaryEvaParams, stationaryTransformData,
+  rlvlmax, timeIndex, timeStamps, tstamps,
+  trans)
+result
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGEV}}

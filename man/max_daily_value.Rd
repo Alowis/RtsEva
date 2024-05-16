@@ -18,5 +18,6 @@ calculates the maximum value for each day.
 }
 \examples{
 # Example usage:
+timeseries <- ArdecheStMartin
 max_daily_value(timeseries)
 }

@@ -63,6 +63,6 @@ series <- ArdecheStMartin[,2]
 timeWindow <- 30*365 # 30 years
 TrendTh <- NA
 result <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps,
-series, timeWindow, percentile, TrendTh, seasonalityVar=F)
+series, timeWindow,seasonalityVar=F)
 plot(result$trendSeries)
 }

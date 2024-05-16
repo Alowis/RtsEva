@@ -44,11 +44,13 @@ A list containing the following elements:
 This function takes a time series and transforms it into a stationary trend series with change points and confidence intervals.
 }
 \examples{
-timeStamps <- c(1, 2, 3, 4, 5)
-series <- c(10, 12, 15, 11, 13)
-timeWindow <- 2
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
 percentile <- 90
-result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps, series, timeWindow, percentile)
-print(result)
+result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps,
+series, timeWindow, percentile)
+plot(result$trendSeries)
 
 }

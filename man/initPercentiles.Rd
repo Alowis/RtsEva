@@ -19,11 +19,13 @@ initPercentiles(subsrs, percentM, percent, percentP)
 A list containing the calculated percentiles and probabilities.
 }
 \description{
-This function calculates the percentiles and probabilities for a given dataset.
+This function calculates percentiles for a given dataset
 }
 \examples{
-subsrs <- c(1, 2, 3, 4, 5)
-initPercentiles(subsrs, 25, 50, 75)
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+initPercentiles(series, 89, 90, 91)
 }
 \seealso{
 \code{\link[=tsEvaNanRunningPercentiles]{tsEvaNanRunningPercentiles()}}

@@ -31,25 +31,27 @@ A list containing the following components:
 }
 \examples{
 # Example usage with some sample data
-nonStationaryEvaParams <- list(
-  parameters = list(
-    epsilon = 0.1,
-    sigma = c(2.1, 2.2, 2.3),
-    mu = c(1.1, 1.2, 1.3)
-  ),
-  paramErr = list(
-    epsilonErr = 0.01,
-    sigmaErr = c(0.11, 0.12, 0.13),
-    muErr = c(0.011, 0.012, 0.013)
-  )
+nonStationaryEvaParams <- list(list(
+parameters = list(
+  epsilon = 0.1,
+  sigma = c(2.1, 2.2, 2.3),
+  mu = c(1.1, 1.2, 1.3),
+  timeHorizonStart=as.POSIXct("1951-01-01"),
+  timeHorizonEnd=as.POSIXct("2020-12-31"),
+  nPeaks=90
+
+),
+paramErr = list(
+  epsilonErr = 0.01,
+  sigmaErr = c(0.11, 0.12, 0.13),
+  muErr = c(0.011, 0.012, 0.013)
+),NA
+)
 )
 returnPeriodsInYears <- c(1, 5, 10, 20, 50)
 timeIndex=1
 results <- tsEvaComputeReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
 head(results$returnLevels)
-head(results$returnLevelsErr)
-head(results$returnLevelsErrFit)
-head(results$returnLevelsErrTransf)
 }
 \seealso{
 \code{\link{tsEvaComputeReturnLevelsGEV}}

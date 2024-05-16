@@ -29,22 +29,27 @@ A list with the following components:
 \code{tsEvaComputeReturnLevelsGPDFromAnalysisObj} is a function that calculates the return levels for a Generalized Pareto Distribution (GPD) using the parameters obtained from an analysis object. It takes into account non-stationarity by considering time-varying parameters and their associated standard errors.
 }
 \examples{
-Example usage with some sample data
-nonStationaryEvaParams <- list(
-  parameters = list(
-    epsilon = 0.1,
-    sigma = c(2.1, 2.2, 2.3),
-    threshold = c(1.1, 1.2, 1.3)
-  ),
-  paramErr = list(
-    epsilonErr = 0.01,
-    sigmaErr = c(0.11, 0.12, 0.13),
-    thresholdErr = c(0.011, 0.012, 0.013)
-  )
+# Example usage with some sample data
+nonStationaryEvaParams <- list(NA,list(
+ parameters = list(
+   epsilon = 0.1,
+   sigma = c(2.1, 2.2, 2.3),
+   threshold = c(1.1, 1.2, 1.3),
+   timeHorizonStart=as.POSIXct("1951-01-01"),
+   timeHorizonEnd=as.POSIXct("2020-12-31"),
+   nPeaks=90
+
+ ),
+ paramErr = list(
+   epsilonErr = 0.01,
+   sigmaErr = c(0.11, 0.12, 0.13),
+   thresholdErr = c(0.011, 0.012, 0.013)
+ )
+)
 )
 returnPeriodsInYears <- c(1, 5, 10, 20, 50)
 timeIndex=1
-results <- tsEvaComputeReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
+results <- tsEvaComputeReturnLevelsGPDFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
 head(results$returnLevels)
 }
 \seealso{

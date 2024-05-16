@@ -362,7 +362,7 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 #'timeWindow <- 30*365 # 30 years
 #'TrendTh <- NA
 #'result <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps,
-#'series, timeWindow, percentile, TrendTh, seasonalityVar=F)
+#'series, timeWindow,seasonalityVar=F)
 #'plot(result$trendSeries)
 #' @export
 
@@ -476,28 +476,30 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
 #'   \item{trendSeasonalError: The error on the seasonal trend.}
 #'   \item{stdDevSeasonalError: The error on the seasonal standard deviation.}
 #' }
+#'@details
+#'  # this function decomposes the series into a season-dependent trend and a
+#' season-dependent standard deviation.
+#' The season-dependent standard deviation is given by a seasonal factor
+#' multiplied by a slowly varying standard deviation.
+
+#' transformation non stationary -> stationary
+#' x(t) =  (y(t) - trend(t) - ssn_trend(t))/(stdDev(t)*ssn_stdDev(t))
+#' transformation stationary -> non stationary
+#' y(t) = stdDev(t)*ssn_stdDev(t)*x(t) + trend(t) + ssn_trend(t)
+#' trasfData.trendSeries = trend(t) + ssn_trend(t)
+#' trasfData.stdDevSeries = stdDev(t)*ssn_stdDev(t)
 #'
 #' @examples
-#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "day")
-#' series <- rnorm(length(timeStamps))
-#' timeWindow <- 30
-#' percentile <- 90
-#' result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps, series, timeWindow, percentile)
-#'
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#'percentile <- 90
+#'result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps,
+#'series, timeWindow, percentile, seasonalityVar=F)
+#'plot(result$trendSeries)
 #' @export
 tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, timeWindow, percentile) {
-  # this function decomposes the series into a season-dependent trend and a
-  # season-dependent standard deviation.
-  # The season-dependent standard deviation is given by a seasonal factor
-  # multiplied by a slowly varying standard deviation.
-
-  # transformation non stationary -> stationary
-  # x(t) = [y(t) - trend(t) - ssn_trend(t)]/[stdDev(t)*ssn_stdDev(t)]
-  # transformation stationary -> non stationary
-  # y(t) = stdDev(t)*ssn_stdDev(t)*x(t) + trend(t) + ssn_trend(t)
-
-  # trasfData.trendSeries = trend(t) + ssn_trend(t)
-  # trasfData.stdDevSeries = stdDev(t)*ssn_stdDev(t)
 
   seasonalityTimeWindow <- 2 * 30.4 # 2 months
 
@@ -511,7 +513,7 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
   statSeries <- rs@detrendSeries - trendSeasonality[, 1]
   print(paste0("computing the slowly varying ", percentile, "th percentile..."))
   percentileSeries <- tsEvaNanRunningPercentiles(timeStamps, statSeries, nRunMn, percentile)
-  #
+
   seasonalVarNRun <- round(nRunMn / timeWindow * seasonalityTimeWindow)
   # seasonalVarSeries is a moving variance computed on a short time
   # window of 1-3 months, able to vary with season.
@@ -602,10 +604,14 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
 #' }
 #'
 #' @examples
-#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "day")
-#' series <- rnorm(length(timeStamps))
-#' timeWindow <- 5
-#' result <- tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps, series, timeWindow)
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#'percentile <- 90
+#'result <- tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps,
+#'series, timeWindow)
+#'plot(result$trendSeries)
 #'
 #' @export
 tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series, timeWindow) {
@@ -712,12 +718,14 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series
 #' }
 #'
 #' @examples
-#' timeStamps <- c(1, 2, 3, 4, 5)
-#' series <- c(10, 12, 15, 11, 13)
-#' timeWindow <- 2
-#' percentile <- 90
-#' result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps, series, timeWindow, percentile)
-#' print(result)
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#'percentile <- 90
+#'result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps,
+#'series, timeWindow, percentile)
+#'plot(result$trendSeries)
 #'
 #' @export
 tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeStamps, series, timeWindow, percentile) {
@@ -816,10 +824,11 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
 #' @details This function iterates over different percentiles and calculates the threshold based on each percentile. It then removes data points below the threshold and detrends the time series using the specified time window. The function calculates the correlation between the normalized trend and the time series and stores the correlation coefficient for each percentile. It performs a changepoint analysis to determine if there is a significant change in the correlation coefficients. If a change point is found, the function returns the percentile corresponding to the change point. If no change point is found, the function returns the percentile with the highest correlation coefficient. If there are negative values in the detrended time series, the function returns the percentile with the fewest negative values.
 #'
 #' @examples
-#' series <- c(1, 2, 3, 4, 5)
-#' timeStamps <- c("2022-01-01", "2022-01-02", "2022-01-03", "2022-01-04", "2022-01-05")
-#' timeWindow <- 3
-#' find_trend_threshold(series, timeStamps, timeWindow)
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#' tsEvaFindTrendThreshold(series, timeStamps, timeWindow)
 #'
 #' @export
 tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
@@ -831,9 +840,7 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
   sts <- c()
   lnegs=c()
   pctd=c()
-  #plot(series)
-  #I play with this
-  pcts <- seq(0.40, 0.96, by=0.02)
+  pcts <- seq(0.40, 0.95, by=0.05)
   # Iterate over each percentile
   for (iter in 1:length(pcts)){
     # Calculate the threshold based on the current percentile
@@ -846,7 +853,7 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
     timeb=timeStamps
     timeb=timeb[-which(serieb < thrsdt)]
     serieb[which(serieb < thrsdt)] <- NA
-    #first I have to test that all years are represented
+    # Test that all years are represented
     checkY=check_timeseries(timeb,bounds)
     if (checkY==FALSE){
       break
@@ -856,12 +863,6 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
     varianceSeries <- tsEvaNanRunningVariance(serieb, rs@nRunMn)
     varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(rs@nRunMn/2))
     norm_trend <- rs@trendSeries/mean(rs@trendSeries, na.rm=TRUE)
-    # if(length(which(is.na(varianceSeries)))>0) {
-    #   break
-    # }
-    # if(length(which(is.na(norm_trend)))>0) {
-    #   break
-    # }
     dtr1=serieb-rs@trendSeries
     lneg=length(which(dtr1<0))
     # Calculate the correlation between the normalized trend and the time series
@@ -879,7 +880,6 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
   sts[1] <- 1
   # Perform a changepoint analysis
   cptm <- try(changepoint::cpt.var(sts, method='AMOC',penalty="BIC", minseglen=3),T)
-  #plot(cptm)
   if(inherits(cptm, "try-error")){
     rval=pctd[which.max(sts[-1])]
 
@@ -914,9 +914,11 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
 #' @importFrom changepoint cpt.meanvar
 #' @examples
 #' \dontrun{
-#' series <- rnorm(100)
-#' timeStamps <- 1:100
-#' result <- tsEvaChangepts(series, 10, timeStamps)
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365 # 30 years
+#' result <- tsEvaChangepts(series, timeWindow, timeStamps)
 #' plot(series, type = "l")
 #' points(timeStamps[result$changepoints], result$trend[result$changepoints], col = "red")
 #' }
@@ -943,7 +945,7 @@ tsEvaChangepts <- function(series, timeWindow, timeStamps) {
 
 #' Initialize Percentiles
 #'
-#' This function calculates the percentiles and probabilities for a given dataset.
+#' This function calculates percentiles for a given dataset
 #'
 #' @param subsrs The input dataset.
 #' @param percentM The percentile for the lower bound.
@@ -951,13 +953,14 @@ tsEvaChangepts <- function(series, timeWindow, timeStamps) {
 #' @param percentP The percentile for the upper bound.
 #'
 #' @return A list containing the calculated percentiles and probabilities.
-#' @import stats
 #' @seealso [tsEvaNanRunningPercentiles()]
 #' @export
 #'
 #' @examples
-#' subsrs <- c(1, 2, 3, 4, 5)
-#' initPercentiles(subsrs, 25, 50, 75)
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series <- ArdecheStMartin[,2]
+#'initPercentiles(series, 89, 90, 91)
 initPercentiles <- function(subsrs, percentM, percent, percentP) {
   probObj <- list()
   probObj$percentM <- percentM
@@ -988,7 +991,7 @@ initPercentiles <- function(subsrs, percentM, percent, percentP) {
 #' @return A vector containing the running mean of the time series
 #'
 #' @examples
-#' series <- c(1, 2, NaN, 4, 5, 6, NaN, 8, 9)
+#' series <- c(1,2,NaN,4,5,6,NaN,8,9,4,5,6,7,3,9,1,0,4,5,2)
 #' windowSize <- 3
 #' result <- tsEvaNanRunningMean(series, windowSize)
 #' print(result)
@@ -1048,13 +1051,12 @@ tsEvaNanRunningMean <- function(series, windowSize) {
 #' @return A vector containing the running variance values.
 #'
 #' @examples
-#' series <- c(1, 2, 3, NaN, 5, 6, 7)
+#' series <- c(1,2,NaN,4,5,6,NaN,8,9,4,5,6,7,3,9,1,0,4,5,2)
 #' windowSize <- 3
 #' tsEvaNanRunningVariance(series, windowSize)
 #'
 #' @export
 tsEvaNanRunningVariance <- function(series, windowSize) {
-  # !!! series must be 0 averaged!!
 
   minNThreshold <- 1
 
@@ -1114,17 +1116,12 @@ tsEvaNanRunningVariance <- function(series, windowSize) {
 #' @details This function calculates the running variance, running third statistical momentum, and running fourth statistical momentum for a given time series data using a moving window approach. The window size determines the number of observations used to calculate the statistics at each point.
 #'
 #' @examples
-#' series <- c(1, 2, 3, 4, 5)
+#' series <- c(1,2,NaN,4,5,6,NaN,8,9,4,5,6,7,3,9,1,0,4,5,2)
 #' windowSize <- 3
 #' tsEvaNanRunningStatistics(series, windowSize)
 #'
 #' @export
 tsEvaNanRunningStatistics <- function(series, windowSize) {
-  # tsEvaNanRunningStatistics: returns the the moving statistical momentums
-  # to the forth.
-  # rnvar: running variance
-  # rn3mom: running third statistical momentum
-  # rn4mom: running fourth statistical momentum
 
   minNThreshold <- 1
 
@@ -1218,15 +1215,15 @@ tsEvaNanRunningStatistics <- function(series, windowSize) {
 #' }
 #'
 #' @examples
-#' timeStamps <- c(1, 2, 3, 4, 5)
-#' series <- c(10, 20, 30, 40, 50)
-#' windowSize <- 3
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series  <- ArdecheStMartin[,2]
+#' windowSize <- 365
 #' percent <- 90
 #' result <- tsEvaNanRunningPercentiles(timeStamps, series, windowSize, percent)
 #' print(result$rnprcnt)
 #' print(result$stdError)
 #'
-#' @import stats
 #' @export
 tsEvaNanRunningPercentiles <- function(timeStamps, series, windowSize, percent) {
   if (windowSize > 2000) {
@@ -1357,14 +1354,14 @@ tsEvaNanRunningPercentiles <- function(timeStamps, series, windowSize, percent) 
 #' @return A list containing the running mean trend series and the number of observations used for each running mean calculation.
 #'
 #' @examples
-#' timeStamps <- c(1, 2, 3, 4, 5)
-#' series <- c(10, 15, 20, 25, 30)
-#' timeWindow <- 2
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series  <- ArdecheStMartin[,2]
+#' timeWindow <- 365*30
 #' result <- tsEvaRunningMeanTrend(timeStamps, series, timeWindow)
 #' result$trendSeries
 #' result$nRunMn
 #'
-#' @import stats
 #' @export
 tsEvaRunningMeanTrend <- function(timeStamps, series, timeWindow) {
   dt1 <- min(diff(timeStamps), na.rm = T)
@@ -1411,11 +1408,11 @@ methods::setClass(
 #' }
 #'
 #' @examples
-#' timeStamps <- c(1, 2, 3, 4, 5)
-#' series <- c(10, 12, 15, 13, 11)
-#' timeWindow <- 3
+#' timeAndSeries <- ArdecheStMartin
+#' timeStamps <- ArdecheStMartin[,1]
+#' series  <- ArdecheStMartin[,2]
+#' timeWindow <- 365*30
 #' detrended <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
-#' detrended$detrendSeries
 #' @export
 tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA, fast = F) {
   extremeLowThreshold <- -Inf
@@ -1455,7 +1452,6 @@ tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA,
 #' @param timeStamps The time stamps of the time series.
 #' @param seasonalitySeries The series representing the seasonality.
 #' @param timeWindow The time window used for averaging the seasonality.
-#' @param peaks A logical value indicating whether to consider peaks in the seasonality.
 #'
 #' @return A list containing the estimated regime and the seasonality series.
 #'   - \code{regime}: The estimated regime of the time series.
@@ -1464,32 +1460,41 @@ tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA,
 #'     - \code{varyingSeasonalitySeries}: The varying seasonality series.
 #'
 #' @examples
-#' timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "day")
-#' seasonalitySeries <- sin(2 * pi * seq(0, 1, length.out = length(timeStamps)))
-#' result <- tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow = 30, peaks = TRUE)
-#' plot(result$regime, type = "l", xlab = "Day", ylab = "Regime", main = "Estimated Regime")
-#' plot(result$Seasonality$averageSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Average Seasonality")
-#' plot(result$Seasonality$varyingSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Varying Seasonality")
+#'timeAndSeries <- ArdecheStMartin
+#'timeStamps <- ArdecheStMartin[,1]
+#'series  <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365  # 30 years
+#'rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
+#'nRunMn <- rs@nRunMn
+#'cat("computing trend seasonality ...\n")
+#'seasonalitySeries <- rs@detrendSeries
+
+#'result <- tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow=rs@nRunMn)
+#'plot(result$regime, type = "l", xlab = "Day", ylab = "Regime", main = "Estimated Regime")
+#'plot(result$Seasonality$averageSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Average Seasonality")
+#'plot(result$Seasonality$varyingSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Varying Seasonality")
 #'@importFrom pracma interp1
 #' @export
-tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWindow, peaks = T) {
+tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWindow) {
   avgYearLength <- 365.2425
   nMonthInYear <- 12
-  timeWindow <- timeWindow
   # to get the number of days
   dt1 <- min(diff(timeStamps), na.rm = T)
   dt <- as.numeric(dt1)
   tdim <- attributes(dt1)$units
-  if (tdim == "hours") dt <- dt / 24
+  if (tdim == "hours") {
+    dt <- dt / 24
+    timeStamps=timeStamps+7200
+  }
   avgYearLength <- avgYearLength / dt
 
   timstamp <- unique(as.Date(timeStamps))
-  nYear <- round(length(timstamp) / avgYearLength)
+  nYear <- round(length(timeStamps) / avgYearLength)
   tw <- round(timeWindow / avgYearLength)
   avgMonthLength <- avgYearLength / nMonthInYear
 
-  firstTmStmp <- timeStamps[1]
-  lastTmStmp <- timeStamps[length(timeStamps)]
+  firstTmStmp <- timstamp[1]
+  lastTmStmp <- timstamp[length(timstamp)]
   mond <- lubridate::month(timeStamps)
   caca <- diff(mond)
   mony <- tsibble::yearmonth(timeStamps)
@@ -1498,17 +1503,10 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
 
   seasonalitySeries <- data.frame(time = timeStamps, series = seasonalitySeries, month = mony, mond = mond)
 
-  if (peaks == T) {
-    grpdSsn_ <- aggregate(seasonalitySeries$series,
-      by = list(month = seasonalitySeries$month),
-      FUN = function(x) sum(x, na.rm = T)
-    )
-  } else {
-    grpdSsn_ <- aggregate(seasonalitySeries$series,
-      by = list(month = seasonalitySeries$month),
-      FUN = function(x) mean(x, na.rm = T)
-    )
-  }
+  grpdSsn_ <- aggregate(seasonalitySeries$series,
+    by = list(month = seasonalitySeries$month),
+    FUN = function(x) mean(x, na.rm = T))
+
   nYears <- ceiling(length(grpdSsn_$month) / nMonthInYear)
   grpdSsn <- matrix(NaN, nYears * nMonthInYear, 1)
   grpdSsn[1:length(grpdSsn_$x)] <- grpdSsn_$x
@@ -1519,7 +1517,7 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   mnSsn_t <- c()
   for (y in (1 + tw / 2):(nYears - tw / 2)) {
     grpdSsnMti <- grpdSsnMtx[, c((y - tw / 2):(y + tw / 2))]
-    twz <- round(timeWindow / 365 / dt)
+    twz <- round(timeWindow / avgYearLength )
     twv <- max(2, twz)
     mnSsn_i <- rowMeans(grpdSsnMti[, c(1:twv)])
     it <- (1:nMonthInYear)
@@ -1551,13 +1549,13 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   pt <- matrix(1, nYears, 1)
   monthAvgVec <- rep(mnSsn, nYears)
   imnth <- c(0:(length(monthAvgVec) - 1))
-  avgTmStamp <- firstTmStmp + avgMonthLength / 2. + imnth * avgMonthLength
+  avgTmStamp <- as.Date(firstTmStmp) + (avgMonthLength*dt) / 2. + imnth * (avgMonthLength*dt)
   imReg <- c(0:(length(mnSsn) - 1))
-  regimeTmStamp <- 1 + avgMonthLength / 2 + imReg * avgMonthLength
+  regimeTmStamp <- 1 + (avgMonthLength*dt)  / 2 + imReg * (avgMonthLength*dt)
 
   # adding first and last times
   monthAvgVec <- c(monthAvgVec[1], monthAvgVec, monthAvgVec[length(monthAvgVec)])
-  avgTmStamp <- c(firstTmStmp, avgTmStamp, max(monthTmStampEnd))
+  avgTmStamp <- c(firstTmStmp, avgTmStamp, lastTmStmp)
 
   regimeVec <- c(mnSsn[1], mnSsn, mnSsn[length(mnSsn)])
   regimeTmStamp <- c(1, regimeTmStamp, 365)
@@ -1567,8 +1565,10 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   monthAvgVex <- c(rep(mnSsn_t[1:12], twz / 2), mnSsn_t, rep(mnSsn_t[(length(mnSsn_t) - 11):length(mnSsn_t)], twz / 2))
   monthAvgVex <- c(monthAvgVex[1], monthAvgVex, monthAvgVex[length(monthAvgVex)])
   avgTmStamp <- as.numeric(avgTmStamp)
-  timeStampsN <- as.numeric(timeStamps)
-  regime <- pracma::interp1(regimeTmStamp, regimeVec, c(1:365), method = "cubic")
+  timeStampsN <- as.numeric(timstamp)
+  max(timeStampsN)
+  max(avgTmStamp)
+  regime <- pracma::interp1(regimeTmStamp, regimeVec, c(1:365), method = "spline")
   averageSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVec, timeStampsN, method = "cubic")
   varyingSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVex, timeStampsN, method = "cubic")
   return(list(regime = regime, Seasonality = data.frame(averageSeasonalitySeries = averageSeasonalitySeries, varyingSeasonalitySeries = varyingSeasonalitySeries)))

@@ -27,7 +27,6 @@ Imports:
     dplyr,
     evd,
     ggplot2,
-    iemisc,
     lubridate,
     methods,
     moments,

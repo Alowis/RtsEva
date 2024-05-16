@@ -7,18 +7,18 @@
 TsEvaNs(
   timeAndSeries,
   timeWindow,
-  transfType,
-  minPeakDistanceInDays,
+  transfType = "trendPeaks",
+  minPeakDistanceInDays = 10,
   seasonalityVar = NA,
   minEventsPerYear = -1,
   gevMaxima = "annual",
-  ciPercentile,
+  ciPercentile = 90,
   gevType = "GEV",
   evdType = c("GEV", "GPD"),
-  tail,
+  tail = "high",
   epy = -1,
-  lowdt,
-  trans
+  lowdt = 7,
+  trans = NULL
 )
 }
 \arguments{
@@ -92,11 +92,12 @@ In particular for the following function
 }
 \examples{
 # Example usage of TsEvaNs function
-TimeAndSeries <- data.frame(timestamp = seq(as.POSIXct("2000-01-01"),
-as.POSIXct("2020-12-31")), by = "day",data = rnorm(7671))
-timeWindow <- 365
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
 result <- TsEvaNs(timeAndSeries, timeWindow,
-transfType = 'trendPeaks', ciPercentile = 90, mode = 'drought')
+transfType = 'trendPeaks',tail = 'high')
 
 }
 \references{

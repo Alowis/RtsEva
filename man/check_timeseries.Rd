@@ -18,10 +18,7 @@ A logical value indicating whether all years in the time series are present.
 This function checks if all years specified in a given time series are present.
 }
 \examples{
-# Create a time series object
-ts_data <- ts(c(1, 2, 3, 4, 5), start = 2000, end = 2004)
-
-# Check if all years in the time series are present
+ts_data <- seq(as.POSIXct("2000-01-01"), as.POSIXct("2004-12-31"), by = "year")
 check_timeseries(ts_data, c(2000, 2004))
 # Output: TRUE
 

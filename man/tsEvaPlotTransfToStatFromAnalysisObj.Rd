@@ -28,6 +28,22 @@ parameters of a non-stationary time series evaluation,
 along with the transformed stationary data,
 and plots the converted stationary series.
 }
+\examples{
+# Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+trans='ori'
+ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
+result = tsEvaPlotTransfToStatFromAnalysisObj (nonStationaryEvaParams, stationaryTransformData)
+result
+}
 \seealso{
 \code{\link{tsEvaPlotTransfToStat}}
 }

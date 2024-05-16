@@ -7,7 +7,7 @@
 tsEvaPlotSeriesTrendStdDevFromAnalyisObj(
   nonStationaryEvaParams,
   stationaryTransformData,
-  mode,
+  trans,
   ...
 )
 }
@@ -16,7 +16,8 @@ tsEvaPlotSeriesTrendStdDevFromAnalyisObj(
 
 \item{stationaryTransformData}{The stationary transformed data.}
 
-\item{mode}{The mode of the plot (optional).}
+\item{trans}{The transformation used to fit the EVD, either "ori" (original)
+or "rev" (reverse). "inv" and "lninv" are also available}
 
 \item{...}{Additional arguments to customize the plot (optional).}
 }
@@ -26,4 +27,19 @@ A ggplot object representing the plot.
 \description{
 \code{tsEvaPlotTrendStdDevFromAnalysisObj}is a function that plots a
 time series along with its trend and standard deviation.
+}
+\examples{
+# Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+trans='ori'
+result = tsEvaPlotGPDImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+result
+
 }

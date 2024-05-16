@@ -269,25 +269,28 @@ tsEvaComputeReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigma
 #'   }
 #' @examples
 #' # Example usage with some sample data
-#' nonStationaryEvaParams <- list(
-#'   parameters = list(
-#'     epsilon = 0.1,
-#'     sigma = c(2.1, 2.2, 2.3),
-#'     mu = c(1.1, 1.2, 1.3)
-#'   ),
-#'   paramErr = list(
-#'     epsilonErr = 0.01,
-#'     sigmaErr = c(0.11, 0.12, 0.13),
-#'     muErr = c(0.011, 0.012, 0.013)
-#'   )
+#'nonStationaryEvaParams <- list(list(
+#' parameters = list(
+#'   epsilon = 0.1,
+#'   sigma = c(2.1, 2.2, 2.3),
+#'   mu = c(1.1, 1.2, 1.3),
+#'   timeHorizonStart=as.POSIXct("1951-01-01"),
+#'   timeHorizonEnd=as.POSIXct("2020-12-31"),
+#'   nPeaks=90
+#'
+#' ),
+#' paramErr = list(
+#'   epsilonErr = 0.01,
+#'   sigmaErr = c(0.11, 0.12, 0.13),
+#'   muErr = c(0.011, 0.012, 0.013)
+#' ),NA
 #' )
+#')
 #' returnPeriodsInYears <- c(1, 5, 10, 20, 50)
 #' timeIndex=1
 #' results <- tsEvaComputeReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
 #' head(results$returnLevels)
-#' head(results$returnLevelsErr)
-#' head(results$returnLevelsErrFit)
-#' head(results$returnLevelsErrTransf)
+
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}
 #' @export
 tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, returnPeriodsInYears, timeIndex=-1) {
@@ -295,15 +298,14 @@ tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, r
   epsilonStdErr <- nonStationaryEvaParams[[1]]$paramErr$epsilonErr
   epsilonStdErrFit <- epsilonStdErr
   epsilonStdErrTransf <- 0
-  marker <- nonStationaryEvaParams[[1]]$paramErr$sigmaErrTransf
-  nonStationary <- exists("marker")
+  nonStationary <- "sigmaErrTransf" %in% names(nonStationaryEvaParams[2]$paramErr)
   if (timeIndex > 0) {
     sigma <- nonStationaryEvaParams[[1]]$parameters$sigma[timeIndex]
     mu <- nonStationaryEvaParams[[1]]$parameters$mu[timeIndex]
     sigmaStdErr <- nonStationaryEvaParams[[1]]$paramErr$sigmaErr[timeIndex]
     sigmaStdErrFit <- nonStationaryEvaParams[[1]]$paramErr$sigmaErrFit[timeIndex]
     sigmaStdErrTransf <- nonStationaryEvaParams[[1]]$paramErr$sigmaErrTransf[timeIndex]
-    muStdErr <- nonStationaryEvaParams$paramErr[[1]]$muErr[timeIndex]
+    muStdErr <- nonStationaryEvaParams[[1]]$paramErr$muErr[timeIndex]
     muStdErrFit <- nonStationaryEvaParams[[1]]$paramErr$muErrFit[timeIndex]
     muStdErrTransf <- nonStationaryEvaParams[[1]]$paramErr$muErrTransf[timeIndex]
   } else {
@@ -367,7 +369,7 @@ tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, r
 #' returnPeriodsInDts <- c( 5, 10, 20, 50)
 #' nPeaks=70
 #' SampleTimeHorizon=70
-#' results <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, SampleTimeHorizon, returnPeriodsInDts)
+#' results <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, SampleTimeHorizon, returnPeriodsInDts)
 #' head(results$returnLevels)
 #' head(results$returnLevelsErr)
 #' @export
@@ -425,23 +427,28 @@ tsEvaComputeReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr
 #'
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
 #' @examples
-#' Example usage with some sample data
-#' nonStationaryEvaParams <- list(
-#'   parameters = list(
-#'     epsilon = 0.1,
-#'     sigma = c(2.1, 2.2, 2.3),
-#'     threshold = c(1.1, 1.2, 1.3)
-#'   ),
-#'   paramErr = list(
-#'     epsilonErr = 0.01,
-#'     sigmaErr = c(0.11, 0.12, 0.13),
-#'     thresholdErr = c(0.011, 0.012, 0.013)
-#'   )
-#' )
-#' returnPeriodsInYears <- c(1, 5, 10, 20, 50)
-#' timeIndex=1
-#' results <- tsEvaComputeReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
-#' head(results$returnLevels)
+#' # Example usage with some sample data
+#'nonStationaryEvaParams <- list(NA,list(
+#'  parameters = list(
+#'    epsilon = 0.1,
+#'    sigma = c(2.1, 2.2, 2.3),
+#'    threshold = c(1.1, 1.2, 1.3),
+#'    timeHorizonStart=as.POSIXct("1951-01-01"),
+#'    timeHorizonEnd=as.POSIXct("2020-12-31"),
+#'    nPeaks=90
+#'
+#'  ),
+#'  paramErr = list(
+#'    epsilonErr = 0.01,
+#'    sigmaErr = c(0.11, 0.12, 0.13),
+#'    thresholdErr = c(0.011, 0.012, 0.013)
+#'  )
+#')
+#')
+#'returnPeriodsInYears <- c(1, 5, 10, 20, 50)
+#'timeIndex=1
+#'results <- tsEvaComputeReturnLevelsGPDFromAnalysisObj(nonStationaryEvaParams, returnPeriodsInYears)
+#'head(results$returnLevels)
 #' @export
 
 tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, returnPeriodsInYears, timeIndex=-1) {
@@ -451,7 +458,7 @@ tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, r
   epsilonStdErrTransf <- 0
   thStart <- nonStationaryEvaParams[[2]]$parameters$timeHorizonStart
   thEnd <- nonStationaryEvaParams[[2]]$parameters$timeHorizonEnd
-  timeHorizonInYears <- (thEnd - thStart) / 365.2425
+  timeHorizonInYears <- round(as.numeric((thEnd - thStart) / 365.2425))
   nPeaks <- nonStationaryEvaParams[[2]]$parameters$nPeaks
   nonStationary <- "sigmaErrTransf" %in% names(nonStationaryEvaParams[2]$paramErr)
   if (timeIndex > 0) {
@@ -1086,17 +1093,6 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
 #'
 #' @return A data frame with two columns: "year" and "Freq". The "year" column contains the years, and the "Freq" column contains the number of events per year.
 #'
-#' @examples
-#' # Create a sample time series data frame
-#' ms <- data.frame(date = seq(as.Date("2000-01-01"), as.Date("2022-12-31"), by = "day"))
-#'
-#' # Generate random events
-#' set.seed(123)
-#' events <- sample(ms$date, 1000)
-#'
-#' # Get the number of events per year
-#' tsGetNumberPerYear(ms, events)
-#'
 #' @importFrom dplyr full_join
 #' @importFrom lubridate year
 #' @examples
@@ -1157,6 +1153,7 @@ tsGetNumberPerYear <- function(ms, locs){
 #' srs <- c(10, 20, 30, 40, 50)
 #' findMax(c(1, 3, 5),srs)
 #' #result is 5.
+#' @export
 findMax <- function(subIndxs,srs) {
   subIndxMaxIndx <- which.max(srs[subIndxs])
   return(subIndxs[subIndxMaxIndx])

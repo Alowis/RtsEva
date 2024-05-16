@@ -20,7 +20,9 @@
 tsEvaFillSeries <- function(timeStamps, series) {
   indxs <- which(is.na(series))
   for (ix in indxs){
-    instant=series[c((ix-4):(ix+4))]
+    id1=max(1,ix-4)
+    id2=min(length(series),ix+4)
+    instant=series[c(id1:id2)]
     filler=mean(instant,na.rm=T)
     series[ix]=filler
   }
@@ -69,10 +71,10 @@ tsEasyParseNamedArgs <- function(args, argStruct) {
 #' @return A logical value indicating whether all years in the time series are present.
 #'
 #' @examples
-#' # Create a time series object
-#' ts_data <- ts(c(1, 2, 3, 4, 5), start = 2000, end = 2004)
-#'
-#' # Check if all years in the time series are present
+# Create a time series object
+#' ts_data <- seq(as.POSIXct("2000-01-01"), as.POSIXct("2004-12-31"), by = "year")
+
+# Check if all years in the time series are present
 #' check_timeseries(ts_data, c(2000, 2004))
 #' # Output: TRUE
 #'
@@ -82,9 +84,6 @@ tsEasyParseNamedArgs <- function(args, argStruct) {
 #' @importFrom lubridate year
 #' @export
 check_timeseries <- function(timeseries, yro) {
-  # Extract the start and end years from the time series
-  # start_year <- yro[1]
-  # end_year <- yro[2]
   # Create a vector of all years in the time series
   all_years <- yro
 
@@ -113,6 +112,7 @@ check_timeseries <- function(timeseries, yro) {
 #' @importFrom xts apply.daily
 #' @examples
 #' # Example usage:
+#'timeseries <- ArdecheStMartin
 #' max_daily_value(timeseries)
 max_daily_value <- function(timeseries) {
   # Convert the 6-hourly time series to daily time series

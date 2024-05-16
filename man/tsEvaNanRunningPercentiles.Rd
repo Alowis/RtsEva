@@ -37,9 +37,10 @@ If the windowSize is between 100 and 1000, percentDelta is set to 5.}
 }
 }
 \examples{
-timeStamps <- c(1, 2, 3, 4, 5)
-series <- c(10, 20, 30, 40, 50)
-windowSize <- 3
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series  <- ArdecheStMartin[,2]
+windowSize <- 365
 percent <- 90
 result <- tsEvaNanRunningPercentiles(timeStamps, series, windowSize, percent)
 print(result$rnprcnt)

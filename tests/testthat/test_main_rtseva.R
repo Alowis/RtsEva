@@ -71,7 +71,6 @@ trendtypes=c("trend","trendPeaks")
 trendtrans=expand.grid(transftypes,trendtypes)
 #choose transformation
 tt=4
-plot(timeAndSeries)
 Nonstat<-TsEvaNs(timeAndSeries, timeWindow, transfType=trendtrans[tt,2],
                  ciPercentile= 90, minPeakDistanceInDays = minPeakDistanceInDays, tail=tail, lowdt=lowdt,trans=trendtrans[tt,1])
 nonStationaryEvaParams=Nonstat[[1]]
@@ -168,3 +167,7 @@ if (RLevs100$Fit == "No fit") {
   nRPgpd=as.data.frame(t(nRPgpd))
   names(nRPgpd)=year(Impdates)
 }
+
+
+
+

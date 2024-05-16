@@ -19,16 +19,6 @@ A data frame with two columns: "year" and "Freq". The "year" column contains the
 }
 \examples{
 # Create a sample time series data frame
-ms <- data.frame(date = seq(as.Date("2000-01-01"), as.Date("2022-12-31"), by = "day"))
-
-# Generate random events
-set.seed(123)
-events <- sample(ms$date, 1000)
-
-# Get the number of events per year
-tsGetNumberPerYear(ms, events)
-
-# Create a sample time series data frame
 set.seed(123)
 ms <- data.frame(date = seq(as.Date("2000-01-01"), as.Date("2022-12-31"), by = "day"),
                 values=rnorm(8401))

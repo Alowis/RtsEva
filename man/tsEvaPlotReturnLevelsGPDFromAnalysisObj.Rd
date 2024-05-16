@@ -9,7 +9,6 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj(
   stationaryTransformData,
   timeIndex,
   trans,
-  ope = F,
   ...
 )
 }
@@ -30,6 +29,22 @@ Plot 2: beam: beam of return level curve for all with highlited curve for select
 }
 \description{
 \code{tsEvaPlotReturnLevelsGPDFromAnalysisObj} is a function that plots the return levels for a Generalized Pareto Distribution (GPD) using the parameters obtained from an analysis object. It considers non-stationarity by considering time-varying parameters and their associated standard errors.
+}
+\examples{
+ # Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+timeIndex=2
+trans='ori'
+result = tsEvaPlotReturnLevelsGPDFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData,
+timeIndex, trans)
+result
 }
 \references{
 Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio, G., and Alfieri, L. (2016). The transformed-stationary approach: a generic and simplified methodology for non-stationary extreme value analysis. \emph{Hydrology and Earth System Sciences}, 20, 3527-3547. doi:10.5194/hess-20-3527-2016.

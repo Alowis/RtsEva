@@ -76,66 +76,67 @@
 #'
 #' @examples
 #' # Example usage of TsEvaNs function
-#' TimeAndSeries <- data.frame(timestamp = seq(as.POSIXct("2000-01-01"),
-#' as.POSIXct("2020-12-31")), by = "day",data = rnorm(7671))
-#' timeWindow <- 365
+#'timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#'timeWindow <- 30*365 # 30 years
 #' result <- TsEvaNs(timeAndSeries, timeWindow,
-#' transfType = 'trendPeaks', ciPercentile = 90, mode = 'drought')
+#' transfType = 'trendPeaks',tail = 'high')
 #'
 #' @export
 
-TsEvaNs<- function(timeAndSeries, timeWindow, transfType,minPeakDistanceInDays,
+TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDistanceInDays=10,
                    seasonalityVar=NA,minEventsPerYear=-1, gevMaxima='annual',
-                   ciPercentile, gevType = 'GEV', evdType = c('GEV', 'GPD'),
-                   tail, epy=-1, lowdt, trans){
+                   ciPercentile=90, gevType = 'GEV', evdType = c('GEV', 'GPD'),
+                   tail="high", epy=-1, lowdt=7, trans=NULL){
 
-  ota=list(transfType = transfType,
-           minPeakDistanceInDays = minPeakDistanceInDays,
-           seasonalityVar = seasonalityVar,
-           minEventsPerYear = minEventsPerYear,
-           gevMaxima = gevMaxima,
-           ciPercentile = ciPercentile,
-           gevType = gevType,
-           evdType =evdType,
-           tail= tail,
-           epy= epy,
-           lowdt=lowdt,
-           trans=trans
-           )
-  args <- list(transfType = 'trendPeaks',
-               minPeakDistanceInDays = -1,
-               seasonalityVar = F,
-               minEventsPerYear = -1,
-               gevMaxima = 'annual',
-               ciPercentile = 90,
-               gevType = 'GEV',
-               evdType = c('GEV', 'GPD'),
-               tail="low",
-               epy=-1,
-               trans=NULL,
-               lowdt=7)
+  # ota=list(transfType = transfType,
+  #          minPeakDistanceInDays = minPeakDistanceInDays,
+  #          seasonalityVar = seasonalityVar,
+  #          minEventsPerYear = minEventsPerYear,
+  #          gevMaxima = gevMaxima,
+  #          ciPercentile = ciPercentile,
+  #          gevType = gevType,
+  #          evdType =evdType,
+  #          tail= tail,
+  #          epy= epy,
+  #          lowdt=lowdt,
+  #          trans=trans
+  #          )
+  # args <- list(transfType = 'trendPeaks',
+  #              minPeakDistanceInDays = -1,
+  #              seasonalityVar = F,
+  #              minEventsPerYear = -1,
+  #              gevMaxima = 'annual',
+  #              ciPercentile = 90,
+  #              gevType = 'GEV',
+  #              evdType = c('GEV', 'GPD'),
+  #              tail="low",
+  #              epy=-1,
+  #              trans=NULL,
+  #              lowdt=7)
+  #
+  # args <- tsEasyParseNamedArgs(ota, args)
+  # seasonalityVar<-args$seasonalityVar
+  # ciPercentile <- args$ciPercentile
+  # transfType <- args$transfType
+  # evdType <- args$evdType
+  # gevType <- args$gevType
+  # TrendTh <- args$TrendTh
+  # epy <- args$epy
+  # tail=args$tail
+  # lowdt=args$lowdt
+  # minPeakDistanceInDays<-args$minPeakDistanceInDays
+  # trans=args$trans
 
-  args <- tsEasyParseNamedArgs(ota, args)
-  seasonalityVar<-args$seasonalityVar
-  ciPercentile <- args$ciPercentile
-  transfType <- args$transfType
-  evdType <- args$evdType
-  gevType <- args$gevType
-  TrendTh <- args$TrendTh
-  epy <- args$epy
-  tail=args$tail
-  lowdt=args$lowdt
-  minPeakDistanceInDays<-args$minPeakDistanceInDays
-  trans=args$trans
 
-
-  timeStamps=as.POSIXct(timeAndSeries$timestamp)
+  timeStamps=as.POSIXct(timeAndSeries[,1])
   dt1=min(diff(timeStamps),na.rm=T)
   dt=as.numeric(dt1)
   tdim=attributes(dt1)$units
   if (tdim=="hours") dt=dt/24
   if (tdim=="seconds") dt=dt/3600
-  series=timeAndSeries$data
+  series=timeAndSeries[,2]
 
   if (epy==-1){
     if (tail=="high") epy=3

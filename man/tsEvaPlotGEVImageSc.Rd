@@ -13,7 +13,7 @@ tsEvaPlotGEVImageSc(
   mu,
   returnPeriodInDts,
   maxObs,
-  mode,
+  trans,
   varargin
 )
 }
@@ -34,9 +34,11 @@ tsEvaPlotGEVImageSc(
 
 \item{maxObs}{A data frame containing the maximum observations.}
 
-\item{mode}{A character string indicating the mode of the plot. Possible values are "inv" (inverse) and "normal".}
+\item{trans}{A character string indicating the transformation for the plot.
+Possible values are "rev" (reverse), inv" (inverse),
+lninv (log of inverse) and "ori"(original).}
 
-\item{...}{Additional arguments to customize the plot.}
+\item{varargin}{Additional arguments to customize the plot.}
 }
 \value{
 A ggplot object representing the GEV plot with a raster image.
@@ -45,4 +47,7 @@ A ggplot object representing the GEV plot with a raster image.
 \code{tsEvaPlotGEVImageSc}is a function that generates a plot of the
 Generalized Extreme Value (GEV) distribution with evolving parameters
 using the provided data.
+}
+\seealso{
+\code{\link{tsEvaPlotGEVImageScFromAnalysisObj}}
 }

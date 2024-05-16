@@ -27,9 +27,11 @@ It returns the mean and variance of the series segments between change points.
 }
 \examples{
 \dontrun{
-series <- rnorm(100)
-timeStamps <- 1:100
-result <- tsEvaChangepts(series, 10, timeStamps)
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
+result <- tsEvaChangepts(series, timeWindow, timeStamps)
 plot(series, type = "l")
 points(timeStamps[result$changepoints], result$trend[result$changepoints], col = "red")
 }

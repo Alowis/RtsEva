@@ -19,7 +19,7 @@ This function calculates the running variance of a time series, taking into acco
 The series must be zero-averaged before passing it to this function.
 }
 \examples{
-series <- c(1, 2, 3, NaN, 5, 6, 7)
+series <- c(1,2,NaN,4,5,6,NaN,8,9,4,5,6,7,3,9,1,0,4,5,2)
 windowSize <- 3
 tsEvaNanRunningVariance(series, windowSize)
 

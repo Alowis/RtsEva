@@ -37,6 +37,23 @@ stationary transform data \code{stationaryTransformData}, transformation method 
 It then updates the arguments with the passed-in values, calculates the time stamps, and performs necessary transformations.
 Finally, it plots the GPD image score using the \code{\link{tsEvaPlotGPDImageSc}} function and returns the plot object.
 }
+\examples{
+# Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+trans='ori'
+ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
+result = tsEvaPlotGEVImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+result
+
+}
 \seealso{
 \code{\link{tsEvaPlotGPDImageSc}}
 }

@@ -44,9 +44,13 @@ varying standard deviation and normalizes the stationary series before detecting
 step changes. It also calculates the error on the trend and standard deviation.
 }
 \examples{
-timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-01-10"), by = "day")
-series <- rnorm(length(timeStamps))
-timeWindow <- 5
-result <- tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps, series, timeWindow)
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
+percentile <- 90
+result <- tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps,
+series, timeWindow)
+plot(result$trendSeries)
 
 }

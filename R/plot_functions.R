@@ -32,6 +32,23 @@
 #' @import ggplot2
 #' @importFrom lubridate yday month
 #' @importFrom texmex pgev
+#' @examples
+#'
+#'  # Example usage of TsEvaNs function
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
+# Define the required function arguments
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' timeIndex=2
+#' trans='ori'
+#' result = tsEvaPlotReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData,
+#' timeIndex, trans)
+#' result
 #' @export
 tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
                                                     stationaryTransformData,
@@ -39,7 +56,7 @@ tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
   varargin <- NULL
   varargin <- list(...)
   args <- list(
-    minReturnPeriodYears = 2,
+    minReturnPeriodYears = 1.1,
     maxReturnPeriodYears = 1000,
     xlabel = "return period (years)",
     ylabel = "return levels (mm)",
@@ -146,10 +163,26 @@ tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
 #' @seealso [tsEvaPlotReturnLevelsGPD()] and [tsEvaPlotAllRLevelsGPD()]
 #' @import ggplot2
 #' @importFrom lubridate yday month
+#' @examples
+#'  # Example usage of TsEvaNs function
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
+# Define the required function arguments
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' timeIndex=2
+#' trans='ori'
+#' result = tsEvaPlotReturnLevelsGPDFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData,
+#' timeIndex, trans)
+#' result
 #' @export
 tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
                                                     stationaryTransformData,
-                                                    timeIndex, trans, ope = F, ...) {
+                                                    timeIndex, trans, ...) {
   varargin <- NULL
   varargin <- list(...)
   args <- list(
@@ -256,10 +289,46 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
 #' @importFrom grDevices colorRampPalette
 #' @return A plot object showing the relationship between return periods and return levels for the GEV distribution at different timesteps.
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}
+#' @examples
+#'  # Example usage of TsEvaNs function
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
+# Define the required function arguments
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' amax <- nonStationaryEvaParams[[1]]$parameters$annualMax
+#' amaxID <- nonStationaryEvaParams[[1]]$parameters$annualMaxIndx
+#' timeStamps <- stationaryTransformData$timeStamps
+#' trendPeaks <- stationaryTransformData$trendSeries[amaxID]
+#' stdPeaks <- stationaryTransformData$stdDevSeries[amaxID]
+#' amaxCor <- (amax - trendPeaks) / stdPeaks
+#' nYears <- length(amaxCor)
+#' rlvlmax <- empdis(amaxCor, nYears)
+#' rlvlmax$QNS <- amax[order(amax)]
+#' rlvlmax$Idt <- stationaryTransformData$timeStamps[amaxID][order(amax)]
+
+#' timeIndex <- 2
+#' tstamps <- "Example Timestamps"
+#' trans <- "ori"
+
+#' # Call the function with the defined arguments
+#' result <- tsEvaPlotAllRLevelsGEV(
+#'   nonStationaryEvaParams, stationaryTransformData,
+#'   rlvlmax, timeIndex, timeStamps, tstamps,
+#'   trans)
+# Plot the result
+#' result
 #' @export
 tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformData,
-                                   rlvmax, timeIndex, timeStamps, tstamps,
-                                   trans, varargin) {
+                                    rlvmax, timeIndex, timeStamps, tstamps,
+                                   trans, ...) {
+  varargin <- NULL
+  varagin <- list(...)
+
   # Define default values for arguments
   epsilon <- nonStationaryEvaParams[[1]]$parameters$epsilon
   sigmav <- nonStationaryEvaParams[[1]]$parameters$sigma
@@ -270,7 +339,7 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
   dt <- as.numeric(dt1)
 
   args <- list(
-    minReturnPeriodYears = 2,
+    minReturnPeriodYears = 1.1,
     maxReturnPeriodYears = 1000,
     confidenceAreaColor = "lightgreen",
     confidenceBarColor = "darkgreen",
@@ -409,7 +478,6 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
       axis.title = element_text(size = 24),
       panel.grid.minor.x = element_line(linetype = 2)
     )
-  f
   return(f)
 }
 
@@ -443,10 +511,45 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
 #' @return A plot object showing the relationship between return periods and
 #' return levels for the GPD distribution at different timest
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
+#' @examples
+#' # Example usage of TsEvaNs function
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#'                       transfType = 'trendPeaks',tail = 'high')
+# Define the required function arguments
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' peax <- nonStationaryEvaParams[[2]]$parameters$peaks
+#' peaxID <- nonStationaryEvaParams[[2]]$parameters$peakID
+#' timeStamps <- stationaryTransformData$timeStamps
+#' trendPeaks <- stationaryTransformData$trendSeries[peaxID]
+#' stdPeaks <- stationaryTransformData$stdDevSeries[peaxID]
+#' peaksCor <- (peax - trendPeaks) / stdPeaks
+#' nYears <- round(length(timeStamps) / 365.25 )
+#' rlvlmax <- empdis(peaksCor, nYears)
+#' rlvlmax$QNS <- peax[order(peax)]
+#' rlvlmax$Idt <- stationaryTransformData$timeStamps[peaxID][order(peax)]
+
+#' timeIndex <- 2
+#' tstamps <- "Example Timestamps"
+#' trans <- "ori"
+
+#' # Call the function with the defined arguments
+#' result <- tsEvaPlotAllRLevelsGPD(
+#'   nonStationaryEvaParams, stationaryTransformData,
+#'   rlvlmax, timeIndex, timeStamps, tstamps,
+#'   trans)
+#' # Plot the result
+#' result
 #' @export
 tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformData,
                                    rlvmax, timeIndex, timeStamps, tstamps,
-                                   trans, varargin) {
+                                   trans, ...) {
+  varargin <- NULL
+  varagin <- list(...)
   # Define default values for arguments
   epsilon <- nonStationaryEvaParams[[2]]$parameters$epsilon
   sigmao <- nonStationaryEvaParams[[2]]$parameters$sigma
@@ -622,6 +725,32 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
 #' @return A ggplot object representing the plot of return levels.
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}
 #' \code{\link{tsEvaPlotReturnLevelsGEVFromAnalysisObj}}
+#' @examples
+#' # Define the required function arguments
+#' epsilon <- 0.2
+#' sigma <- 0.5
+#' mu <- 10
+#' epsilonStdErr <- 0.05
+#' sigmaStdErr <- 0.05
+#' muStdErr <- 0.1
+#' rlvmax <- data.frame(
+#'   haz.RP = c(2, 5, 10, 20, 50, 100, 200, 500, 1000),
+#'   Idt = as.POSIXct(as.Date("2000-01-01") + round(runif(9, 0, 21 * 365.25)),
+#'     origin = "1970-01-01"
+#'   ),
+#'   QNS = c(10, 12, 13, 13.2, 14, 15.7, 16, 16.2, 18)
+#' )
+#' tstamps <- "Example Timestamps"
+#' trans <- "ori"
+
+#' # Call the function with the defined arguments
+#' result <- tsEvaPlotReturnLevelsGEV(
+#'   epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr,
+#'   rlvmax, tstamps, trans
+#' )
+#'
+#' # Plot the result
+#' result
 #' @export
 tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr,
                                      muStdErr, rlvmax, tstamps, trans, ...) {
@@ -629,7 +758,7 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
   varagin <- list(...)
   # Define default values for arguments
   args <- list(
-    minReturnPeriodYears = 2,
+    minReturnPeriodYears = 1.1,
     maxReturnPeriodYears = 1000,
     confidenceAreaColor = "lightgreen",
     confidenceBarColor = "darkgreen",
@@ -760,6 +889,32 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
 #' \code{\link{tsEvaPlotReturnLevelsGPDFromAnalysisObj}}
 #' @return A ggplot object representing the plot of return levels.
+#' @examples
+#' #' # Define the required function arguments
+#' epsilon <- 0.2
+#' sigma <- 0.5
+#' threshold <- 10
+#' epsilonStdErr <- 0.05
+#' sigmaStdErr <- 0.05
+#' thresholdStdErr <- 0.1
+#' rlvmax <- data.frame(
+#'   haz.RP = c(2, 5, 10, 20, 50, 100, 200, 500, 1000),
+#'   Idt = as.POSIXct(as.Date("2000-01-01") + round(runif(9, 0, 21 * 365.25)),
+#'     origin = "1970-01-01"
+#'   ),
+#'   QNS = c(10, 12, 13, 13.2, 14, 15.7, 16, 16.2, 18)
+#' )
+#' tstamps <- "Example Timestamps"
+#' trans <- "ori"
+
+#' # Call the function with the defined arguments
+#' result <- tsEvaPlotReturnLevelsGPD(
+#'   epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr,
+#'   rlvmax, tstamps, trans
+#' )
+#'
+#' # Plot the result
+#' result
 #' @export
 tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
                                      sigmaStdErr, thresholdStdErr, nPeaks,
@@ -881,13 +1036,7 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
     f <- f + geom_vline(xintercept = dfr$returnPeriods[idm], col = "red", lwd = 2)
   }
 
-  f
-  # find a better way to save the plot
-  # if(!is.null(f))
-  #   ggsave(f, plot = last_plot(), device = "pdf")
-
   return(f)
-  # consider adding the observations to that plot
 }
 
 
@@ -907,6 +1056,22 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
 #' @import ggplot2
 #' @seealso \code{\link{tsEvaPlotGEVImageSc}}
 #' @return The GEV image scatter plot.
+#' @examples
+#'  # Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+# Define the required function argumentsnonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+nonStationaryEvaParams <- TSEVA_data[[1]]
+trans='ori'
+ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
+result = tsEvaPlotGEVImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+result
 #' @export
 tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
                                                stationaryTransformData,
@@ -945,13 +1110,13 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
 
 
   if (nonStationaryEvaParams[[1]]$parameters$timeDeltaYears <= 1) {
-    maxObs <- amaxplot
-  } else {
     maxObs <- monmaxplot
+  } else {
+    maxObs <- amaxplot
   }
 
   plotbg <- tsEvaPlotGEVImageSc(Y, timeStamps, serix, epsilon, sigma, mu,
-                                returnPeriodsInDts, maxObs, mode, varargin)
+                                returnPeriodsInDts, maxObs, trans, varargin)
   print(plotbg)
   return(plotbg)
 }
@@ -980,6 +1145,23 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
 #' Finally, it plots the GPD image score using the \code{\link{tsEvaPlotGPDImageSc}} function and returns the plot object.
 #'
 #' @seealso \code{\link{tsEvaPlotGPDImageSc}}
+#' @examples
+#' # Example usage of TsEvaNs function
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
+# Define the required function arguments
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' trans='ori'
+#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+#' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
+#' result = tsEvaPlotGEVImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+#' result
+#'
 #' @export
 tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
                                                stationaryTransformData,
@@ -1038,7 +1220,6 @@ tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
 #' @importFrom grDevices colorRampPalette
 #' @return A ggplot object representing the GPD plot.
 #' @seealso \code{\link{tsEvaPlotGPDImageScFromAnalysisObj}}
-#' @export
 tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
                                 threshold, peakplot, trans, varargin) {
   avgYearLength <- 365.2425
@@ -1112,7 +1293,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
   gridTime <- expand.grid(Y, timeStamps_plot)
 
 
-  # colnames(grid) <- c("Y", "epsilon", "sigma", "threshold")
+
   if (trans == "inv") {
     Ybis <- seq(min(1 / Y), max(1 / Y), length.out = length(Y))
     pdf <- texmex::dgpd(1 / Ybis, gridSig$Var2, gridEps$Var2, gridthreshold$Var2)
@@ -1233,16 +1414,18 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
 #' @param mu A vector of location parameters corresponding to the timestamps.
 #' @param returnPeriodInDts The return period in decimal time steps.
 #' @param maxObs A data frame containing the maximum observations.
-#' @param mode A character string indicating the mode of the plot. Possible values are "inv" (inverse) and "normal".
-#' @param ... Additional arguments to customize the plot.
+#' @param trans A character string indicating the transformation for the plot.
+#' Possible values are "rev" (reverse), inv" (inverse),
+#' lninv (log of inverse) and "ori"(original).
+#' @param varargin Additional arguments to customize the plot.
 #'
 #' @return A ggplot object representing the GEV plot with a raster image.
 #' @import ggplot2 scales
 #' @importFrom rlang .data
 #' @importFrom grDevices colorRampPalette
 #' @importFrom texmex dgev
-#' @export
-tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, returnPeriodInDts, maxObs, mode, varargin) {
+#' @seealso \code{\link{tsEvaPlotGEVImageScFromAnalysisObj}}
+tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, returnPeriodInDts, maxObs, trans, varargin) {
   avgYearLength <- 365.2425
   nyears <- as.numeric(round((max(timeStamps) - min(timeStamps)) / avgYearLength))
   nelmPerYear <- length(timeStamps) / nyears
@@ -1313,17 +1496,32 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 
   pdf <- texmex::dgev(Y, gridMu$Var2, gridSig$Var2, gridEps$Var2)
 
-  if (mode == "inv") {
+
+  if (trans == "inv") {
     Ybis <- seq(min(1 / Y), max(1 / Y), length.out = length(Y))
-    pdf <- texmex::dgev(1 / Ybis, gridMu$Var2, gridSig$Var2, gridEps$Var2)
+    pdf <- texmex::dgev(1 / Ybis, gridSig$Var2, gridEps$Var2, gridMu$Var2)
     datap <- data.frame(
-      timeStamps = gridTime$Var2, extremeValues = Ybis,
+      timeStamps = as.Date(gridTime$Var2), extremeValues = Ybis,
+      pdf = pdf
+    )
+  } else if (trans == "rev") {
+    Ybis <- seq(min(-Y), max(-Y), length.out = length(Y))
+    pdf <- texmex::dgev(-Ybis, gridSig$Var2, gridEps$Var2, gridMu$Var2)
+    datap <- data.frame(
+      timeStamps = as.Date(gridTime$Var2), extremeValues = Ybis,
+      pdf = pdf
+    )
+  } else if (trans == "lninv") {
+    Ybis <- seq(min(1 / exp(Y)), max(1 / exp(Y)), length.out = length(Y))
+    pdf <- texmex::dgev(-log(Ybis), gridSig$Var2, gridEps$Var2, gridMu$Var2)
+    datap <- data.frame(
+      timeStamps = as.Date(gridTime$Var2), extremeValues = Ybis,
       pdf = pdf
     )
   } else {
-    pdf <- texmex::dgev(Y, gridMu$Var2, gridSig$Var2, gridEps$Var2)
+    pdf <- texmex::dgev(Y, gridSig$Var2, gridEps$Var2, gridMu$Var2)
     datap <- data.frame(
-      timeStamps = gridTime$Var2, extremeValues = Y,
+      timeStamps = as.Date(gridTime$Var2), extremeValues = Y,
       pdf = pdf
     )
   }
@@ -1363,7 +1561,13 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 
 
 
-  if (mode == "inv") {
+  if (trans == "inv") {
+    maxObs$value <- 1 / maxObs$value
+    ylims <- c(max(min(Ybis) - 0.5, 0), max(Ybis) + 0.5)
+  }else if (trans == "rev") {
+    maxObs$value <- -maxObs$value
+    ylims <- c(max(min(Ybis) - 0.5, 0), max(Ybis) + 0.5)
+  }  if (trans == "inv") {
     maxObs$value <- 1 / maxObs$value
     ylims <- c(max(min(Ybis) - 0.5, 0), max(Ybis) + 0.5)
   }
@@ -1420,6 +1624,22 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 #' @importFrom grDevices colorRampPalette
 #' @seealso \code{\link{tsEvaPlotTransfToStat}}
 #' @return The plot object representing the converted stationary series.
+#' @examples
+#' # Example usage of TsEvaNs function
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
+# Define the required function arguments
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' trans='ori'
+#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+#' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
+#' result = tsEvaPlotTransfToStatFromAnalysisObj (nonStationaryEvaParams, stationaryTransformData)
+#' result
 #' @export
 tsEvaPlotTransfToStatFromAnalysisObj <- function(nonStationaryEvaParams,
                                                  stationaryTransformData, ...) {
@@ -1441,108 +1661,6 @@ tsEvaPlotTransfToStatFromAnalysisObj <- function(nonStationaryEvaParams,
   return(plotbg)
 }
 
-#' tsEvaPlotSeriesTrendStdDevFromAnalyisObj
-#'
-#' \code{tsEvaPlotTrendStdDevFromAnalysisObj}is a function that plots a
-#' time series along with its trend and standard deviation.
-#'
-#' @param nonStationaryEvaParams The non-stationary evaluation parameters.
-#' @param stationaryTransformData The stationary transformed data.
-#' @param mode The mode of the plot (optional).
-#' @param ... Additional arguments to customize the plot (optional).
-#'
-#' @importFrom rlang .data
-#' @importFrom grDevices colorRampPalette
-#' @import ggplot2
-#'
-#' @return A ggplot object representing the plot.
-#' @export
-tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams,
-                                                     stationaryTransformData, mode, ...) {
-  varargin <- list(...)
-  args <- list(
-    plotPercentile = -1,
-    ylabel = "Values",
-    xlabel = "Date",
-    minYear = 1950,
-    maxYear = 2020,
-    axisFontSize = 20,
-    labelFontSize = 22
-  )
-  args <- tsEasyParseNamedArgs(varargin, args)
-
-  minTS <- as.Date(paste(args$minYear, "-01-01", sep = ""))
-  maxTS <- as.Date(paste(args$maxYear, "-01-01", sep = ""))
-  args <- tsEasyParseNamedArgs(varargin, args)
-  plotPercentile <- args$plotPercentile
-
-  timeStamps <- stationaryTransformData$timeStamps
-  series <- stationaryTransformData$nonStatSeries
-  dt1 <- min(diff(timeStamps), na.rm = T)
-  dt <- as.numeric(dt1)
-  tdim <- attributes(dt1)$units
-  if (tdim == "hours") dt <- dt / 24
-  if (dt == 1) {
-    trend <- stationaryTransformData$trendSeries
-    stdDev <- stationaryTransformData$stdDevSeries
-  } else {
-    trend <- stationaryTransformData$trendSeriesOr
-    stdDev <- stationaryTransformData$stdDevSeriesOr
-  }
-  if ("statsTimeStamps" %in% names(stationaryTransformData)) {
-    statsTimeStamps <- stationaryTransformData$statsTimeStamps
-  } else {
-    statsTimeStamps <- timeStamps
-  }
-
-  # Create a data frame with the time stamps, series, trend, and stdDev
-  data <- data.frame(timeStamps = timeStamps, series = series, trend = trend, stdDev = stdDev)
-  data$infCI <- data$trend - data$stdDev
-  data$supCI <- data$trend + data$stdDev
-  # time breaks
-  tbi <- round(lubridate::year(minTS) / 5) * 5
-  tbf <- round(lubridate::year(maxTS) / 5) * 5
-
-  ttbi <- as.Date(paste(tbi, "-01-01", sep = ""))
-  ttbf <- as.Date(paste(tbf, "-01-01", sep = ""))
-  if (mode == "inv") {
-    data$series <- 1 / data$series
-    data$infCI <- 1 / data$infCI
-    data$supCI <- 1 / data$supCI
-    data$trend <- 1 / data$trend
-  }
-  # Create the plot
-  plotz <- ggplot(data, aes(x = as.Date(timeStamps), y = series)) +
-    geom_line(aes(color = "Series"), size = 1) +
-    geom_ribbon(aes(ymin = .data$infCI, ymax = .data$supCI), fill = "lightgreen", alpha = 0.6) +
-    geom_line(aes(y = .data$infCI, color = "Std.Dev"), size = 1, lty = 2) +
-    geom_line(aes(y = .data$supCI, color = "Std.Dev"), size = 1, lty = 2) +
-    geom_line(aes(y = trend, color = "Trend"), size = 1) +
-    ggtitle("Trend") +
-    scale_color_manual(name = "", values = c("Trend" = "black", "Std.Dev" = "darkgreen", "Series" = "red")) +
-    scale_y_continuous(
-      n.breaks = 5, args$ylabel
-    ) +
-    scale_x_date(
-      labels = scales::date_format("%Y"), args$xlabel,
-      breaks = seq(ttbi, ttbf, by = "5 years"), expand = c(0, 0)
-    ) +
-        # coord_cartesian(ylim= c(ylims[1], ylims[2]),xlim= c(minTS, maxTS))+
-    theme_bw() +
-    theme(
-      axis.text.x = element_text(size = args$axisFontSize),
-      axis.text.y = element_text(size = args$axisFontSize),
-      axis.title.x = element_text(size = args$labelFontSize),
-      axis.title.y = element_text(size = args$labelFontSize),
-      legend.justification = c(1.1, 1.1), legend.position = c(1, 1),
-      legend.background = element_rect(linetype = 1, size = 0.5, colour = 1),
-      legend.title = element_blank()
-    )
-  plotz
-  return(plotz)
-}
-
-
 #' tsEvaPlotTransfToStat
 #'
 #' \code{tsEvaPlotTransfToStat}is a function that creates a
@@ -1561,7 +1679,6 @@ tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams,
 #' @importFrom grDevices colorRampPalette
 #' @return A ggplot object representing the line plot.
 #' @seealso \code{\link{tsEvaPlotTransfToStatFromAnalysisObj}}
-#' @export
 tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mom, st4mom, varargin) {
   data <- data.frame(timeStamps, statSeries, srsmean, stdDev, st3mom, st4mom)
   names(data) <- c("timeStamps", "statSeries", "srsmean", "stdDev", "thirdMom", "fourthMom")
@@ -1623,4 +1740,130 @@ tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mo
     )
 
   return(elplot)
+}
+
+#' tsEvaPlotSeriesTrendStdDevFromAnalyisObj
+#'
+#' \code{tsEvaPlotTrendStdDevFromAnalysisObj}is a function that plots a
+#' time series along with its trend and standard deviation.
+#'
+#' @param nonStationaryEvaParams The non-stationary evaluation parameters.
+#' @param stationaryTransformData The stationary transformed data.
+#' @param trans The transformation used to fit the EVD, either "ori" (original)
+#' or "rev" (reverse). "inv" and "lninv" are also available
+#' @param ... Additional arguments to customize the plot (optional).
+#'
+#' @importFrom rlang .data
+#' @importFrom grDevices colorRampPalette
+#' @import ggplot2
+#'
+#' @return A ggplot object representing the plot.
+#' @examples
+#' # Example usage of TsEvaNs function
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
+# Define the required function arguments
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' trans='ori'
+#' result = tsEvaPlotGPDImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+#' result
+#'
+#' @export
+tsEvaPlotSeriesTrendStdDevFromAnalyisObj <- function(nonStationaryEvaParams,
+                                                     stationaryTransformData, trans, ...) {
+  varargin <- list(...)
+  args <- list(
+    plotPercentile = -1,
+    ylabel = "Values",
+    xlabel = "Date",
+    minYear = 1950,
+    maxYear = 2020,
+    axisFontSize = 20,
+    labelFontSize = 22
+  )
+  args <- tsEasyParseNamedArgs(varargin, args)
+
+  minTS <- as.Date(paste(args$minYear, "-01-01", sep = ""))
+  maxTS <- as.Date(paste(args$maxYear, "-01-01", sep = ""))
+  args <- tsEasyParseNamedArgs(varargin, args)
+  plotPercentile <- args$plotPercentile
+
+  timeStamps <- stationaryTransformData$timeStamps
+  series <- stationaryTransformData$nonStatSeries
+  dt1 <- min(diff(timeStamps), na.rm = T)
+  dt <- as.numeric(dt1)
+  tdim <- attributes(dt1)$units
+  if (tdim == "hours") dt <- dt / 24
+  if (dt == 1) {
+    trend <- stationaryTransformData$trendSeries
+    stdDev <- stationaryTransformData$stdDevSeries
+  } else {
+    trend <- stationaryTransformData$trendSeriesOr
+    stdDev <- stationaryTransformData$stdDevSeriesOr
+  }
+  if ("statsTimeStamps" %in% names(stationaryTransformData)) {
+    statsTimeStamps <- stationaryTransformData$statsTimeStamps
+  } else {
+    statsTimeStamps <- timeStamps
+  }
+
+  # Create a data frame with the time stamps, series, trend, and stdDev
+  data <- data.frame(timeStamps = timeStamps, series = series, trend = trend, stdDev = stdDev)
+  data$infCI <- data$trend - data$stdDev
+  data$supCI <- data$trend + data$stdDev
+  # time breaks
+  tbi <- round(lubridate::year(minTS) / 5) * 5
+  tbf <- round(lubridate::year(maxTS) / 5) * 5
+
+  ttbi <- as.Date(paste(tbi, "-01-01", sep = ""))
+  ttbf <- as.Date(paste(tbf, "-01-01", sep = ""))
+  if (trans == "inv") {
+    data$series <- 1 / data$series
+    data$infCI <- 1 / data$infCI
+    data$supCI <- 1 / data$supCI
+    data$trend <- 1 / data$trend
+  }else if (trans == "rev") {
+    data$series <- -data$series
+    data$infCI <- -data$infCI
+    data$supCI <- -data$supCI
+    data$trend <- -data$trend
+  }else if (trans == "lninv") {
+    data$series <- -log(data$series)
+    data$infCI <- -log(data$infCI)
+    data$supCI <- -log(data$supCI)
+    data$trend <- -log(data$trend)
+  }
+  # Create the plot
+  plotz <- ggplot(data, aes(x = as.Date(timeStamps), y = series)) +
+    geom_line(aes(color = "Series"), size = 1) +
+    geom_ribbon(aes(ymin = .data$infCI, ymax = .data$supCI), fill = "lightgreen", alpha = 0.6) +
+    geom_line(aes(y = .data$infCI, color = "Std.Dev"), size = 1, lty = 2) +
+    geom_line(aes(y = .data$supCI, color = "Std.Dev"), size = 1, lty = 2) +
+    geom_line(aes(y = trend, color = "Trend"), size = 1) +
+    ggtitle("Trend") +
+    scale_color_manual(name = "", values = c("Trend" = "black", "Std.Dev" = "darkgreen", "Series" = "red")) +
+    scale_y_continuous(
+      n.breaks = 5, args$ylabel
+    ) +
+    scale_x_date(
+      labels = scales::date_format("%Y"), args$xlabel,
+      breaks = seq(ttbi, ttbf, by = "5 years"), expand = c(0, 0)
+    ) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(size = args$axisFontSize),
+      axis.text.y = element_text(size = args$axisFontSize),
+      axis.title.x = element_text(size = args$labelFontSize),
+      axis.title.y = element_text(size = args$labelFontSize),
+      legend.justification = c(1.1, 1.1), legend.position = c(1, 1),
+      legend.background = element_rect(linetype = 1, size = 0.5, colour = 1),
+      legend.title = element_blank()
+    )
+  plotz
+  return(plotz)
 }

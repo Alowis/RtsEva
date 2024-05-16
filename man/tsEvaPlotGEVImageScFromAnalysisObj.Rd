@@ -31,6 +31,22 @@ The GEV image scatter plot.
 (Generalized Extreme Value) time-varying distribution through time as
 and show the evolution of exceedance probabilities.
 }
+\examples{
+ # Example usage of TsEvaNs function
+timeAndSeries <- ArdecheStMartin
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeWindow <- 30*365 # 30 years
+TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
+nonStationaryEvaParams <- TSEVA_data[[1]]
+stationaryTransformData <- TSEVA_data[[2]]
+trans='ori'
+ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
+result = tsEvaPlotGEVImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+result
+}
 \seealso{
 \code{\link{tsEvaPlotGEVImageSc}}
 }

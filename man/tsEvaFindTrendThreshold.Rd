@@ -23,9 +23,10 @@ This function calculates the optimal trend threshold for a given time series.
 This function iterates over different percentiles and calculates the threshold based on each percentile. It then removes data points below the threshold and detrends the time series using the specified time window. The function calculates the correlation between the normalized trend and the time series and stores the correlation coefficient for each percentile. It performs a changepoint analysis to determine if there is a significant change in the correlation coefficients. If a change point is found, the function returns the percentile corresponding to the change point. If no change point is found, the function returns the percentile with the highest correlation coefficient. If there are negative values in the detrended time series, the function returns the percentile with the fewest negative values.
 }
 \examples{
-series <- c(1, 2, 3, 4, 5)
-timeStamps <- c("2022-01-01", "2022-01-02", "2022-01-03", "2022-01-04", "2022-01-05")
-timeWindow <- 3
-find_trend_threshold(series, timeStamps, timeWindow)
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
+tsEvaFindTrendThreshold(series, timeStamps, timeWindow)
 
 }

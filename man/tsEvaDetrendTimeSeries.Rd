@@ -30,9 +30,9 @@ An object of class "tsTrend" with the following components:
 This function detrends a time series by subtracting the trend component from the original series.
 }
 \examples{
-timeStamps <- c(1, 2, 3, 4, 5)
-series <- c(10, 12, 15, 13, 11)
-timeWindow <- 3
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series  <- ArdecheStMartin[,2]
+timeWindow <- 365*30
 detrended <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
-detrended$detrendSeries
 }

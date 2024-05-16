@@ -46,11 +46,25 @@ A list containing the following components:
 This function decomposes a time series into a season-dependent trend and a season-dependent standard deviation.
 The season-dependent amplitude is given by a seasonal factor multiplied by a slowly varying percentile.
 }
-\examples{
-timeStamps <- seq(as.Date("2022-01-01"), as.Date("2022-12-31"), by = "day")
-series <- rnorm(length(timeStamps))
-timeWindow <- 30
-percentile <- 90
-result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps, series, timeWindow, percentile)
+\section{this function decomposes the series into a season-dependent trend and a}{
+season-dependent standard deviation.
+The season-dependent standard deviation is given by a seasonal factor
+multiplied by a slowly varying standard deviation.
+transformation non stationary -> stationary
+x(t) =  (y(t) - trend(t) - ssn_trend(t))/(stdDev(t)*ssn_stdDev(t))
+transformation stationary -> non stationary
+y(t) = stdDev(t)*ssn_stdDev(t)*x(t) + trend(t) + ssn_trend(t)
+trasfData.trendSeries = trend(t) + ssn_trend(t)
+trasfData.stdDevSeries = stdDev(t)*ssn_stdDev(t)
+}
 
+\examples{
+timeAndSeries <- ArdecheStMartin
+timeStamps <- ArdecheStMartin[,1]
+series <- ArdecheStMartin[,2]
+timeWindow <- 30*365 # 30 years
+percentile <- 90
+result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps,
+series, timeWindow, percentile, seasonalityVar=F)
+plot(result$trendSeries)
 }

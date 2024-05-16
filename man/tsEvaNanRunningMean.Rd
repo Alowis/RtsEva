@@ -21,7 +21,7 @@ If the number of non-NaN values within the window is greater than a threshold, t
 Otherwise, NaN is returned.
 }
 \examples{
-series <- c(1, 2, NaN, 4, 5, 6, NaN, 8, 9)
+series <- c(1,2,NaN,4,5,6,NaN,8,9,4,5,6,7,3,9,1,0,4,5,2)
 windowSize <- 3
 result <- tsEvaNanRunningMean(series, windowSize)
 print(result)
