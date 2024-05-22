@@ -19,7 +19,18 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of RtsEva is to ...
+<img src="RtsEVA.png" align="right" height="200"/>
+
+This package is an adaptation of the Matalb tsEVA toolbox developed by Lorenzo Mentaschi availaible here: https://github.com/menta78/tsEva
+
+It contains an implementation of the Transformed-Stationary (TS) methodology for non-stationary EVA as described in Mentaschi et al. (2016). 
+In synthesis this approach consists in (i) transforming a non-stationary time series into a stationary one to which the stationary EVA theory can be applied; 
+and (ii) reverse-transforming the result into a non-stationary extreme value distribution.
+
+## References ##
+[Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio, G., and Alfieri, L.: 
+The transformed-stationary approach: a generic and simplified methodology for non-stationary extreme value analysis, Hydrol. Earth Syst. Sci., 20,3527-3547, 
+doi:10.5194/hess-20-3527-2016, 2016](http://www.hydrol-earth-syst-sci.net/20/3527/2016/)
 
 ## Installation
 
