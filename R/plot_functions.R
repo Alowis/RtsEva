@@ -890,7 +890,7 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
 #' \code{\link{tsEvaPlotReturnLevelsGPDFromAnalysisObj}}
 #' @return A ggplot object representing the plot of return levels.
 #' @examples
-#' #' # Define the required function arguments
+#' # Define the required function arguments
 #' epsilon <- 0.2
 #' sigma <- 0.5
 #' threshold <- 10
@@ -906,13 +906,14 @@ tsEvaPlotReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigmaStd
 #' )
 #' tstamps <- "Example Timestamps"
 #' trans <- "ori"
-
+#' nPeaks=70
+#' SampleTimeHorizon=70
 #' # Call the function with the defined arguments
 #' result <- tsEvaPlotReturnLevelsGPD(
-#'   epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr,
-#'   rlvmax, tstamps, trans
+#'   epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr,nPeaks,
+#'   SampleTimeHorizon,rlvmax, tstamps, trans
 #' )
-#'
+
 #' # Plot the result
 #' result
 #' @export
@@ -930,7 +931,7 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
     confidenceBarColor = "darkgreen",
     returnLevelColor = "black",
     xlabel = "return period (years)",
-    ylabel = "return levels (mm)",
+    ylabel = "return levels",
     ylim = NULL,
     dtSampleYears = 1, # one year
     ax = NULL
@@ -941,7 +942,6 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
   # print(args)
   minReturnPeriodYears <- args$minReturnPeriodYears
   maxReturnPeriodYears <- args$maxReturnPeriodYears
-
   # Compute return periods and levels
   returnPeriods <- 10^(seq(log10(minReturnPeriodYears), log10(maxReturnPeriodYears), by = 0.01))
 
@@ -1058,20 +1058,20 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
 #' @return The GEV image scatter plot.
 #' @examples
 #'  # Example usage of TsEvaNs function
-timeAndSeries <- ArdecheStMartin
-#go from six-hourly values to daily max
-timeAndSeries <- max_daily_value(timeAndSeries)
-timeWindow <- 30*365 # 30 years
-TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
-transfType = 'trendPeaks',tail = 'high')
-# Define the required function argumentsnonStationaryEvaParams <- TSEVA_data[[1]]
-stationaryTransformData <- TSEVA_data[[2]]
-nonStationaryEvaParams <- TSEVA_data[[1]]
-trans='ori'
-ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
-Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
-result = tsEvaPlotGEVImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
-result
+#' timeAndSeries <- ArdecheStMartin
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
+#' # Define the required function argumentsnonStationaryEvaParams <- TSEVA_data[[1]]
+#' stationaryTransformData <- TSEVA_data[[2]]
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' trans='ori'
+#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+#' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
+#' result = tsEvaPlotGEVImageScFromAnalysisObj(Y,nonStationaryEvaParams, stationaryTransformData, trans)
+#' result
 #' @export
 tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
                                                stationaryTransformData,
@@ -1159,7 +1159,7 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
 #' trans='ori'
 #' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
 #' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
-#' result = tsEvaPlotGEVImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+#' result = tsEvaPlotGEVImageScFromAnalysisObj(Y, nonStationaryEvaParams, stationaryTransformData, trans)
 #' result
 #'
 #' @export
@@ -1385,7 +1385,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
       labels = scales::date_format("%Y"), args$xlabel,
       breaks = seq(ttbi, ttbf, by = paste0(tic, " years")),
       minor_breaks = scales::date_breaks(paste0(tac, " months")), expand = c(0, 0)) +
-    annotate("label", x = maxTS - 36 * xy, y = 0.95 * ylims[2],
+    annotate("label", x = as.Date(maxTS) - 36 * xy, y = 0.95 * ylims[2],
              label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
     coord_cartesian(ylim= c(ylims[1], ylims[2]),xlim= c(minTS, maxTS))+
     theme_bw() +
@@ -1494,32 +1494,32 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
   gridMu <- expand.grid(Y, mu0)
   gridTime <- expand.grid(Y, timeStamps_plot)
 
-  pdf <- texmex::dgev(Y, gridMu$Var2, gridSig$Var2, gridEps$Var2)
+  #pdf <- texmex::dgev(Y, gridMu$Var2, gridSig$Var2, gridEps$Var2)
 
 
   if (trans == "inv") {
     Ybis <- seq(min(1 / Y), max(1 / Y), length.out = length(Y))
-    pdf <- texmex::dgev(1 / Ybis, gridSig$Var2, gridEps$Var2, gridMu$Var2)
+    pdf <- texmex::dgev(1 / Ybis,gridMu$Var2, gridSig$Var2, gridEps$Var2)
     datap <- data.frame(
       timeStamps = as.Date(gridTime$Var2), extremeValues = Ybis,
       pdf = pdf
     )
   } else if (trans == "rev") {
     Ybis <- seq(min(-Y), max(-Y), length.out = length(Y))
-    pdf <- texmex::dgev(-Ybis, gridSig$Var2, gridEps$Var2, gridMu$Var2)
+    pdf <- texmex::dgev(-Ybis, gridMu$Var2, gridSig$Var2, gridEps$Var2)
     datap <- data.frame(
       timeStamps = as.Date(gridTime$Var2), extremeValues = Ybis,
       pdf = pdf
     )
   } else if (trans == "lninv") {
     Ybis <- seq(min(1 / exp(Y)), max(1 / exp(Y)), length.out = length(Y))
-    pdf <- texmex::dgev(-log(Ybis), gridSig$Var2, gridEps$Var2, gridMu$Var2)
+    pdf <- texmex::dgev(-log(Ybis),gridMu$Var2, gridSig$Var2, gridEps$Var2)
     datap <- data.frame(
       timeStamps = as.Date(gridTime$Var2), extremeValues = Ybis,
       pdf = pdf
     )
   } else {
-    pdf <- texmex::dgev(Y, gridSig$Var2, gridEps$Var2, gridMu$Var2)
+    pdf <- texmex::dgev(Y, gridMu$Var2, gridSig$Var2, gridEps$Var2)
     datap <- data.frame(
       timeStamps = as.Date(gridTime$Var2), extremeValues = Y,
       pdf = pdf
@@ -1559,15 +1559,13 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 
   ylims <- c(max(min(Y), 0), min(max(Ys)))
 
-
-
   if (trans == "inv") {
     maxObs$value <- 1 / maxObs$value
     ylims <- c(max(min(Ybis) - 0.5, 0), max(Ybis) + 0.5)
   }else if (trans == "rev") {
     maxObs$value <- -maxObs$value
     ylims <- c(max(min(Ybis) - 0.5, 0), max(Ybis) + 0.5)
-  }  if (trans == "inv") {
+  }else if (trans == "lninv") {
     maxObs$value <- 1 / maxObs$value
     ylims <- c(max(min(Ybis) - 0.5, 0), max(Ybis) + 0.5)
   }
@@ -1589,7 +1587,7 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
     scale_y_continuous(
       n.breaks = 10, args$ylabel, expand = c(0, 0)
     ) +
-    annotate("label", x = maxTS - 36 * xy, y = 0.9 * ylims[2],
+    annotate("label", x = as.Date(maxTS) - 36 * xy, y = 0.9 * ylims[2],
              label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
     coord_cartesian(ylim= c(ylims[1], ylims[2]))+
     theme_bw() +
@@ -1632,9 +1630,9 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 #' timeWindow <- 30*365 # 30 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
-# Define the required function arguments
-#' nonStationaryEvaParams <- TSEVA_data[[1]]
+#' # Define the required function argumentsnonStationaryEvaParams <- TSEVA_data[[1]]
 #' stationaryTransformData <- TSEVA_data[[2]]
+#' nonStationaryEvaParams <- TSEVA_data[[1]]
 #' trans='ori'
 #' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
 #' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
@@ -1692,8 +1690,8 @@ tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mo
     nPlottedTimesByYear = min(360, round(nelmPerYear)),
     ylabel = " ",
     xlabel = "Date",
-    minYear = 1979,
-    maxYear = 2019,
+    minYear = 1951,
+    maxYear = 2020,
     axisFontSize = 20,
     labelFontSize = 22,
     legendFontSize = 18
@@ -1714,7 +1712,7 @@ tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mo
 
   ylims <- c(min(statSeries, na.rm = T), max(max(statSeries, na.rm = T), max(st3mom), max(st4mom)))
 
-  elplot <- ggplot(data, aes(x = timeStamps)) +
+  elplot <- ggplot(data, aes(x = as.Date(timeStamps))) +
     geom_line(aes(y = statSeries, color = "Normalized series"), color = "royalblue") +
     geom_line(aes(y = srsmean, color = "Mean"), linetype = "dashed", size = 1.5) +
     geom_line(aes(y = stdDev, color = "Std.Dev"), linetype = "dashed", size = 1.5) +
@@ -1770,7 +1768,7 @@ tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mo
 #' nonStationaryEvaParams <- TSEVA_data[[1]]
 #' stationaryTransformData <- TSEVA_data[[2]]
 #' trans='ori'
-#' result = tsEvaPlotGPDImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+#' result = tsEvaPlotSeriesTrendStdDevFromAnalyisObj(nonStationaryEvaParams, stationaryTransformData, trans)
 #' result
 #'
 #' @export

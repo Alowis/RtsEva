@@ -8,7 +8,7 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(
   timeStamps,
   series,
   timeWindow,
-  seasonalityVar = T
+  seasonalityVar = TRUE
 )
 }
 \arguments{
@@ -63,6 +63,6 @@ series <- ArdecheStMartin[,2]
 timeWindow <- 30*365 # 30 years
 TrendTh <- NA
 result <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps,
-series, timeWindow,seasonalityVar=F)
+series, timeWindow,seasonalityVar=FALSE)
 plot(result$trendSeries)
 }

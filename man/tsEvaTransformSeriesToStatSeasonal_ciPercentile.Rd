@@ -65,6 +65,6 @@ series <- ArdecheStMartin[,2]
 timeWindow <- 30*365 # 30 years
 percentile <- 90
 result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps,
-series, timeWindow, percentile, seasonalityVar=F)
+series, timeWindow, percentile)
 plot(result$trendSeries)
 }

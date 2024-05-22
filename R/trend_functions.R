@@ -229,8 +229,8 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
 #'series <- ArdecheStMartin[,2]
 #'timeWindow <- 30*365 # 30 years
 #'TrendTh <- NA
-#'result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
-#'series, timeWindow, percentile, TrendTh)
+#'result <- tsEvaTransformSeriesToStationaryPeakTrend(timeStamps,
+#'series, timeWindow, TrendTh)
 #'plot(result$trendSeries)
 #'
 #' @seealso [tsEvaFindTrendThreshold()]
@@ -362,16 +362,16 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 #'timeWindow <- 30*365 # 30 years
 #'TrendTh <- NA
 #'result <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps,
-#'series, timeWindow,seasonalityVar=F)
+#'series, timeWindow,seasonalityVar=FALSE)
 #'plot(result$trendSeries)
 #' @export
 
 tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps,
-                series, timeWindow, seasonalityVar = T) {
+                series, timeWindow, seasonalityVar = TRUE) {
 
 
   svar <- 1
-  if (seasonalityVar == T) svar <- 2
+  if (seasonalityVar == TRUE) svar <- 2
   seasonalityTimeWindow <- 2 * 30.4 # 2 months
 
   cat("computing trend ...\n")
@@ -496,7 +496,7 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
 #'timeWindow <- 30*365 # 30 years
 #'percentile <- 90
 #'result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps,
-#'series, timeWindow, percentile, seasonalityVar=F)
+#'series, timeWindow, percentile)
 #'plot(result$trendSeries)
 #' @export
 tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, timeWindow, percentile) {
@@ -931,7 +931,7 @@ tsEvaChangepts <- function(series, timeWindow, timeStamps) {
   }
   series <- series - 1.1 * shift
   cptm <- changepoint::cpt.meanvar(series, penalty = "Manual", method = "PELT", pen.value = 100, minseglen = timeWindow, test.stat = "Gamma", shape = 1)
-  cpts <- c(1, cpts(cptm), length(series)) # change point time points\
+  cpts <- c(1, changepoint::cpts(cptm), length(series)) # change point time points\
   cptsmean <- cptm@param.est$scale * cptm@param.est$shape + 1.1 * shift
 
   meants <- rep(0, length(series))

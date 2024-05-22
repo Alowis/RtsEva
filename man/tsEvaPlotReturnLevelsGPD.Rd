@@ -52,7 +52,7 @@ A ggplot object representing the plot of return levels.
 using the Generalized Pareto Distribution (GPD).
 }
 \examples{
-#' # Define the required function arguments
+# Define the required function arguments
 epsilon <- 0.2
 sigma <- 0.5
 threshold <- 10
@@ -68,12 +68,13 @@ rlvmax <- data.frame(
 )
 tstamps <- "Example Timestamps"
 trans <- "ori"
+nPeaks=70
+SampleTimeHorizon=70
 # Call the function with the defined arguments
 result <- tsEvaPlotReturnLevelsGPD(
-  epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr,
-  rlvmax, tstamps, trans
+  epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr,nPeaks,
+  SampleTimeHorizon,rlvmax, tstamps, trans
 )
-
 # Plot the result
 result
 }

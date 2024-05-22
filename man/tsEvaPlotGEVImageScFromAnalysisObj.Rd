@@ -39,12 +39,13 @@ timeAndSeries <- max_daily_value(timeAndSeries)
 timeWindow <- 30*365 # 30 years
 TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 transfType = 'trendPeaks',tail = 'high')
-nonStationaryEvaParams <- TSEVA_data[[1]]
+# Define the required function argumentsnonStationaryEvaParams <- TSEVA_data[[1]]
 stationaryTransformData <- TSEVA_data[[2]]
+nonStationaryEvaParams <- TSEVA_data[[1]]
 trans='ori'
 ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
 Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
-result = tsEvaPlotGEVImageScFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+result = tsEvaPlotGEVImageScFromAnalysisObj(Y,nonStationaryEvaParams, stationaryTransformData, trans)
 result
 }
 \seealso{

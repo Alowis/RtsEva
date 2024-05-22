@@ -51,8 +51,8 @@ timeStamps <- ArdecheStMartin[,1]
 series <- ArdecheStMartin[,2]
 timeWindow <- 30*365 # 30 years
 TrendTh <- NA
-result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
-series, timeWindow, percentile, TrendTh)
+result <- tsEvaTransformSeriesToStationaryPeakTrend(timeStamps,
+series, timeWindow, TrendTh)
 plot(result$trendSeries)
 
 }
