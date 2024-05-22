@@ -2,7 +2,7 @@ Type: Package
 Package: RtsEva
 Title: Performs the Transformed-Stationary Extreme Values Analysis for
     non-stationary analysis of extreme events
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: 
     person(given = "Alois",
            family = "Tilloy",
