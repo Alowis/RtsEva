@@ -941,7 +941,6 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
   # Update args with passed in arguments
   # print(varargin)
   args <- tsEasyParseNamedArgs(varargin, args)
-  # print(args)
   minReturnPeriodYears <- args$minReturnPeriodYears
   maxReturnPeriodYears <- args$maxReturnPeriodYears
   # Compute return periods and levels
