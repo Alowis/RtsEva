@@ -82,6 +82,7 @@ if (haz=="flood") wr2 <- c(seq(min(ExRange),max(ExRange),length.out=700))
 if (haz=="drought") wr2 <- c(seq(1.1*min(ExRange),0.1*max(ExRange),length.out=700))
 
 Plot1= tsEvaPlotGPDImageScFromAnalysisObj(wr2, nonStationaryEvaParams, stationaryTransformData, minYear = '1950',trans=trendtrans[tt,1])
+Plot1
 timeIndex=1
 Plot2 = tsEvaPlotReturnLevelsGPDFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, timeIndex, trans=trendtrans[tt,1],ylabel="Discharge (m3/s)")
 Plot3 = tsEvaPlotReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, timeIndex, trans=trendtrans[tt,1],ylabel="Discharge (m3/s)")
