@@ -39,7 +39,8 @@ transfType = 'trendPeaks',tail = 'high')
 nonStationaryEvaParams <- TSEVA_data[[1]]
 stationaryTransformData <- TSEVA_data[[2]]
 trans='ori'
-result = tsEvaPlotSeriesTrendStdDevFromAnalyisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+result = tsEvaPlotSeriesTrendStdDevFromAnalyisObj(nonStationaryEvaParams,
+stationaryTransformData, trans)
 result
 
 }

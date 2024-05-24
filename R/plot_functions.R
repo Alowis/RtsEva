@@ -1068,9 +1068,11 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
 #' stationaryTransformData <- TSEVA_data[[2]]
 #' nonStationaryEvaParams <- TSEVA_data[[1]]
 #' trans='ori'
-#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),
+#' max(nonStationaryEvaParams$potObj$parameters$peaks))
 #' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
-#' result = tsEvaPlotGEVImageScFromAnalysisObj(Y,nonStationaryEvaParams, stationaryTransformData, trans)
+#' result = tsEvaPlotGEVImageScFromAnalysisObj(Y,nonStationaryEvaParams,
+#' stationaryTransformData, trans)
 #' result
 #' @export
 tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
@@ -1157,9 +1159,11 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
 #' nonStationaryEvaParams <- TSEVA_data[[1]]
 #' stationaryTransformData <- TSEVA_data[[2]]
 #' trans='ori'
-#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),
+#' max(nonStationaryEvaParams$potObj$parameters$peaks))
 #' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
-#' result = tsEvaPlotGEVImageScFromAnalysisObj(Y, nonStationaryEvaParams, stationaryTransformData, trans)
+#' result = tsEvaPlotGEVImageScFromAnalysisObj(Y, nonStationaryEvaParams,
+#' stationaryTransformData, trans)
 #' result
 #'
 #' @export
@@ -1634,9 +1638,11 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 #' stationaryTransformData <- TSEVA_data[[2]]
 #' nonStationaryEvaParams <- TSEVA_data[[1]]
 #' trans='ori'
-#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+#' ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),
+#' max(nonStationaryEvaParams$potObj$parameters$peaks))
 #' Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
-#' result = tsEvaPlotTransfToStatFromAnalysisObj (nonStationaryEvaParams, stationaryTransformData)
+#' result = tsEvaPlotTransfToStatFromAnalysisObj (nonStationaryEvaParams,
+#' stationaryTransformData)
 #' result
 #' @export
 tsEvaPlotTransfToStatFromAnalysisObj <- function(nonStationaryEvaParams,
@@ -1768,7 +1774,8 @@ tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mo
 #' nonStationaryEvaParams <- TSEVA_data[[1]]
 #' stationaryTransformData <- TSEVA_data[[2]]
 #' trans='ori'
-#' result = tsEvaPlotSeriesTrendStdDevFromAnalyisObj(nonStationaryEvaParams, stationaryTransformData, trans)
+#' result = tsEvaPlotSeriesTrendStdDevFromAnalyisObj(nonStationaryEvaParams,
+#' stationaryTransformData, trans)
 #' result
 #'
 #' @export

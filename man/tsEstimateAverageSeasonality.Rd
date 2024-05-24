@@ -38,6 +38,8 @@ cat("computing trend seasonality ...\n")
 seasonalitySeries <- rs@detrendSeries
 result <- tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow=rs@nRunMn)
 plot(result$regime, type = "l", xlab = "Day", ylab = "Regime", main = "Estimated Regime")
-plot(result$Seasonality$averageSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Average Seasonality")
-plot(result$Seasonality$varyingSeasonalitySeries, type = "l", xlab = "Day", ylab = "Seasonality", main = "Varying Seasonality")
+plot(result$Seasonality$averageSeasonalitySeries, type = "l", xlab = "Day",
+ylab = "Seasonality", main = "Average Seasonality")
+plot(result$Seasonality$varyingSeasonalitySeries, type = "l", xlab = "Day",
+ylab = "Seasonality", main = "Varying Seasonality")
 }

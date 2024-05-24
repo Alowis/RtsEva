@@ -211,7 +211,8 @@ tsEvaComputeReturnPeriodsGPD <- function(epsilon, sigma, threshold, peaks, nPeak
 #' muStdErr <- c(0.011)
 #' returnPeriodsInDts <- c( 5, 10, 20, 50)
 
-#' results <- tsEvaComputeReturnLevelsGEV(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr, returnPeriodsInDts)
+#' results <- tsEvaComputeReturnLevelsGEV(epsilon, sigma, mu, epsilonStdErr,
+#' sigmaStdErr, muStdErr, returnPeriodsInDts)
 #' head(results$returnLevels)
 #' head(results$returnLevelsErr)
 #' @export
@@ -369,7 +370,8 @@ tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, r
 #' returnPeriodsInDts <- c( 5, 10, 20, 50)
 #' nPeaks=70
 #' SampleTimeHorizon=70
-#' results <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, SampleTimeHorizon, returnPeriodsInDts)
+#' results <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErr,
+#' sigmaStdErr, thresholdStdErr, nPeaks, SampleTimeHorizon, returnPeriodsInDts)
 #' head(results$returnLevels)
 #' head(results$returnLevelsErr)
 #' @export

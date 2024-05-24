@@ -76,12 +76,12 @@
 #'
 #' @examples
 #' # Example usage of TsEvaNs function
-timeAndSeries <- ArdecheStMartin
+#' timeAndSeries <- ArdecheStMartin
 #go from six-hourly values to daily max
-timeAndSeries <- max_daily_value(timeAndSeries)
-timeWindow <- 30*365 # 30 years
-result <- TsEvaNs(timeAndSeries, timeWindow,
-transfType = 'trendPeaks',tail = 'high')
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeWindow <- 30*365 # 30 years
+#' result <- TsEvaNs(timeAndSeries, timeWindow,
+#' transfType = 'trendPeaks',tail = 'high')
 #'
 #' @export
 

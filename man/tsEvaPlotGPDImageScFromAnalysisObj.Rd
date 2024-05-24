@@ -48,9 +48,11 @@ transfType = 'trendPeaks',tail = 'high')
 nonStationaryEvaParams <- TSEVA_data[[1]]
 stationaryTransformData <- TSEVA_data[[2]]
 trans='ori'
-ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),
+max(nonStationaryEvaParams$potObj$parameters$peaks))
 Y <- c(seq(min(ExRange),max(ExRange),length.out=700))
-result = tsEvaPlotGEVImageScFromAnalysisObj(Y, nonStationaryEvaParams, stationaryTransformData, trans)
+result = tsEvaPlotGEVImageScFromAnalysisObj(Y, nonStationaryEvaParams,
+stationaryTransformData, trans)
 result
 
 }

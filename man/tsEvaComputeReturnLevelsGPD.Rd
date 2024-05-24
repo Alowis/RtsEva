@@ -61,7 +61,8 @@ thresholdStdErr <- c(0.011)
 returnPeriodsInDts <- c( 5, 10, 20, 50)
 nPeaks=70
 SampleTimeHorizon=70
-results <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr, nPeaks, SampleTimeHorizon, returnPeriodsInDts)
+results <- tsEvaComputeReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErr,
+sigmaStdErr, thresholdStdErr, nPeaks, SampleTimeHorizon, returnPeriodsInDts)
 head(results$returnLevels)
 head(results$returnLevelsErr)
 }

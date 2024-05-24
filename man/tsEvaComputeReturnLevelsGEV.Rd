@@ -53,7 +53,8 @@ epsilonStdErr <- c(0.01)
 sigmaStdErr <- c(0.11)
 muStdErr <- c(0.011)
 returnPeriodsInDts <- c( 5, 10, 20, 50)
-results <- tsEvaComputeReturnLevelsGEV(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr, returnPeriodsInDts)
+results <- tsEvaComputeReturnLevelsGEV(epsilon, sigma, mu, epsilonStdErr,
+sigmaStdErr, muStdErr, returnPeriodsInDts)
 head(results$returnLevels)
 head(results$returnLevelsErr)
 }
