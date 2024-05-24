@@ -1121,7 +1121,6 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
 
   plotbg <- tsEvaPlotGEVImageSc(Y, timeStamps, serix, epsilon, sigma, mu,
                                 returnPeriodsInDts, maxObs, trans, varargin)
-  print(plotbg)
   return(plotbg)
 }
 
@@ -1199,7 +1198,6 @@ tsEvaPlotGPDImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
   peaktime <- stationaryTransformData$timeStamps[peaxID]
   peakplot <- data.frame(time = peaktime, value = peax)
   plotbg <- tsEvaPlotGPDImageSc(Y, as.Date(timeStamps), serix, epsilon, sigma, threshold, peakplot, trans, varargin)
-  print(plotbg)
   return(plotbg)
 }
 
@@ -1666,8 +1664,6 @@ tsEvaPlotTransfToStatFromAnalysisObj <- function(nonStationaryEvaParams,
   st4mom <- stationaryTransformData$statSer4Mom
 
   plotbg <- tsEvaPlotTransfToStat(timeStamps, statSeries, srsmean, stdDev, st3mom, st4mom, varargin)
-
-  print(plotbg)
 
   return(plotbg)
 }
