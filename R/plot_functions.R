@@ -138,10 +138,10 @@ tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
   }
 
   RLtstep <- tsEvaPlotReturnLevelsGEV(epsilon, sigma, mu, epsilonStdErr, sigmaStdErr, muStdErr, rlvmax, tstamps, trans, dtSampleYears)
-  print(RLtstep)
+  # print(RLtstep)
 
   beam <- tsEvaPlotAllRLevelsGEV(nonStationaryEvaParams, stationaryTransformData, rlvmax, timeIndex, timeStamps, tstamps, trans, varargin)
-  print(beam)
+  # print(beam)
 }
 
 #' tsEvaPlotReturnLevelsGPDFromAnalysisObj
@@ -261,7 +261,7 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
   RLtstep <- tsEvaPlotReturnLevelsGPD(epsilon, sigma, threshold, epsilonStdErr, sigmaStdErr, thresholdStdErr,
     nPeaks = nPeaks, timeHorizonInYears = timeHorizonInYears, rlvmax, tstamps, trans, varargin
   )
-  print(RLtstep)
+  #print(RLtstep)
 
   beam <- tsEvaPlotAllRLevelsGPD(nonStationaryEvaParams, stationaryTransformData, rlvmax, timeIndex, timeStamps, tstamps, trans, varargin)
 }
@@ -1357,7 +1357,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
     peakplot$value <- -peakplot$value
     serie$serio <- -serie$serix
     ylims <- c(max(min(serie$serio, na.rm = T) - sd(peakplot$value, na.rm = T), 0), min(max(-Y)))
-    print(ylims)
+    #print(ylims)
     ey <- ylims[2]
   } else if (trans == "lninv") {
     peakplot$value <- 1 / exp(peakplot$value)
