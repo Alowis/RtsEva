@@ -457,7 +457,8 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
     IndexCurve <- 1 / exp(IndexCurve)
   }
   IndexCurve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = IndexCurve)
-
+  epslab=as.character(paste0("\U03B5 = ", as.character(round(epsilon, 3))))
+  epslab=enc2utf8(epslab)
   f <- ggplot2::ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = ts, group = .data$group)) +
     ggtitle(title) +
     geom_line(lwd = 1.5, alpha = 0.2) +
@@ -465,7 +466,7 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
     geom_point(data = rlvmax, aes(x = .data$haz.RP, y = .data$Qreal, fill = .data$cg, group = .data$cg), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
     scale_colour_gradientn(guide = "colourbar", colours = gpd.palette(100), legendx) +
     scale_fill_gradientn(guide = "none", colours = gpd.palette(100), legendx) +
-    annotate("label", x = , minReturnPeriodYears * 2, y = 0.9 * maxRL, label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+    annotate("label", x = , minReturnPeriodYears * 2, y = 0.9 * maxRL, label =epslab, size = 8) +
     scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel) +
     scale_y_continuous(
       n.breaks = 10, args$ylabel
@@ -675,7 +676,8 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
   }
   IndexCurve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = IndexCurve)
   IndexCurve$returnLevels[which(IndexCurve$returnLevels < 0)] <- 0
-
+  epslab=as.character(paste0("\U03B5 = ", as.character(round(epsilon, 3))))
+  epslab=enc2utf8(epslab)
   f <- ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = .data$ti, group = .data$group)) +
     ggtitle(title) +
     geom_line(lwd = 1.5, alpha = 0.5) +
@@ -683,7 +685,7 @@ tsEvaPlotAllRLevelsGPD <- function(nonStationaryEvaParams, stationaryTransformDa
     geom_point(data = rlvmax, aes(x = .data$haz.RP, y = .data$Qreal, fill = .data$cg, group = .data$cg), pch = 21, size = 3, stroke = 1.5, color = "darkblue") +
     scale_colour_gradientn(guide = "colourbar", colours = gpd.palette(100), legendx) +
     scale_fill_gradientn(guide = "none", colours = gpd.palette(100), "Time") +
-    annotate("label", x = , maxReturnPeriodYears / 2, y = maxRL, label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+    annotate("label", x = , maxReturnPeriodYears / 2, y = maxRL, label = epslab, size = 8) +
     scale_x_log10(breaks = breaks, minor_breaks = minor_breaks, args$xlabel) +
     scale_y_continuous(
       n.breaks = 10, args$ylabel
@@ -1368,6 +1370,9 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
     serie$serio <- serie$serix
   }
 
+  epslab=as.character(paste0("\U03B5 = ", as.character(round(epsilon, 3))))
+  epslab=enc2utf8(epslab)
+  #print(epslab)
   datap$npdf <- datap$pdf / max(datap$pdf)
   datap$timeStamps=as.Date(datap$timeStamps)
   plo <- ggplot(datap, aes(x = as.Date(timeStamps), y = .data$extremeValues)) +
@@ -1390,7 +1395,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
       breaks = seq(ttbi, ttbf, by = paste0(tic, " years")),
       minor_breaks = scales::date_breaks(paste0(tac, " months")), expand = c(0, 0)) +
     annotate("label", x = as.Date(maxTS) - 36 * xy, y = 0.95 * ylims[2],
-             label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+             label = epslab, size = 8) +
     coord_cartesian(ylim= c(ylims[1], ylims[2]),xlim= c(minTS, maxTS))+
     theme_bw() +
     theme(
@@ -1574,6 +1579,8 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
     ylims <- c(max(min(Ybis) - 0.5, 0), max(Ybis) + 0.5)
   }
 
+  epslab=as.character(paste0("\U03B5 = ", as.character(round(epsilon, 3))))
+  epslab=enc2utf8(epslab)
   datapsub <- datap
   datapsub$npdf <- datapsub$pdf / max(datapsub$pdf, na.rm = T)
   plo <- ggplot(datapsub, aes(x = timeStamps, y = .data$extremeValues)) +
@@ -1592,7 +1599,7 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
       n.breaks = 10, args$ylabel, expand = c(0, 0)
     ) +
     annotate("label", x = as.Date(maxTS) - 36 * xy, y = 0.9 * ylims[2],
-             label = paste0("\U03B5 = ", as.character(round(epsilon, 3))), size = 8) +
+             label = epslab, size = 8) +
     coord_cartesian(ylim= c(ylims[1], ylims[2]))+
     theme_bw() +
     theme(

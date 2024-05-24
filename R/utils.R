@@ -117,6 +117,6 @@ check_timeseries <- function(timeseries, yro) {
 max_daily_value <- function(timeseries) {
   # Convert the 6-hourly time series to daily time series
   daily_timeseries <- apply.daily(timeseries, max)
-  tday=unique(as.Date(timeseries$time+3600))
+  tday=unique(as.Date(as.character(timeseries[,1])))
   return(data.frame(date=tday,Qmd=daily_timeseries))
 }
