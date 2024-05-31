@@ -677,16 +677,16 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 #'
 #' @return A list containing the following fields:
 #' \itemize{
-#'   \item{threshold}{The threshold value used for identifying peaks.}
-#'   \item{thresholdError}{The error associated with the threshold value.}
-#'   \item{percentile}{The percentile value used as the threshold.}
-#'   \item{peaks}{The values of the identified peaks.}
-#'   \item{stpeaks}{The start indices of the identified peaks.}
-#'   \item{endpeaks}{The end indices of the identified peaks.}
-#'   \item{ipeaks}{The indices of the identified peaks.}
-#'   \item{time}{The time values corresponding to the identified peaks.}
-#'   \item{pars}{The parameters of the Generalized Pareto Distribution (GPD)
-#'   fitted to the peaks.}
+#'   \item \code{threshold}:The threshold value used for identifying peaks.
+#'   \item \code{thresholdError}:The error associated with the threshold value.
+#'   \item \code{percentile}:The percentile value used as the threshold.
+#'   \item \code{peaks}:The values of the identified peaks.
+#'   \item \code{stpeaks}:The start indices of the identified peaks.
+#'   \item \code{endpeaks}:The end indices of the identified peaks.
+#'   \item \code{ipeaks}:The indices of the identified peaks.
+#'   \item \code{time}:The time values corresponding to the identified peaks.
+#'   \item \code{pars}:The parameters of the Generalized Pareto Distribution (GPD)
+#'   fitted to the peaks.
 #' }
 #'
 #' @import stats
@@ -861,32 +861,28 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #' @importFrom evd fgev
 #' @return A list containing the following components:
 #'   \itemize{
-#'     \item{EVmeta: A list containing metadata about the analysis.
+#'     \item \code {EVmeta}: A list containing metadata about the analysis.
 #'     It includes Tr, A vector of return periods for which
 #'     return levels are calculated.
-#'       }
-#'     \item{EVdata: A list containing the calculated statistics and return levels. It includes the following components:
+#'     \item \code {EVdata}: A list containing the calculated statistics and return levels. It includes the following components:
 #'       \itemize{
-#'         \item{GEVstat: A list containing the GEV statistics and return levels:
+#'         \item \code {GEVstat}: A list containing the GEV statistics and return levels:
 #'           \itemize{
-#'             \item{method: The method used for fitting the GEV distribution.}
-#'             \item{values: A vector of return levels calculated using the GEV distribution.}
-#'             \item{parameters: A vector of parameter estimates for the GEV distribution.}
-#'             \item{paramCIs: A matrix of confidence intervals for the parameter estimates.}
+#'             \item \code{method}: The method used for fitting the GEV distribution.
+#'             \item \code{values}: A vector of return levels calculated using the GEV distribution.
+#'             \item \code{parameters}: A vector of parameter estimates for the GEV distribution.
+#'             \item \code{paramCIs}: A matrix of confidence intervals for the parameter estimates.
 #'           }
 #'         }
-#'         \item{GPDstat: list containing the GPD statistics and return levels:
+#'         \item \code{GPDstat}: list containing the GPD statistics and return levels:
 #'           \itemize{
-#'             \item{method: The method used for fitting the GPD distribution.}
-#'             \item{values: A vector of return levels calculated using the GPD distribution.}
-#'             \item{parameters: A vector of parameter estimates for the GPD distribution.}
-#'             \item{paramCIs: A matrix of confidence intervals for the parameter estimates.}
+#'             \item \code{method}: The method used for fitting the GPD distribution.
+#'             \item \code{values}: A vector of return levels calculated using the GPD distribution.
+#'             \item \code{parameters}: A vector of parameter estimates for the GPD distribution.
+#'             \item \code{paramCIs}: A matrix of confidence intervals for the parameter estimates.
 #'           }
-#'         }
-#'       }
+#'         \item \code{isValid}: A logical value indicating whether the analysis was performed or not.
 #'     }
-#'     \item{isValid: A logical value indicating whether the analysis was performed or not.}
-#'   }
 #'
 #' @examples
 #' # Create a sample dataset
