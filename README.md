@@ -6,9 +6,11 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml)
+[![PRsWelcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com/)
+
 <!-- badges: end -->
 
-<img src="RtsEVA.png" align="right" height="200"/>
+<img src="man/figures/RtsEVA.png" align="right" height="200"/>
 
 This package is an adaptation of the Matalb tsEVA toolbox developed by
 Lorenzo Mentaschi availaible here: <https://github.com/menta78/tsEva>
@@ -44,30 +46,28 @@ devtools::install_github("Alowis/RtsEva")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-#library(RtsEva)
-## basic example code
+library(RtsEva)
+# Load a time series
+timeAndSeries <- ArdecheStMartin
+# go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+
+# set a temporal window for the computation of running statistics
+timeWindow <- 30*365 # 30 years
+
+# Run the non-stationnary EVA
+result <- TsEvaNs(timeAndSeries, timeWindow,
+transfType = 'trendPeaks',tail = 'high')
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+After fitting the non-stationnay EVA, the package offers functions to
+visualize the plots
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
+## Contact
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+For any questions or inquiries, please contact the package maintainer at
+<alois.tilloy@ec.europa.eu>
 
-You can also embed plots, for example:
+## License
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+[MIT © Richard McRichface.](../LICENSE)

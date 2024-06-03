@@ -45,12 +45,20 @@ This function takes a time series and transforms it into a stationary trend seri
 }
 \examples{
 timeAndSeries <- ArdecheStMartin
-timeStamps <- ArdecheStMartin[,1]
-series <- ArdecheStMartin[,2]
-timeWindow <- 30*365 # 30 years
+
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+timeStamps <- timeAndSeries[,1]
+series <- timeAndSeries[,2]
+
+#select only the 5 latest years
+yrs <- as.integer(format(timeStamps, "\%Y"))
+tokeep <- which(yrs>=2015)
+timeStamps <- timeStamps[tokeep]
+series <- series[tokeep]
+timeWindow <- 365 # 1 year
 percentile <- 90
 result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps,
 series, timeWindow, percentile)
 plot(result$trendSeries)
-
 }

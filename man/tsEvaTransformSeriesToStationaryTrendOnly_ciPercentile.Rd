@@ -47,7 +47,12 @@ a running percentiles to represent the slowly varying amplitude of the distribut
 timeAndSeries <- ArdecheStMartin
 timeStamps <- ArdecheStMartin[,1]
 series <- ArdecheStMartin[,2]
-timeWindow <- 30*365 # 30 years
+#select only the 5 latest years
+yrs <- as.integer(format(timeStamps, "\%Y"))
+tokeep <- which(yrs>=2015)
+timeStamps <- timeStamps[tokeep]
+series <- series[tokeep]
+timeWindow <- 365 # 1 year
 percentile <- 90
 result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
 series, timeWindow, percentile)

@@ -1,7 +1,7 @@
 Type: Package
 Package: RtsEva
 Title: Performs the Transformed-Stationary Extreme Values Analysis for
-    non-stationary analysis of extreme events
+    Non-Stationary Analysis of Extreme Events
 Version: 1.0.0
 Authors@R: 
     person(given = "Alois",
@@ -10,8 +10,8 @@ Authors@R:
            email = "alois.tilloy@ec.europa.eu",
            comment = c(ORCID = "https://orcid.org/0000-0002-5881-0642"))
 Maintainer: The package maintainer <alois.tilloy@ec.europa.eu>
-Description: RtsEva is an adaptation of the Matalb tsEVA toolbox
-    developed by Lorenzo Mentaschi availaible here:
+Description: RtsEva is an adaptation of the Matlab tsEVA toolbox
+    developed by Lorenzo Mentaschi available here:
     <https://github.com/menta78/tsEva>. It contains an implementation of the
     Transformed-Stationary (TS) methodology for non-stationary extreme value
     analysis (EVA) as described in Mentaschi et al. (2016).  

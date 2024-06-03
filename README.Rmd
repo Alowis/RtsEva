@@ -17,9 +17,11 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml)
+[![PRsWelcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com/)
+
 <!-- badges: end -->
 
-<img src="RtsEVA.png" align="right" height="200"/>
+<img src="man/figures/RtsEVA.png" align="right" height="200"/>
 
 This package is an adaptation of the Matalb tsEVA toolbox developed by Lorenzo Mentaschi availaible here: https://github.com/menta78/tsEva
 
@@ -45,14 +47,14 @@ devtools::install_github("Alowis/RtsEva")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
+```{r, eval=FALSE}
 library(RtsEva)
 # Load a time series
 timeAndSeries <- ArdecheStMartin
-#go from six-hourly values to daily max
+# go from six-hourly values to daily max
 timeAndSeries <- max_daily_value(timeAndSeries)
 
-#set a temporal window for the computation of running statistics
+# set a temporal window for the computation of running statistics
 timeWindow <- 30*365 # 30 years
 
 # Run the non-stationnary EVA
@@ -63,8 +65,11 @@ transfType = 'trendPeaks',tail = 'high')
 After fitting the non-stationnay EVA, the package offers functions to 
 visualize the plots
 
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
+
 ## Contact
 For any questions or inquiries, please contact the package maintainer at alois.tilloy@ec.europa.eu
+
+## License
+
+[MIT © Richard McRichface.](../LICENSE)
+

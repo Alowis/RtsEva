@@ -33,6 +33,12 @@
 #'timeStamps <- ArdecheStMartin[,1]
 #'series <- ArdecheStMartin[,2]
 #'timeWindow <- 30*365 # 30 years
+#'#select only the 5 latest years
+#'yrs <- as.integer(format(timeStamps, "%Y"))
+#'tokeep <- which(yrs>=2015)
+#'timeStamps <- timeStamps[tokeep]
+#'series <- series[tokeep]
+#'timeWindow <- 365 # 1 year
 #'result <- tsEvaTransformSeriesToStationaryTrendOnly(timeStamps, series, timeWindow)
 #'plot(result$trendSeries)
 #' @export
@@ -116,7 +122,12 @@ tsEvaTransformSeriesToStationaryTrendOnly <- function(timeStamps, series, timeWi
 #'timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
 #'series <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365 # 30 years
+#'#select only the 5 latest years
+#'yrs <- as.integer(format(timeStamps, "%Y"))
+#'tokeep <- which(yrs>=2015)
+#'timeStamps <- timeStamps[tokeep]
+#'series <- series[tokeep]
+#'timeWindow <- 365 # 1 year
 #'percentile <- 90
 #'result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
 #'series, timeWindow, percentile)
@@ -227,7 +238,12 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
 #'timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
 #'series <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365 # 30 years
+#'#select only the 5 latest years
+#'yrs <- as.integer(format(timeStamps, "%Y"))
+#'tokeep <- which(yrs>=2015)
+#'timeStamps <- timeStamps[tokeep]
+#'series <- series[tokeep]
+#'timeWindow <- 365 # 1 year
 #'TrendTh <- NA
 #'result <- tsEvaTransformSeriesToStationaryPeakTrend(timeStamps,
 #'series, timeWindow, TrendTh)
@@ -359,7 +375,12 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 #'timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
 #'series <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365 # 30 years
+#'#select only the 5 latest years
+#'yrs <- as.integer(format(timeStamps, "%Y"))
+#'tokeep <- which(yrs>=2015)
+#'timeStamps <- timeStamps[tokeep]
+#'series <- series[tokeep]
+#'timeWindow <- 365 # 1 year
 #'TrendTh <- NA
 #'result <- tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps,
 #'series, timeWindow,seasonalityVar=FALSE)
@@ -493,7 +514,12 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
 #'timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
 #'series <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365 # 30 years
+#'#select only the 5 latest years
+#'yrs <- as.integer(format(timeStamps, "%Y"))
+#'tokeep <- which(yrs>=2015)
+#'timeStamps <- timeStamps[tokeep]
+#'series <- series[tokeep]
+#'timeWindow <- 365 # 1 year
 #'percentile <- 90
 #'result <- tsEvaTransformSeriesToStatSeasonal_ciPercentile(timeStamps,
 #'series, timeWindow, percentile)
@@ -604,14 +630,19 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
 #' }
 #'
 #' @examples
-#'timeAndSeries <- ArdecheStMartin
-#'timeStamps <- ArdecheStMartin[,1]
-#'series <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365 # 30 years
-#'percentile <- 90
-#'result <- tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps,
-#'series, timeWindow)
-#'plot(result$trendSeries)
+#' timeAndSeries <- ArdecheStMartin
+#' timeStamps <- ArdecheStMartin[,1]
+#' series <- ArdecheStMartin[,2]
+#' #select only the 5 latest years
+#' yrs <- as.integer(format(timeStamps, "%Y"))
+#' tokeep <- which(yrs>=2015)
+#' timeStamps <- timeStamps[tokeep]
+#' series <- series[tokeep]
+#' timeWindow <- 365 # 1 year
+#' percentile <- 90
+#' result <- tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps,
+#' series, timeWindow)
+#' plot(result$trendSeries)
 #'
 #' @export
 tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series, timeWindow) {
@@ -718,15 +749,23 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series
 #' }
 #'
 #' @examples
-#'timeAndSeries <- ArdecheStMartin
-#'timeStamps <- ArdecheStMartin[,1]
-#'series <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365 # 30 years
-#'percentile <- 90
-#'result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps,
-#'series, timeWindow, percentile)
-#'plot(result$trendSeries)
+#' timeAndSeries <- ArdecheStMartin
 #'
+#' #go from six-hourly values to daily max
+#' timeAndSeries <- max_daily_value(timeAndSeries)
+#' timeStamps <- timeAndSeries[,1]
+#' series <- timeAndSeries[,2]
+#'
+#' #select only the 5 latest years
+#' yrs <- as.integer(format(timeStamps, "%Y"))
+#' tokeep <- which(yrs>=2015)
+#' timeStamps <- timeStamps[tokeep]
+#' series <- series[tokeep]
+#' timeWindow <- 365 # 1 year
+#' percentile <- 90
+#' result <- tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps,
+#' series, timeWindow, percentile)
+#' plot(result$trendSeries)
 #' @export
 tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeStamps, series, timeWindow, percentile) {
   cat('computing the trend ...\n')
@@ -1460,10 +1499,10 @@ tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA,
 #'     - \code{varyingSeasonalitySeries}: The varying seasonality series.
 #'
 #' @examples
-#'timeAndSeries <- ArdecheStMartin
+#' timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
-#'series  <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365  # 30 years
+#' series  <- ArdecheStMartin[,2]
+#' timeWindow <- 30*365  # 30 years
 #'rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
 #'nRunMn <- rs@nRunMn
 #'cat("computing trend seasonality ...\n")
@@ -1486,17 +1525,16 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   tdim <- attributes(dt1)$units
   if (tdim == "hours") {
     dt <- dt / 24
-    timeStamps=timeStamps+7200
   }
   avgYearLength <- avgYearLength / dt
 
-  timstamp <- unique(as.Date(timeStamps))
+  timstamp <- unique(as.integer(format(timeStamps, "%Y")))
   nYear <- round(length(timeStamps) / avgYearLength)
   tw <- round(timeWindow / avgYearLength)
   avgMonthLength <- avgYearLength / nMonthInYear
 
-  firstTmStmp <- timstamp[1]
-  lastTmStmp <- timstamp[length(timstamp)]
+  firstTmStmp <- timeStamps[1]
+  lastTmStmp <- timeStamps[length(timeStamps)]
   mond <- lubridate::month(timeStamps)
   caca <- diff(mond)
   mony <- tsibble::yearmonth(timeStamps)
@@ -1563,13 +1601,12 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   regimeTmStamp <- c(1, regimeTmStamp, 365)
 
   # for the varying seasonality
-  # add the missiong 3 years at the end and beginning
-  monthAvgVex <- c(rep(mnSsn_t[1:12], twz / 2), mnSsn_t, rep(mnSsn_t[(length(mnSsn_t) - 11):length(mnSsn_t)], twz / 2))
-  monthAvgVex <- c(monthAvgVex[1], monthAvgVex, monthAvgVex[length(monthAvgVex)])
+  # add the missing 3 years at the end and beginning
+  sidefill=(length(avgTmStamp)-length(mnSsn_t))/2
+  monthAvgVex <- c(mnSsn_t[1:(sidefill)], mnSsn_t, mnSsn_t[(length(mnSsn_t) - (sidefill-1)):length(mnSsn_t)])
+  #monthAvgVex <- c(monthAvgVex[1], monthAvgVex, monthAvgVex[length(monthAvgVex)])
   avgTmStamp <- as.numeric(avgTmStamp)
-  timeStampsN <- as.numeric(timstamp)
-  max(timeStampsN)
-  max(avgTmStamp)
+  timeStampsN <- as.numeric(timeStamps)
   regime <- pracma::interp1(regimeTmStamp, regimeVec, c(1:365), method = "spline")
   averageSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVec, timeStampsN, method = "cubic")
   varyingSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVex, timeStampsN, method = "cubic")

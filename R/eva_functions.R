@@ -617,8 +617,14 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
 #' # Generate sample data
 #' data <- ArdecheStMartin
 #' colnames(data) <- c("Date", "Value")
+#' #select only the 5 latest years
+#' yrs <- as.integer(format(data$Date, "%Y"))
+#' tokeep <- which(yrs>=2015)
+#' data <- data[tokeep,]
+#' timeWindow <- 365 # 1 year
 #' # Calculate statistics and data
-#' result <- tsEvaSampleData(data, 10, 5, 7, "high")
+#' result <- tsEvaSampleData(data, meanEventsPerYear=3, minEventsPerYear=0,
+#' minPeakDistanceInDays=7, "high")
 #' # View the result
 #' print(result)
 #' @export
@@ -861,12 +867,12 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #' @importFrom evd fgev
 #' @return A list containing the following components:
 #'   \itemize{
-#'     \item \code {EVmeta}: A list containing metadata about the analysis.
+#'     \item \code{EVmeta}: A list containing metadata about the analysis.
 #'     It includes Tr, A vector of return periods for which
 #'     return levels are calculated.
-#'     \item \code {EVdata}: A list containing the calculated statistics and return levels. It includes the following components:
+#'     \item \code{EVdata}: A list containing the calculated statistics and return levels. It includes the following components:
 #'       \itemize{
-#'         \item \code {GEVstat}: A list containing the GEV statistics and return levels:
+#'         \item \code{GEVstat}: A list containing the GEV statistics and return levels:
 #'           \itemize{
 #'             \item \code{method}: The method used for fitting the GEV distribution.
 #'             \item \code{values}: A vector of return levels calculated using the GEV distribution.
@@ -885,11 +891,15 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #'     }
 #'
 #' @examples
-#' # Create a sample dataset
-#' data <- ArdecheStMartin
+#'# Create a sample dataset
+#'data <- ArdecheStMartin
 #'colnames(data) <- c("Date", "Value")
+#'yrs <- as.integer(format(data$Date, "%Y"))
+#'tokeep <- which(yrs>=2015)
+#'data <- data[tokeep,]
 # Calculate statistics and data
-#'pointData <- tsEvaSampleData(data, 10, 5, 7, "high")
+#'pointData <- tsEvaSampleData(data, meanEventsPerYear=3, minEventsPerYear=0,
+#'minPeakDistanceInDays=7, "high")
 # Calculate GEV and GPD statistics
 #'result <- tsEVstatistics(pointData)
 #'result$EVdata$GEVstat$values

@@ -46,8 +46,14 @@ and data for time series evaluation.
 # Generate sample data
 data <- ArdecheStMartin
 colnames(data) <- c("Date", "Value")
+#select only the 5 latest years
+yrs <- as.integer(format(data$Date, "\%Y"))
+tokeep <- which(yrs>=2015)
+data <- data[tokeep,]
+timeWindow <- 365 # 1 year
 # Calculate statistics and data
-result <- tsEvaSampleData(data, 10, 5, 7, "high")
+result <- tsEvaSampleData(data, meanEventsPerYear=3, minEventsPerYear=0,
+minPeakDistanceInDays=7, "high")
 # View the result
 print(result)
 }
