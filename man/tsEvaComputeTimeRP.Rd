@@ -8,17 +8,17 @@ tsEvaComputeTimeRP(params, RPiGEV, RPiGPD)
 }
 \arguments{
 \item{params}{A data frame containing the following parameters:
-\itemize{
-\item \code{epsilonGEV}: Shape parameter for the Generalized Extreme Value
-(GEV) distribution.
-\item \code{muGEV}: Location parameter for the GEV distribution.
-\item \code{sigmaGEV}: Scale parameter for the GEV distribution.
-\item \code{epsilonGPD}: Shape parameter for the Generalized Pareto
-(GPD) distribution.
-\item \code{thresholdGPD}:Threshold parameter for the GPD distribution.
-\item \code{sigmaGPD}: Scale parameter for the GPD distribution.
-\item \code{nPeaks}: Number of peaks in the sample time horizon.
-\item \code{SampleTimeHorizon}: Total number of years in the data sample.
+\describe{
+\item{\code{epsilonGEV}}{Shape parameter for the Generalized Extreme Value
+(GEV) distribution.}
+\item{\code{muGEV}}{Location parameter for the GEV distribution.}
+\item{\code{sigmaGEV}}{Scale parameter for the GEV distribution.}
+\item{\code{epsilonGPD}}{Shape parameter for the Generalized Pareto
+(GPD) distribution.}
+\item{\code{thresholdGPD}}{Threshold parameter for the GPD distribution.}
+\item{\code{sigmaGPD}}{Scale parameter for the GPD distribution.}
+\item{\code{nPeaks}}{Number of peaks in the sample time horizon.}
+\item{\code{SampleTimeHorizon}}{Total number of years in the data sample.}
 }}
 
 \item{RPiGEV}{Value of RP for the GEV distribution.}

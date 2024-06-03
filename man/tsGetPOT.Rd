@@ -30,17 +30,17 @@ thresholds for identifying peaks.}
 }
 \value{
 A list containing the following fields:
-\itemize{
-\item \code{threshold}:The threshold value used for identifying peaks.
-\item \code{thresholdError}:The error associated with the threshold value.
-\item \code{percentile}:The percentile value used as the threshold.
-\item \code{peaks}:The values of the identified peaks.
-\item \code{stpeaks}:The start indices of the identified peaks.
-\item \code{endpeaks}:The end indices of the identified peaks.
-\item \code{ipeaks}:The indices of the identified peaks.
-\item \code{time}:The time values corresponding to the identified peaks.
-\item \code{pars}:The parameters of the Generalized Pareto Distribution (GPD)
-fitted to the peaks.
+\describe{
+\item{\code{threshold}}{The threshold value used for identifying peaks}
+\item{\code{thresholdError}}{The error associated with the threshold value}
+\item{\code{percentile}}{The percentile value used as the threshold.}
+\item{\code{peaks}}{The values of the identified peaks.}
+\item{\code{stpeaks}}{The start indices of the identified peaks.}
+\item{\code{endpeaks}}{The end indices of the identified peaks.}
+\item{\code{ipeaks}}{The indices of the identified peaks.}
+\item{\code{time}}{The time values corresponding to the identified peaks.}
+\item{\code{pars}}{The parameters of the Generalized Pareto Distribution (GPD)
+fitted to the peaks.}
 }
 }
 \description{

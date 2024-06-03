@@ -17,13 +17,14 @@ declustpeaks(data, minpeakdistance = 10, minrundistance = 7, qt)
 }
 \value{
 A data frame with information about the peaks, including:
-\itemize{
-\item{Q: the peak value},
-\item{max: max time index},
-\item{start: start time index},
-\item{end: end time index},
-\item{dur: duration},
-\item{cluster:cluster information }}
+\describe{
+\item{\code{Q}}{the peak value}
+\item{\code{max}}{max time index}
+\item{\code{start}}{start time index}
+\item{\code{end}}{end time index}
+\item{\code{dur}}{duration}
+\item{\code{cluster}}{cluster information }
+}
 }
 \description{
 \code{declustpeaks} is a function that takes in a data vector, minimum peak distance, minimum run distance, and a threshold value.

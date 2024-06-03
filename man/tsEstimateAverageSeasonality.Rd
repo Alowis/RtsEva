@@ -14,14 +14,12 @@ tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow)
 \item{timeWindow}{The time window used for averaging the seasonality.}
 }
 \value{
-A list containing the estimated regime and the seasonality series.
-\itemize{
-\item \code{regime}: The estimated regime of the time series.
-\item \code{Seasonality}: A data frame containing the average and varying seasonality series.
-\itemize{
-\item \code{averageSeasonalitySeries}: The average seasonality series.
-\item \code{varyingSeasonalitySeries}: The varying seasonality series.
-}
+A list containing the estimated regime and the seasonality series:
+\describe{
+\item{\code{regime}}{The estimated regime of the time series.}
+\item{\code{Seasonality}}{A data frame containing the average and varying seasonality series.}
+\item{\code{averageSeasonalitySeries}}{The average seasonality series.}
+\item{\code{varyingSeasonalitySeries}}{The varying seasonality series.}
 }
 }
 \description{

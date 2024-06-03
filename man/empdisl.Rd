@@ -13,13 +13,13 @@ empdisl(x, nyr)
 }
 \value{
 A data frame containing the following columns:
-\itemize{
-\item{emp.RP: Empirical return period},
-\item{haz.RP: Hazen return period},
-\item{gumbel: Gumbel frequency},
-\item{emp.f: Empirical frequency},
-\item{emp.hazen: Empirical Hazen frequency},
-\item{Q: Discharge values}
+\describe{
+\item{\code{emp.RP}}{Empirical return period}
+\item{\code{haz.RP}}{Hazen return period}
+\item{\code{gumbel}}{Gumbel frequency}
+\item{\code{emp.f}}{Empirical frequency}
+\item{\code{emp.hazen}}{Empirical Hazen frequency}
+\item{\code{Q}}{Discharge values}
 }
 }
 \description{

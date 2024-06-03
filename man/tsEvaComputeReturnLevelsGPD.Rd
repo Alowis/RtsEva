@@ -37,9 +37,9 @@ tsEvaComputeReturnLevelsGPD(
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{returnLevels}: A vector of return levels corresponding to the specified return periods.
-\item \code{returnLevelsErr}: A vector of standard errors for the return levels.
+\describe{
+\item{\code{returnLevels}}{A vector of return levels corresponding to the specified return periods.}
+\item{\code{returnLevelsErr}}{A vector of standard errors for the return levels.}
 }
 }
 \description{

@@ -13,19 +13,19 @@
 #' @param timeWindow The size of the time window used for detrending.
 #'
 #' @return A list containing the following elements:
-#' \itemize{
-#'   \item \code{runningStatsMulteplicity}: The running statistics multiplicity.
-#'   \item \code{stationarySeries}: The transformed stationary series.
-#'   \item \code{trendSeries}: The trend series.
-#'   \item \code{trendSeriesNonSeasonal}: The non-seasonal trend series.
-#'   \item \code{trendError}: The error on the trend.
-#'   \item \code{stdDevSeries}: The slowly varying standard deviation series.
-#'   \item \code{stdDevSeriesNonSeasonal}: The non-seasonal slowly varying standard deviation series.
-#'   \item \code{stdDevError}: The error on the standard deviation.
-#'   \item \code{timeStamps}: The time stamps.
-#'   \item \code{nonStatSeries}: The original non-stationary series.
-#'   \item \code{statSer3Mom}: The third moment of the transformed stationary series.
-#'   \item \code{statSer4Mom}: The fourth moment of the transformed stationary series.
+#' \describe{
+#'  \item{\code{runningStatsMulteplicity}}{The running statistics multiplicity.}
+#'  \item{\code{stationarySeries}}{The transformed stationary series.}
+#'  \item{\code{trendSeries}}{The trend series.}
+#'  \item{\code{trendSeriesNonSeasonal}}{The non-seasonal trend series.}
+#'  \item{\code{trendError}}{The error on the trend.}
+#'  \item{\code{stdDevSeries}}{The slowly varying standard deviation series.}
+#'  \item{\code{stdDevSeriesNonSeasonal}}{The non-seasonal slowly varying standard deviation series.}
+#'  \item{\code{stdDevError}}{The error on the standard deviation.}
+#'  \item{\code{timeStamps}}{The time stamps.}
+#'  \item{\code{nonStatSeries}}{The original non-stationary series.}
+#'  \item{\code{statSer3Mom}}{The third moment of the transformed stationary series.}
+#'  \item{\code{statSer4Mom}}{The fourth moment of the transformed stationary series.}
 #' }
 #'
 #' @examples
@@ -103,19 +103,19 @@ tsEvaTransformSeriesToStationaryTrendOnly <- function(timeStamps, series, timeWi
 #' of the stationary series.
 #'
 #' @return A list containing the following elements:
-#' \itemize{
-#'   \item{runningStatsMulteplicity: The running statistics multiplicity.}
-#'   \item{stationarySeries: The transformed stationary trend only series.}
-#'   \item{trendSeries: The trend series.}
-#'   \item{trendSeriesNonSeasonal: The non-seasonal trend series.}
-#'   \item{trendError: The error on the trend.}
-#'   \item{stdDevSeries: The standard deviation series.}
-#'   \item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
-#'   \item{stdDevError: The error on the standard deviation.}
-#'   \item{timeStamps: The time stamps.}
-#'   \item{nonStatSeries: The original non-stationary series.}
-#'   \item{statSer3Mom: The running mean of the third moment of the stationary series.}
-#'   \item{statSer4Mom: The running mean of the fourth moment of the stationary series.}
+#' \describe{
+#'   \item{\code{runningStatsMulteplicity}}{The running statistics multiplicity}
+#'   \item{\code{stationarySeries}}{The transformed stationary trend only series}
+#'   \item{\code{trendSeries}}{The trend series}
+#'   \item{\code{trendSeriesNonSeasonal}}{The non-seasonal trend series}
+#'   \item{\code{trendError}}{The error on the trend}
+#'   \item{\code{stdDevSeries}}{The standard deviation series}
+#'   \item{\code{stdDevSeriesNonSeasonal}}{The non-seasonal standard deviation series}
+#'   \item{\code{stdDevError}}{The error on the standard deviation}
+#'   \item{\code{timeStamps}}{The time stamps}
+#'   \item{\code{nonStatSeries}}{The original non-stationary series}
+#'   \item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series}
+#'   \item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series}
 #' }
 #'
 #' @examples
@@ -218,19 +218,19 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
 #' given quantile. Default is 0.5.
 #'
 #' @return A list containing the following components:
-#'   \itemize{
-#'     \item \code{runningStatsMulteplicity}: The multiplicity of running statistics.
-#'     \item \code{stationarySeries}: The stationary series after removing the trend.
-#'     \item \code{trendSeries}: The trend component of the series.
-#'     \item \code{trendSeriesNonSeasonal}: NULL (not used).
-#'     \item \code{trendError}: The error on the trend component.
-#'     \item \code{stdDevSeries}: The standard deviation series.
-#'     \item \code{stdDevSeriesNonSeasonal}: NULL (not used).
-#'     \item \code{stdDevError}: The error on the standard deviation series.
-#'     \item \code{timeStamps}: The time stamps.
-#'     \item \code{nonStatSeries}: The original non-stationary series.
-#'     \item \code{statSer3Mom}: The running mean of the third moment of the stationary series.
-#'     \item \code{statSer4Mom}: The running mean of the fourth moment of the stationary series.
+#'   \describe{
+#'    \item{\code{runningStatsMulteplicity}}{The multiplicity of running statistics.}
+#'    \item{\code{stationarySeries}}{The stationary series after removing the trend.}
+#'    \item{\code{trendSeries}}{The trend component of the series.}
+#'    \item{\code{trendSeriesNonSeasonal}}{NULL (not used).}
+#'    \item{\code{trendError}}{The error on the trend component.}
+#'    \item{\code{stdDevSeries}}{The standard deviation series.}
+#'    \item{\code{stdDevSeriesNonSeasonal}}{NULL (not used).}
+#'    \item{\code{stdDevError}}{The error on the standard deviation series.}
+#'    \item{\code{timeStamps}}{The time stamps.}
+#'    \item{\code{nonStatSeries}}{The original non-stationary series.}
+#'    \item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series.}
+#'    \item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series.}
 #'   }
 #'
 #' @import stats
@@ -342,24 +342,24 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 #' seasonal cycle in the transformation. Default is TRUE.
 #'
 #' @return A list containing the transformed data and various statistics and errors.
-#' \itemize{
-#'   \item{runningStatsMulteplicity: The size of the moving window used for trend estimation.}
-#'   \item{stationarySeries: The transformed stationary series.}
-#'   \item{trendSeries: The trend component of the transformed series.}
-#'   \item{trendSeriesNonSeasonal: The trend component of the original series without seasonality.}
-#'   \item{stdDevSeries: The standard deviation component of the transformed series.}
-#'   \item{stdDevSeriesNonSeasonal: The standard deviation component of the original series without seasonality.}
-#'   \item{trendNonSeasonalError: The error on the non-seasonal trend component.}
-#'   \item{stdDevNonSeasonalError: The error on the non-seasonal standard deviation component.}
-#'   \item{trendSeasonalError: The error on the seasonal trend component.}
-#'   \item{stdDevSeasonalError: The error on the seasonal standard deviation component.}
-#'   \item{trendError: The overall error on the trend component.}
-#'   \item{stdDevError: The overall error on the standard deviation component.}
-#'   \item{Regime: The estimated regime of the trend seasonality.}
-#'   \item{timeStamps: The input timestamps.}
-#'   \item{nonStatSeries: The original non-stationary series.}
-#'   \item{statSer3Mom: The third moment of the transformed stationary series.}
-#'   \item{statSer4Mom: The fourth moment of the transformed stationary series.}
+#' \describe{
+#'   \item{\code{runningStatsMulteplicity}}{The size of the moving window used for trend estimation}
+#'   \item{\code{stationarySeries}}{The transformed stationary series}
+#'   \item{\code{trendSeries}}{The trend component of the transformed series}
+#'   \item{\code{trendSeriesNonSeasonal}}{The trend component of the original series without seasonality}
+#'   \item{\code{stdDevSeries}}{The standard deviation component of the transformed series}
+#'   \item{\code{stdDevSeriesNonSeasonal}}{The standard deviation component of the original series without seasonality}
+#'   \item{\code{trendNonSeasonalError}}{The error on the non-seasonal trend component}
+#'   \item{\code{stdDevNonSeasonalError}}{The error on the non-seasonal standard deviation component}
+#'   \item{\code{trendSeasonalError}}{The error on the seasonal trend component}
+#'   \item{\code{stdDevSeasonalError}}{The error on the seasonal standard deviation component}
+#'   \item{\code{trendError}}{The overall error on the trend component}
+#'   \item{\code{stdDevError}}{The overall error on the standard deviation component}
+#'   \item{\code{Regime}}{The estimated regime of the trend seasonality}
+#'   \item{\code{timeStamps}}{The input timestamps}
+#'   \item{\code{nonStatSeries}}{The original non-stationary series}
+#'   \item{\code{statSer3Mom}}{The third moment of the transformed stationary series}
+#'   \item{\code{statSer4Mom}}{The fourth moment of the transformed stationary series}
 #' }
 #'
 #'@details
@@ -478,24 +478,24 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
 #' @param percentile The percentile value used for computing the slowly varying percentile.
 #'
 #' @return A list containing the following components:
-#' \itemize{
-#'   \item{runningStatsMulteplicity: The size of each sample used to compute the average.}
-#'   \item{stationarySeries: The transformed stationary series.}
-#'   \item{trendSeries: The trend series.}
-#'   \item{trendSeriesNonSeasonal: The non-seasonal trend series.}
-#'   \item{stdDevSeries: The season-dependent standard deviation series.}
-#'   \item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
-#'   \item{trendError: The error on the trend.}
-#'   \item{stdDevError: The error on the standard deviation.}
-#'   \item{statSer3Mom: The 3rd moment of the transformed stationary series.}
-#'   \item{statSer4Mom: The 4th moment of the transformed stationary series.}
-#'   \item{nonStatSeries: The original non-stationary series.}
-#'   \item{Regime: The regime of the trend seasonality.}
-#'   \item{timeStamps: The time stamps.}
-#'   \item{trendNonSeasonalError: The error on the non-seasonal trend.}
-#'   \item{stdDevNonSeasonalError: The error on the non-seasonal standard deviation.}
-#'   \item{trendSeasonalError: The error on the seasonal trend.}
-#'   \item{stdDevSeasonalError: The error on the seasonal standard deviation.}
+#' \describe{
+#'   \item{\code{runningStatsMulteplicity}}{The size of each sample used to compute the average}
+#'   \item{\code{stationarySeries}}{The transformed stationary series}
+#'   \item{\code{trendSeries}}{The trend series}
+#'   \item{\code{trendSeriesNonSeasonal}}{The non-seasonal trend series}
+#'   \item{\code{stdDevSeries}}{The season-dependent standard deviation series}
+#'   \item{\code{stdDevSeriesNonSeasonal}}{The non-seasonal standard deviation series}
+#'   \item{\code{trendError}}{The error on the trend}
+#'   \item{\code{stdDevError}}{The error on the standard deviation}
+#'   \item{\code{statSer3Mom}}{The 3rd moment of the transformed stationary series}
+#'   \item{\code{statSer4Mom}}{The 4th moment of the transformed stationary series}
+#'   \item{\code{nonStatSeries}}{The original non-stationary series}
+#'   \item{\code{Regime}}{The regime of the trend seasonality}
+#'   \item{\code{timeStamps}}{The time stamps}
+#'   \item{\code{trendNonSeasonalError}}{The error on the non-seasonal trend}
+#'   \item{\code{stdDevNonSeasonalError}}{The error on the non-seasonal standard deviation}
+#'   \item{\code{trendSeasonalError}}{The error on the seasonal trend}
+#'   \item{\code{stdDevSeasonalError}}{The error on the seasonal standard deviation}
 #' }
 #'@details
 #'  # this function decomposes the series into a season-dependent trend and a
@@ -611,22 +611,22 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
 #' @param timeWindow The size of the time window used for detrending.
 #'
 #' @return A list containing the following elements:
-#' \itemize{
-#'   \item \code{runningStatsMulteplicity}: The running statistics multiplicity.
-#'   \item \code{stationarySeries}: The transformed stationary series.
-#'   \item \code{trendSeries}: The trend series.
-#'   \item \code{trendonlySeries}: The trend series without the stationary component.
-#'   \item \code{ChpointsSeries2}: The trend component of the change points.
-#'   \item \code{changePoints}: The detected change points.
-#'   \item \code{trendSeriesNonSeasonal}: The trend series without the seasonal component.
-#'   \item \code{trendError}: The error on the trend.
-#'   \item \code{stdDevSeries}: The slowly varying standard deviation series.
-#'   \item \code{stdDevSeriesNonStep}: The slowly varying standard deviation series without step changes.
-#'   \item \code{stdDevError}: The error on the standard deviation.
-#'   \item \code{timeStamps}: The time stamps.
-#'   \item \code{nonStatSeries}: The original non-stationary series.
-#'   \item \code{statSer3Mom}: The running mean of the third moment of the stationary series.
-#'   \item \code{statSer4Mom}: The running mean of the fourth moment of the stationary series.
+#' \describe{
+#'  \item{\code{runningStatsMulteplicity}}{The running statistics multiplicity.}
+#'  \item{\code{stationarySeries}}{The transformed stationary series.}
+#'  \item{\code{trendSeries}}{The trend series.}
+#'  \item{\code{trendonlySeries}}{The trend series without the stationary component.}
+#'  \item{\code{ChpointsSeries2}}{The trend component of the change points.}
+#'  \item{\code{changePoints}}{The detected change points.}
+#'  \item{\code{trendSeriesNonSeasonal}}{The trend series without the seasonal component.}
+#'  \item{\code{trendError}}{The error on the trend.}
+#'  \item{\code{stdDevSeries}}{The slowly varying standard deviation series.}
+#'  \item{\code{stdDevSeriesNonStep}}{The slowly varying standard deviation series without step changes.}
+#'  \item{\code{stdDevError}}{The error on the standard deviation.}
+#'  \item{\code{timeStamps}}{The time stamps.}
+#'  \item{\code{nonStatSeries}}{The original non-stationary series.}
+#'  \item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series.}
+#'  \item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series.}
 #' }
 #'
 #' @examples
@@ -730,22 +730,22 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series
 #' @param percentile The percentile value used for computing the running percentile of the stationary series.
 #'
 #' @return A list containing the following elements:
-#' \itemize{
-#'   \item{runningStatsMulteplicity: The running statistics multiplicity.}
-#'   \item{stationarySeries: The transformed stationary series.}
-#'   \item{trendSeries: The trend series.}
-#'   \item{trendonlySeries: The trend series without the stationary component.}
-#'   \item{ChpointsSeries2: The trend series with change points.}
-#'   \item{changePoints: The detected change points.}
-#'   \item{trendSeriesNonSeasonal: The trend series without the seasonal component.}
-#'   \item{trendError: The error on the trend.}
-#'   \item{stdDevSeries: The standard deviation series.}
-#'   \item{stdDevSeriesNonStep: The standard deviation series without the step change component.}
-#'   \item{stdDevError: The error on the standard deviation.}
-#'   \item{timeStamps: The time stamps.}
-#'   \item{nonStatSeries: The original non-stationary series.}
-#'   \item{statSer3Mom: The running mean of the third moment of the stationary series.}
-#'   \item{statSer4Mom: The running mean of the fourth moment of the stationary series.}
+#' \describe{
+#'   \item{\code{runningStatsMulteplicity}}{The running statistics multiplicity}
+#'   \item{\code{stationarySeries}}{The transformed stationary series}
+#'   \item{\code{trendSeries}}{The trend series}
+#'   \item{\code{trendonlySeries}}{The trend series without the stationary component}
+#'   \item{\code{ChpointsSeries2}}{The trend series with change points}
+#'   \item{\code{changePoints}}{The detected change points}
+#'   \item{\code{trendSeriesNonSeasonal}}{The trend series without the seasonal component}
+#'   \item{\code{trendError}}{The error on the trend}
+#'   \item{\code{stdDevSeries}}{The standard deviation series}
+#'   \item{\code{stdDevSeriesNonStep}}{The standard deviation series without the step change component}
+#'   \item{\code{stdDevError}}{The error on the standard deviation}
+#'   \item{\code{timeStamps}}{The time stamps}
+#'   \item{\code{nonStatSeries}}{The original non-stationary series}
+#'   \item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series}
+#'   \item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series}
 #' }
 #'
 #' @examples
@@ -944,10 +944,10 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
 #' @param timeStamps A vector of timestamps corresponding to the series data points.
 #'
 #' @return A list containing:
-#' \itemize{
-#'   \item{trend: A numeric vector of the same length as series, with each segment between change points filled with its mean value.}
-#'   \item{variance: A numeric vector of the same length as series, with each segment between change points filled with its variance.}
-#'   \item{changepoints: A vector of timestamps at which change points were detected.}
+#' \describe{
+#'   \item{\code{trend}}{A numeric vector of the same length as series, with each segment between change points filled with its mean value}
+#'   \item{\code{variance}}{A numeric vector of the same length as series, with each segment between change points filled with its variance}
+#'   \item{\code{changepoints}}{A vector of timestamps at which change points were detected}
 #' }
 #'
 #' @importFrom changepoint cpt.meanvar
@@ -1146,13 +1146,16 @@ tsEvaNanRunningVariance <- function(series, windowSize) {
 #' @param windowSize The size of the moving window.
 #'
 #' @return A data frame containing the following running statistics:
-#' \itemize{
-#'   \item{rnvar: running variance}
-#'   \item{rn3mom: running third statistical momentum}
-#'   \item{rn4mom: running fourth statistical momentum}
+#' \describe{
+#'   \item{\code{rnvar}}{running variance}
+#'   \item{\code{rn3mom}}{running third statistical momentum}
+#'   \item{\code{rn4mom}}{running fourth statistical momentum}
 #' }
 #'
-#' @details This function calculates the running variance, running third statistical momentum, and running fourth statistical momentum for a given time series data using a moving window approach. The window size determines the number of observations used to calculate the statistics at each point.
+#' @details This function calculates the running variance, running third statistical
+#' momentum, and running fourth statistical momentum for a given time series
+#' data using a moving window approach. The window size determines the number
+#' of observations used to calculate the statistics at each point.
 #'
 #' @examples
 #' series <- c(1,2,NaN,4,5,6,NaN,8,9,4,5,6,7,3,9,1,0,4,5,2)
@@ -1245,12 +1248,12 @@ tsEvaNanRunningStatistics <- function(series, windowSize) {
 #' The function also performs smoothing on the output and calculates the standard error.
 #'
 #' The function uses the following label parameters:
-#' \itemize{
-#'   \item{percentDelta: Delta for the computation of a percentile interval around the requested percentage.
+#' \describe{
+#'   \item{\code{percentDelta}}{Delta for the computation of a percentile interval around the requested percentage.
 #'                      If the windowSize is greater than 2000, percentDelta is set to 1.
 #'                      If the windowSize is between 1000 and 2000, percentDelta is set to 2.
 #'                      If the windowSize is between 100 and 1000, percentDelta is set to 5.}
-#'   \item{nLowLimit: Minimum number of non-NA elements for a window for percentile computation.}
+#'   \item{\code{nLowLimit}}{Minimum number of non-NA elements for a window for percentile computation}
 #' }
 #'
 #' @examples
@@ -1439,11 +1442,11 @@ methods::setClass(
 #'
 #' @import methods
 #' @return An object of class "tsTrend" with the following components:
-#' \itemize{
-#'   \item{originSeries: The original time series.}
-#'   \item{detrendSeries: The detrended time series.}
-#'   \item{trendSeries: The trend component of the time series.}
-#'   \item{nRunMn: The number of data points in the moving window used to calculate the trend.}
+#' \describe{
+#'   \item{\code{originSeries}}{The original time series}
+#'   \item{\code{detrendSeries}}{The detrended time series}
+#'   \item{\code{trendSeries}}{The trend component of the time series}
+#'   \item{\code{nRunMn }}{The number of data points in the moving window used to calculate the trend}
 #' }
 #'
 #' @examples
@@ -1492,28 +1495,29 @@ tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA,
 #' @param seasonalitySeries The series representing the seasonality.
 #' @param timeWindow The time window used for averaging the seasonality.
 #'
-#' @return A list containing the estimated regime and the seasonality series.
-#'   - \code{regime}: The estimated regime of the time series.
-#'   - \code{Seasonality}: A data frame containing the average and varying seasonality series.
-#'     - \code{averageSeasonalitySeries}: The average seasonality series.
-#'     - \code{varyingSeasonalitySeries}: The varying seasonality series.
+#' @return A list containing the estimated regime and the seasonality series:
+#' \describe{
+#'  \item{\code{regime}}{The estimated regime of the time series.}
+#'  \item{\code{Seasonality}}{A data frame containing the average and varying seasonality series.}
+#'  \item{\code{averageSeasonalitySeries}}{The average seasonality series.}
+#'  \item{\code{varyingSeasonalitySeries}}{The varying seasonality series.}
+#'  }
 #'
 #' @examples
-#' timeAndSeries <- ArdecheStMartin
+#'timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
-#' series  <- ArdecheStMartin[,2]
-#' timeWindow <- 30*365  # 30 years
+#'series  <- ArdecheStMartin[,2]
+#'timeWindow <- 30*365  # 30 years
 #'rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
 #'nRunMn <- rs@nRunMn
 #'cat("computing trend seasonality ...\n")
 #'seasonalitySeries <- rs@detrendSeries
-
 #'result <- tsEstimateAverageSeasonality(timeStamps, seasonalitySeries, timeWindow=rs@nRunMn)
 #'plot(result$regime, type = "l", xlab = "Day", ylab = "Regime", main = "Estimated Regime")
 #'plot(result$Seasonality$averageSeasonalitySeries, type = "l", xlab = "Day",
-#' ylab = "Seasonality", main = "Average Seasonality")
+#'ylab = "Seasonality", main = "Average Seasonality")
 #'plot(result$Seasonality$varyingSeasonalitySeries, type = "l", xlab = "Day",
-#' ylab = "Seasonality", main = "Varying Seasonality")
+#'ylab = "Seasonality", main = "Varying Seasonality")
 #'@importFrom pracma interp1
 #' @export
 tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWindow) {
@@ -1608,8 +1612,8 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   avgTmStamp <- as.numeric(avgTmStamp)
   timeStampsN <- as.numeric(timeStamps)
   regime <- pracma::interp1(regimeTmStamp, regimeVec, c(1:365), method = "spline")
-  averageSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVec, timeStampsN, method = "cubic")
-  varyingSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVex, timeStampsN, method = "cubic")
+  averageSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVec, timeStampsN, method = "spline")
+  varyingSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVex, timeStampsN, method = "spline")
   return(list(regime = regime, Seasonality = data.frame(averageSeasonalitySeries = averageSeasonalitySeries, varyingSeasonalitySeries = varyingSeasonalitySeries)))
 }
 

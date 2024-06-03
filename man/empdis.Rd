@@ -13,16 +13,16 @@ empdis(x, nyr)
 }
 \value{
 A data frame containing:
-\itemize{
-\item{emp.RP: empirical return period},
-\item{haz.RP: Hazen return period},
-\item{cun.RP: Cunnane return period},
-\item{gumbel: Gumbel values},
-\item{emp.f: empirical cumulative density},
-\item{emp.hazen:Hazen cumulative density},
-\item{emp.cunnan: Cunnane cumulative density},
-\item{Q: original data},
-\item{timestamp: time component}
+\describe{
+\item{\code{emp.RP}}{empirical return period}
+\item{\code{haz.RP}}{Hazen return period}
+\item{\code{cun.RP}}{Cunnane return period}
+\item{\code{gumbel}}{Gumbel values}
+\item{\code{emp.f}}{empirical cumulative density}
+\item{\code{emp.hazen}}{Hazen cumulative density}
+\item{\code{emp.cunnan}}{Cunnane cumulative density}
+\item{\code{Q}}{original data}
+\item{\code{timestamp}}{time component}
 }
 }
 \description{

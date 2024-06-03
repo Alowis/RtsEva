@@ -15,19 +15,19 @@ tsEvaTransformSeriesToStationaryTrendOnly(timeStamps, series, timeWindow)
 }
 \value{
 A list containing the following elements:
-\itemize{
-\item \code{runningStatsMulteplicity}: The running statistics multiplicity.
-\item \code{stationarySeries}: The transformed stationary series.
-\item \code{trendSeries}: The trend series.
-\item \code{trendSeriesNonSeasonal}: The non-seasonal trend series.
-\item \code{trendError}: The error on the trend.
-\item \code{stdDevSeries}: The slowly varying standard deviation series.
-\item \code{stdDevSeriesNonSeasonal}: The non-seasonal slowly varying standard deviation series.
-\item \code{stdDevError}: The error on the standard deviation.
-\item \code{timeStamps}: The time stamps.
-\item \code{nonStatSeries}: The original non-stationary series.
-\item \code{statSer3Mom}: The third moment of the transformed stationary series.
-\item \code{statSer4Mom}: The fourth moment of the transformed stationary series.
+\describe{
+\item{\code{runningStatsMulteplicity}}{The running statistics multiplicity.}
+\item{\code{stationarySeries}}{The transformed stationary series.}
+\item{\code{trendSeries}}{The trend series.}
+\item{\code{trendSeriesNonSeasonal}}{The non-seasonal trend series.}
+\item{\code{trendError}}{The error on the trend.}
+\item{\code{stdDevSeries}}{The slowly varying standard deviation series.}
+\item{\code{stdDevSeriesNonSeasonal}}{The non-seasonal slowly varying standard deviation series.}
+\item{\code{stdDevError}}{The error on the standard deviation.}
+\item{\code{timeStamps}}{The time stamps.}
+\item{\code{nonStatSeries}}{The original non-stationary series.}
+\item{\code{statSer3Mom}}{The third moment of the transformed stationary series.}
+\item{\code{statSer4Mom}}{The fourth moment of the transformed stationary series.}
 }
 }
 \description{

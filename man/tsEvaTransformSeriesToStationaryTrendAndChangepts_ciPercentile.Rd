@@ -22,22 +22,22 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(
 }
 \value{
 A list containing the following elements:
-\itemize{
-\item{runningStatsMulteplicity: The running statistics multiplicity.}
-\item{stationarySeries: The transformed stationary series.}
-\item{trendSeries: The trend series.}
-\item{trendonlySeries: The trend series without the stationary component.}
-\item{ChpointsSeries2: The trend series with change points.}
-\item{changePoints: The detected change points.}
-\item{trendSeriesNonSeasonal: The trend series without the seasonal component.}
-\item{trendError: The error on the trend.}
-\item{stdDevSeries: The standard deviation series.}
-\item{stdDevSeriesNonStep: The standard deviation series without the step change component.}
-\item{stdDevError: The error on the standard deviation.}
-\item{timeStamps: The time stamps.}
-\item{nonStatSeries: The original non-stationary series.}
-\item{statSer3Mom: The running mean of the third moment of the stationary series.}
-\item{statSer4Mom: The running mean of the fourth moment of the stationary series.}
+\describe{
+\item{\code{runningStatsMulteplicity}}{The running statistics multiplicity}
+\item{\code{stationarySeries}}{The transformed stationary series}
+\item{\code{trendSeries}}{The trend series}
+\item{\code{trendonlySeries}}{The trend series without the stationary component}
+\item{\code{ChpointsSeries2}}{The trend series with change points}
+\item{\code{changePoints}}{The detected change points}
+\item{\code{trendSeriesNonSeasonal}}{The trend series without the seasonal component}
+\item{\code{trendError}}{The error on the trend}
+\item{\code{stdDevSeries}}{The standard deviation series}
+\item{\code{stdDevSeriesNonStep}}{The standard deviation series without the step change component}
+\item{\code{stdDevError}}{The error on the standard deviation}
+\item{\code{timeStamps}}{The time stamps}
+\item{\code{nonStatSeries}}{The original non-stationary series}
+\item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series}
+\item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series}
 }
 }
 \description{

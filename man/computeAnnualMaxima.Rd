@@ -14,11 +14,13 @@ second column should contain the series values.}
 \value{
 A list containing the annual maximum values, their corresponding dates,
 and their indices.
-- \code{annualMax}: A numeric vector of annual maximum values.
-- \code{annualMaxDate}: A vector of dates corresponding to the annual
-maximum values.
-- \code{annualMaxIndx}: A vector of indices indicating the positions
-of the annual maximum values in the original time series.
+\describe{
+\item{\code{annualMax}}{A numeric vector of annual maximum values.}
+\item{\code{annualMaxDate}}{A vector of dates corresponding to the annual
+maximum values.}
+\item{\code{annualMaxIndx}}{A vector of indices indicating the positions
+of the annual maximum values in the original time series.}
+}
 }
 \description{
 \code{computeAnnualMaxima} is a function that computes the annual maxima of

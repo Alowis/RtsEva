@@ -24,8 +24,11 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj(
 \item{...}{Additional arguments to be passed to the function.}
 }
 \value{
-Plot 1: RLtstep: return level curve with confidence interval for the selected timeIndex
-Plot 2: beam: beam of return level curve for all with highlited curve for selected timeIndex
+\describe{
+\item{Plot 1}{RLtstep: return level curve with confidence interval for the
+selected timeIndex}
+\item{Plot 2}{}beam: beam of return level curve for all with highlited curve
+for selected timeIndex}
 }
 \description{
 \code{tsEvaPlotReturnLevelsGPDFromAnalysisObj} is a function that plots the return levels for a Generalized Pareto Distribution (GPD) using the parameters obtained from an analysis object. It considers non-stationarity by considering time-varying parameters and their associated standard errors.

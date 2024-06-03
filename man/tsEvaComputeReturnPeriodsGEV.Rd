@@ -17,13 +17,13 @@ tsEvaComputeReturnPeriodsGEV(epsilon, sigma, mu, BlockMax)
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{GevPseudo}: A matrix of pseudo observations obtained from
-the GEV distribution for each annual extreme at every time step.
-\item \code{returnPeriods}: A matrix of return periods corresponding to
-the pseudo observations.
-\item \code{PseudoObs}: The pseudo observation corresponding to
-the maximum value used in the computation.
+\describe{
+\item{\code{GevPseudo}}{A matrix of pseudo observations obtained from
+the GEV distribution for each annual extreme at every time step.}
+\item{\code{returnPeriods}}{A matrix of return periods corresponding to
+the pseudo observations.}
+\item{\code{PseudoObs}}{The pseudo observation corresponding to
+the maximum value used in the computation.}
 }
 }
 \description{

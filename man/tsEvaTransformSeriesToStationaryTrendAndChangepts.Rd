@@ -19,22 +19,22 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts(
 }
 \value{
 A list containing the following elements:
-\itemize{
-\item \code{runningStatsMulteplicity}: The running statistics multiplicity.
-\item \code{stationarySeries}: The transformed stationary series.
-\item \code{trendSeries}: The trend series.
-\item \code{trendonlySeries}: The trend series without the stationary component.
-\item \code{ChpointsSeries2}: The trend component of the change points.
-\item \code{changePoints}: The detected change points.
-\item \code{trendSeriesNonSeasonal}: The trend series without the seasonal component.
-\item \code{trendError}: The error on the trend.
-\item \code{stdDevSeries}: The slowly varying standard deviation series.
-\item \code{stdDevSeriesNonStep}: The slowly varying standard deviation series without step changes.
-\item \code{stdDevError}: The error on the standard deviation.
-\item \code{timeStamps}: The time stamps.
-\item \code{nonStatSeries}: The original non-stationary series.
-\item \code{statSer3Mom}: The running mean of the third moment of the stationary series.
-\item \code{statSer4Mom}: The running mean of the fourth moment of the stationary series.
+\describe{
+\item{\code{runningStatsMulteplicity}}{The running statistics multiplicity.}
+\item{\code{stationarySeries}}{The transformed stationary series.}
+\item{\code{trendSeries}}{The trend series.}
+\item{\code{trendonlySeries}}{The trend series without the stationary component.}
+\item{\code{ChpointsSeries2}}{The trend component of the change points.}
+\item{\code{changePoints}}{The detected change points.}
+\item{\code{trendSeriesNonSeasonal}}{The trend series without the seasonal component.}
+\item{\code{trendError}}{The error on the trend.}
+\item{\code{stdDevSeries}}{The slowly varying standard deviation series.}
+\item{\code{stdDevSeriesNonStep}}{The slowly varying standard deviation series without step changes.}
+\item{\code{stdDevError}}{The error on the standard deviation.}
+\item{\code{timeStamps}}{The time stamps.}
+\item{\code{nonStatSeries}}{The original non-stationary series.}
+\item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series.}
+\item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series.}
 }
 }
 \description{

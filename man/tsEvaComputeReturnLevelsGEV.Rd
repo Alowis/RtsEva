@@ -32,9 +32,9 @@ corresponding time unit. For example, while working on yearly}
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{returnLevels}: A matrix of return levels corresponding to the specified return periods.
-\item \code{returnLevelsErr}: A matrix of standard errors for the return levels.
+\describe{
+\item{\code{returnLevels}}{A matrix of return levels corresponding to the specified return periods.}
+\item{\code{returnLevelsErr}}{A matrix of standard errors for the return levels.}
 }
 }
 \description{

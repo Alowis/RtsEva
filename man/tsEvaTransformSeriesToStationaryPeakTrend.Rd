@@ -23,19 +23,19 @@ given quantile. Default is 0.5.}
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{runningStatsMulteplicity}: The multiplicity of running statistics.
-\item \code{stationarySeries}: The stationary series after removing the trend.
-\item \code{trendSeries}: The trend component of the series.
-\item \code{trendSeriesNonSeasonal}: NULL (not used).
-\item \code{trendError}: The error on the trend component.
-\item \code{stdDevSeries}: The standard deviation series.
-\item \code{stdDevSeriesNonSeasonal}: NULL (not used).
-\item \code{stdDevError}: The error on the standard deviation series.
-\item \code{timeStamps}: The time stamps.
-\item \code{nonStatSeries}: The original non-stationary series.
-\item \code{statSer3Mom}: The running mean of the third moment of the stationary series.
-\item \code{statSer4Mom}: The running mean of the fourth moment of the stationary series.
+\describe{
+\item{\code{runningStatsMulteplicity}}{The multiplicity of running statistics.}
+\item{\code{stationarySeries}}{The stationary series after removing the trend.}
+\item{\code{trendSeries}}{The trend component of the series.}
+\item{\code{trendSeriesNonSeasonal}}{NULL (not used).}
+\item{\code{trendError}}{The error on the trend component.}
+\item{\code{stdDevSeries}}{The standard deviation series.}
+\item{\code{stdDevSeriesNonSeasonal}}{NULL (not used).}
+\item{\code{stdDevError}}{The error on the standard deviation series.}
+\item{\code{timeStamps}}{The time stamps.}
+\item{\code{nonStatSeries}}{The original non-stationary series.}
+\item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series.}
+\item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series.}
 }
 }
 \description{

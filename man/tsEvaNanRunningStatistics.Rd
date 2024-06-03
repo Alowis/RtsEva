@@ -13,17 +13,20 @@ tsEvaNanRunningStatistics(series, windowSize)
 }
 \value{
 A data frame containing the following running statistics:
-\itemize{
-\item{rnvar: running variance}
-\item{rn3mom: running third statistical momentum}
-\item{rn4mom: running fourth statistical momentum}
+\describe{
+\item{\code{rnvar}}{running variance}
+\item{\code{rn3mom}}{running third statistical momentum}
+\item{\code{rn4mom}}{running fourth statistical momentum}
 }
 }
 \description{
 Returns the moving statistical momentums to the forth.
 }
 \details{
-This function calculates the running variance, running third statistical momentum, and running fourth statistical momentum for a given time series data using a moving window approach. The window size determines the number of observations used to calculate the statistics at each point.
+This function calculates the running variance, running third statistical
+momentum, and running fourth statistical momentum for a given time series
+data using a moving window approach. The window size determines the number
+of observations used to calculate the statistics at each point.
 }
 \examples{
 series <- c(1,2,NaN,4,5,6,NaN,8,9,4,5,6,7,3,9,1,0,4,5,2)

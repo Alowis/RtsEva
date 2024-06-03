@@ -13,9 +13,11 @@ and the second column should contain the series values.}
 }
 \value{
 A list containing the monthly maxima, corresponding dates, and indices.
-- \code{monthlyMax}: A vector of the monthly maximum values.
-- \code{monthlyMaxDate}: A vector of the dates corresponding to the monthly maximum values.
-- \code{monthlyMaxIndx}: A vector of the indices of the monthly maximum values in the original series.
+\describe{
+\item{\code{monthlyMax}}{A vector of the monthly maximum values.}
+\item{\code{monthlyMaxDate}}{A vector of the dates corresponding to the monthly maximum values.}
+\item{\code{monthlyMaxIndx}}{A vector of the indices of the monthly maximum values in the original series.}
+}
 }
 \description{
 \code{computeMonthlyMaxima} is a function that computes the monthly maxima

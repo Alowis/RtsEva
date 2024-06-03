@@ -28,10 +28,11 @@ transformation or "rev" for reverse transformation.}
 \item{...}{Additional arguments to be passed to the function.}
 }
 \value{
-Plot 1: RLtstep: return level curve with confidence interval for the
-selected timeIndex
-Plot 2: beam: beam of return level curve for all with highlited curve
-for selected timeIndex
+\describe{
+\item{Plot 1}{RLtstep: return level curve with confidence interval for the
+selected timeIndex}
+\item{Plot 2}{}beam: beam of return level curve for all with highlited curve
+for selected timeIndex}
 }
 \description{
 \code{tsEvaPlotReturnLevelsGEVFromAnalysisObj} is a function that plots the

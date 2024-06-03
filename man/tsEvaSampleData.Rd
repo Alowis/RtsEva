@@ -25,17 +25,17 @@ tsEvaSampleData(
 }
 \value{
 A list containing the following elements:
-\itemize{
-\item \code{completeSeries}: The complete time series data.
-\item \code{POT}: The data for Peaks Over Threshold (POT) analysis.
-\item \code{years}: The years in the time series data.
-\item \code{Percentiles}: The desired percentiles and their corresponding values.
-\item \code{annualMax}: The annual maximum values.
-\item \code{annualMaxDate}: The dates corresponding to the annual maximum values.
-\item \code{annualMaxIndx}: The indices of the annual maximum values.
-\item \code{monthlyMax}: The monthly maximum values.
-\item \code{monthlyMaxDate}: The dates corresponding to the monthly maximum values.
-\item \code{monthlyMaxIndx}: The indices of the monthly maximum values.
+\describe{
+\item{\code{completeSeries}}{The complete time series data.}
+\item{\code{POT}}{The data for Peaks Over Threshold (POT) analysis.}
+\item{\code{years}}{The years in the time series data.}
+\item{\code{Percentiles}}{The desired percentiles and their corresponding values.}
+\item{\code{annualMax}}{The annual maximum values.}
+\item{\code{annualMaxDate}}{The dates corresponding to the annual maximum values.}
+\item{\code{annualMaxIndx}}{The indices of the annual maximum values.}
+\item{\code{monthlyMax}}{The monthly maximum values.}
+\item{\code{monthlyMaxDate}}{The dates corresponding to the monthly maximum values.}
+\item{\code{monthlyMaxIndx}}{The indices of the monthly maximum values.}
 }
 }
 \description{

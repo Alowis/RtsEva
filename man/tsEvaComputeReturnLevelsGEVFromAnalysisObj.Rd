@@ -19,11 +19,11 @@ tsEvaComputeReturnLevelsGEVFromAnalysisObj(
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{returnLevels}: A matrix of return levels corresponding to the specified return periods.
-\item \code{returnLevelsErr}: A matrix of standard errors for the return levels.
-\item \code{returnLevelsErrFit}: A matrix of standard errors for the return levels obtained from fitting the non-stationary model.
-\item \code{returnLevelsErrTransf}: A matrix of standard errors for the return levels obtained from the transformed data.
+\describe{
+\item{\code{returnLevels}}{A matrix of return levels corresponding to the specified return periods.}
+\item{\code{returnLevelsErr}}{A matrix of standard errors for the return levels.}
+\item{\code{returnLevelsErrFit}}{A matrix of standard errors for the return levels obtained from fitting the non-stationary model.}
+\item{\code{returnLevelsErrTransf}}{A matrix of standard errors for the return levels obtained from the transformed data.}
 }
 }
 \description{

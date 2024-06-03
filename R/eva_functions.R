@@ -7,17 +7,17 @@
 #' of a given event for GEV and GPD distributions at a given time index.
 #'
 #' @param params A data frame containing the following parameters:
-#' \itemize{
-#' \item \code{epsilonGEV}: Shape parameter for the Generalized Extreme Value
-#' (GEV) distribution.
-#' \item \code{muGEV}: Location parameter for the GEV distribution.
-#' \item \code{sigmaGEV}: Scale parameter for the GEV distribution.
-#' \item \code{epsilonGPD}: Shape parameter for the Generalized Pareto
-#' (GPD) distribution.
-#' \item \code{thresholdGPD}:Threshold parameter for the GPD distribution.
-#' \item \code{sigmaGPD}: Scale parameter for the GPD distribution.
-#' \item \code{nPeaks}: Number of peaks in the sample time horizon.
-#' \item \code{SampleTimeHorizon}: Total number of years in the data sample.
+#' \describe{
+#' \item{\code{epsilonGEV}}{Shape parameter for the Generalized Extreme Value
+#' (GEV) distribution.}
+#' \item{\code{muGEV}}{Location parameter for the GEV distribution.}
+#' \item{\code{sigmaGEV}}{Scale parameter for the GEV distribution.}
+#' \item{\code{epsilonGPD}}{Shape parameter for the Generalized Pareto
+#' (GPD) distribution.}
+#' \item{\code{thresholdGPD}}{Threshold parameter for the GPD distribution.}
+#' \item{\code{sigmaGPD}}{Scale parameter for the GPD distribution.}
+#' \item{\code{nPeaks}}{Number of peaks in the sample time horizon.}
+#' \item{\code{SampleTimeHorizon}}{Total number of years in the data sample.}
 #' }
 #' @param RPiGEV Value of RP for the GEV distribution.
 #' @param RPiGPD Value of RP for the GPD distribution.
@@ -58,13 +58,13 @@ tsEvaComputeTimeRP <- function(params, RPiGEV, RPiGPD){
 #' @param BlockMax A vector containing the block maxima data.
 #'
 #' @return A list containing the following components:
-#' \itemize{
-#' \item \code{GevPseudo}: A matrix of pseudo observations obtained from
-#' the GEV distribution for each annual extreme at every time step.
-#' \item \code{returnPeriods}: A matrix of return periods corresponding to
-#' the pseudo observations.
-#' \item \code{PseudoObs}: The pseudo observation corresponding to
-#' the maximum value used in the computation.
+#' \describe{
+#' \item{\code{GevPseudo}}{A matrix of pseudo observations obtained from
+#' the GEV distribution for each annual extreme at every time step.}
+#' \item{\code{returnPeriods}}{A matrix of return periods corresponding to
+#' the pseudo observations.}
+#' \item{\code{PseudoObs}}{The pseudo observation corresponding to
+#' the maximum value used in the computation.}
 #' }
 #'
 #' @seealso \code{\link{empdis}}
@@ -119,13 +119,13 @@ tsEvaComputeReturnPeriodsGEV <- function(epsilon, sigma, mu, BlockMax) {
 #' @param sampleTimeHorizon The time horizon of the sample.
 #'
 #' @return A list containing the following components:
-#'   \itemize{
-#'     \item \code{GpdPseudo}: A matrix of pseudo observations obtained from
-#'      the GPD for each peak value at every time step.
-#'     \item \code{returnPeriods}: A matrix of return periods
-#'     corresponding to the pseudo observations.
-#'     \item \code{PseudoObs}: A data frame containing the pseudo
-#'     observations and their corresponding identifiers.
+#'   \describe{
+#'     \item{\code{GpdPseudo}}{A matrix of pseudo observations obtained from
+#'      the GPD for each peak value at every time step.}
+#'     \item{\code{returnPeriods}}{A matrix of return periods
+#'     corresponding to the pseudo observations.}
+#'     \item{\code{PseudoObs}}{A data frame containing the pseudo
+#'     observations and their corresponding identifiers.}
 #'   }
 #'
 #' @seealso \code{\link{empdis}}
@@ -195,9 +195,9 @@ tsEvaComputeReturnPeriodsGPD <- function(epsilon, sigma, threshold, peaks, nPeak
 # monthly maxima returnPeriodsInDts must be expressed in months.
 #'
 #' @return A list containing the following components:
-#'   \itemize{
-#'     \item \code{returnLevels}: A matrix of return levels corresponding to the specified return periods.
-#'     \item \code{returnLevelsErr}: A matrix of standard errors for the return levels.
+#'   \describe{
+#'     \item{\code{returnLevels}}{A matrix of return levels corresponding to the specified return periods.}
+#'     \item{\code{returnLevelsErr}}{A matrix of standard errors for the return levels.}
 #'   }
 #'
 #' @seealso \code{\link{empdis}}
@@ -262,11 +262,11 @@ tsEvaComputeReturnLevelsGEV <- function(epsilon, sigma, mu, epsilonStdErr, sigma
 #' @param timeIndex Temporal index corresponding to the time step on which compute the GEV RLs.
 #'
 #' @return A list containing the following components:
-#'   \itemize{
-#'     \item \code{returnLevels}: A matrix of return levels corresponding to the specified return periods.
-#'     \item \code{returnLevelsErr}: A matrix of standard errors for the return levels.
-#'     \item \code{returnLevelsErrFit}: A matrix of standard errors for the return levels obtained from fitting the non-stationary model.
-#'     \item \code{returnLevelsErrTransf}: A matrix of standard errors for the return levels obtained from the transformed data.
+#'   \describe{
+#'     \item{\code{returnLevels}}{A matrix of return levels corresponding to the specified return periods.}
+#'     \item{\code{returnLevelsErr}}{A matrix of standard errors for the return levels.}
+#'     \item{\code{returnLevelsErrFit}}{A matrix of standard errors for the return levels obtained from fitting the non-stationary model.}
+#'     \item{\code{returnLevelsErrTransf}}{A matrix of standard errors for the return levels obtained from the transformed data.}
 #'   }
 #' @examples
 #' # Example usage with some sample data
@@ -352,9 +352,9 @@ tsEvaComputeReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams, r
 #' @param returnPeriods The return periods for which to compute the return levels.
 #'
 #' @return A list containing the following components:
-#'   \itemize{
-#'     \item \code{returnLevels}: A vector of return levels corresponding to the specified return periods.
-#'     \item \code{returnLevelsErr}: A vector of standard errors for the return levels.
+#'   \describe{
+#'     \item{\code{returnLevels}}{A vector of return levels corresponding to the specified return periods.}
+#'     \item{\code{returnLevelsErr}}{A vector of standard errors for the return levels.}
 #'   }
 #'
 #' @details
@@ -421,10 +421,10 @@ tsEvaComputeReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr
 #' @param timeIndex Temporal index corresponding to the time step on which compute the GEV RLs.
 #'
 #' @return A list with the following components:
-#'   \itemize{
-#'     \item \code{returnLevels} A vector of return levels corresponding to the specified return periods.
-#'     \item \code{returnLevelsErrFit} A vector of standard errors for the return levels estimated based on the fit.
-#'     \item \code{returnLevelsErrTransf} A vector of standard errors for the return levels estimated based on the transformed parameters.
+#'   \describe{
+#'     \item{\code{returnLevels}}{A vector of return levels corresponding to the specified return periods.}
+#'     \item{\code{returnLevelsErrFit}}{A vector of standard errors for the return levels estimated based on the fit.}
+#'     \item{\code{returnLevelsErrTransf}}{A vector of standard errors for the return levels estimated based on the transformed parameters.}
 #'   }
 #'
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGPD}}
@@ -517,10 +517,15 @@ tsEvaComputeReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams, r
 #' implemented.
 #'
 #' @return A list containing the following components:
-#'   \itemize{
-#'     \item \code{Fit}: A character string indicating whether the EVD could be fitted to the data ("No fit") or the EVD was successfully fitted to the data ("Fitted").
-#'     \item \code{ReturnLevels}: A data frame containing the target return period (`ReturnPeriod`), GEV return level (`GEV`), GPD return level (`GPD`), GEV return level error (`errGEV`), and GPD return level error (`errGPD`) for the specified time index.
-#'     \item \code{Params}: A list containing the GEV and GPD parameters for the specified time index, including their standard errors.
+#'   \describe{
+#'     \item{\code{Fit}}{A character string indicating whether the EVD could be
+#'      fitted to the data ("No fit") or the EVD was successfully fitted to the data ("Fitted").}
+#'     \item{\code{ReturnLevels}}{A data frame containing the target
+#'      return period (`ReturnPeriod`), GEV return level (`GEV`), GPD return level (`GPD`),
+#'       GEV return level error (`errGEV`), and GPD return level error (`errGPD`) for
+#'        the specified time index.}
+#'     \item{\code{Params}}{A list containing the GEV and GPD parameters for the
+#'     specified time index, including their standard errors.}
 #'   }
 #'
 #' @seealso \code{\link{tsEvaComputeReturnLevelsGEV}}, \code{\link{tsEvaComputeReturnLevelsGPD}}
@@ -599,17 +604,17 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
 #' @param tail The tail to be studied for POT selection, either 'high' or 'low'.
 #'
 #' @return A list containing the following elements:
-#'   \itemize{
-#'     \item \code{completeSeries}: The complete time series data.
-#'     \item \code{POT}: The data for Peaks Over Threshold (POT) analysis.
-#'     \item \code{years}: The years in the time series data.
-#'     \item \code{Percentiles}: The desired percentiles and their corresponding values.
-#'     \item \code{annualMax}: The annual maximum values.
-#'     \item \code{annualMaxDate}: The dates corresponding to the annual maximum values.
-#'     \item \code{annualMaxIndx}: The indices of the annual maximum values.
-#'     \item \code{monthlyMax}: The monthly maximum values.
-#'     \item \code{monthlyMaxDate}: The dates corresponding to the monthly maximum values.
-#'     \item \code{monthlyMaxIndx}: The indices of the monthly maximum values.
+#'   \describe{
+#'     \item{\code{completeSeries}}{The complete time series data.}
+#'     \item{\code{POT}}{The data for Peaks Over Threshold (POT) analysis.}
+#'     \item{\code{years}}{The years in the time series data.}
+#'     \item{\code{Percentiles}}{The desired percentiles and their corresponding values.}
+#'     \item{\code{annualMax}}{The annual maximum values.}
+#'     \item{\code{annualMaxDate}}{The dates corresponding to the annual maximum values.}
+#'     \item{\code{annualMaxIndx}}{The indices of the annual maximum values.}
+#'     \item{\code{monthlyMax}}{The monthly maximum values.}
+#'     \item{\code{monthlyMaxDate}}{The dates corresponding to the monthly maximum values.}
+#'     \item{\code{monthlyMaxIndx}}{The indices of the monthly maximum values.}
 #'   }
 #' @seealso [tsGetPOT()]
 #' @import stats
@@ -682,17 +687,17 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 #' @param tail The tail to be studied for POT selection, either 'high' or 'low'.
 #'
 #' @return A list containing the following fields:
-#' \itemize{
-#'   \item \code{threshold}:The threshold value used for identifying peaks.
-#'   \item \code{thresholdError}:The error associated with the threshold value.
-#'   \item \code{percentile}:The percentile value used as the threshold.
-#'   \item \code{peaks}:The values of the identified peaks.
-#'   \item \code{stpeaks}:The start indices of the identified peaks.
-#'   \item \code{endpeaks}:The end indices of the identified peaks.
-#'   \item \code{ipeaks}:The indices of the identified peaks.
-#'   \item \code{time}:The time values corresponding to the identified peaks.
-#'   \item \code{pars}:The parameters of the Generalized Pareto Distribution (GPD)
-#'   fitted to the peaks.
+#' \describe{
+#'   \item{\code{threshold}}{The threshold value used for identifying peaks}
+#'   \item{\code{thresholdError}}{The error associated with the threshold value}
+#'   \item{\code{percentile}}{The percentile value used as the threshold.}
+#'   \item{\code{peaks}}{The values of the identified peaks.}
+#'   \item{\code{stpeaks}}{The start indices of the identified peaks.}
+#'   \item{\code{endpeaks}}{The end indices of the identified peaks.}
+#'   \item{\code{ipeaks}}{The indices of the identified peaks.}
+#'   \item{\code{time}}{The time values corresponding to the identified peaks.}
+#'   \item{\code{pars}}{The parameters of the Generalized Pareto Distribution (GPD)
+#'   fitted to the peaks.}
 #' }
 #'
 #' @import stats
@@ -853,10 +858,10 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #' and return levels for a given dataset of extreme values.
 #'
 #' @param pointData A list containing the dataset of extreme values. It should include the following components:
-#'   \itemize{
-#'     \item{annualMax}{A vector of annual maximum values.}
-#'     \item{annualMaxDate}{A vector of dates corresponding to the annual maximum values.}
-#'     \item{monthlyMax}{A matrix of monthly maximum values.}
+#'   \describe{
+#'     \item{\code{annualMax}}{A vector of annual maximum values}
+#'     \item{\code{annualMaxDate}}{A vector of dates corresponding to the annual maximum values}
+#'     \item{\code{monthlyMax}}{A matrix of monthly maximum values}
 #'   }
 #' @param alphaCI The confidence level for the confidence intervals of the parameter estimates. Default is 0.95.
 #' @param gevMaxima The type of maxima to use for GEV fitting. Can be either 'annual' or 'monthly'. Default is 'annual'.
@@ -866,28 +871,28 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
 #'
 #' @importFrom evd fgev
 #' @return A list containing the following components:
-#'   \itemize{
-#'     \item \code{EVmeta}: A list containing metadata about the analysis.
+#'   \describe{
+#'     \item{\code{EVmeta}}{A list containing metadata about the analysis.
 #'     It includes Tr, A vector of return periods for which
-#'     return levels are calculated.
-#'     \item \code{EVdata}: A list containing the calculated statistics and return levels. It includes the following components:
-#'       \itemize{
-#'         \item \code{GEVstat}: A list containing the GEV statistics and return levels:
-#'           \itemize{
-#'             \item \code{method}: The method used for fitting the GEV distribution.
-#'             \item \code{values}: A vector of return levels calculated using the GEV distribution.
-#'             \item \code{parameters}: A vector of parameter estimates for the GEV distribution.
-#'             \item \code{paramCIs}: A matrix of confidence intervals for the parameter estimates.
+#'     return levels are calculated}
+#'     \item{\code{EVdata}}{A list containing the calculated statistics and return levels. It includes the following components:}
+#'       \describe{
+#'         \item{\code{GEVstat}}{A list containing the GEV statistics and return levels:}
+#'           \describe{
+#'             \item{\code{method}}{The method used for fitting the GEV distribution.}
+#'             \item{\code{values}}{A vector of return levels calculated using the GEV distribution.}
+#'             \item{\code{parameters}}{A vector of parameter estimates for the GEV distribution.}
+#'             \item{\code{paramCIs}}{A matrix of confidence intervals for the parameter estimates.}
 #'           }
 #'         }
-#'         \item \code{GPDstat}: list containing the GPD statistics and return levels:
-#'           \itemize{
-#'             \item \code{method}: The method used for fitting the GPD distribution.
-#'             \item \code{values}: A vector of return levels calculated using the GPD distribution.
-#'             \item \code{parameters}: A vector of parameter estimates for the GPD distribution.
-#'             \item \code{paramCIs}: A matrix of confidence intervals for the parameter estimates.
+#'         \item{\code{GPDstat}}{list containing the GPD statistics and return levels:}
+#'           \describe{
+#'             \item{\code{method}}{The method used for fitting the GPD distribution}
+#'             \item{\code{values}}{A vector of return levels calculated using the GPD distribution}
+#'             \item{\code{parameters}}{A vector of parameter estimates for the GPD distribution}
+#'             \item{\code{paramCIs}}{A matrix of confidence intervals for the parameter estimates}
 #'           }
-#'         \item \code{isValid}: A logical value indicating whether the analysis was performed or not.
+#'         \item{\code{isValid}}{A logical value indicating whether the analysis was performed or not.}
 #'     }
 #'
 #' @examples
@@ -1178,11 +1183,13 @@ findMax <- function(subIndxs,srs) {
 #'
 #' @return A list containing the annual maximum values, their corresponding dates,
 #'  and their indices.
-#'         - \code{annualMax}: A numeric vector of annual maximum values.
-#'         - \code{annualMaxDate}: A vector of dates corresponding to the annual
-#'          maximum values.
-#'         - \code{annualMaxIndx}: A vector of indices indicating the positions
-#'         of the annual maximum values in the original time series.
+#' \describe{
+#' \item{\code{annualMax}}{A numeric vector of annual maximum values.}
+#' \item{\code{annualMaxDate}}{A vector of dates corresponding to the annual
+#' maximum values.}
+#' \item{\code{annualMaxIndx}}{A vector of indices indicating the positions
+#' of the annual maximum values in the original time series.}
+#' }
 #'
 #' @examples
 #' timeAndSeries <- ArdecheStMartin
@@ -1219,10 +1226,11 @@ computeAnnualMaxima <- function(timeAndSeries) {
 #'                      and the second column should contain the series values.
 #'
 #' @return A list containing the monthly maxima, corresponding dates, and indices.
-#'         - \code{monthlyMax}: A vector of the monthly maximum values.
-#'         - \code{monthlyMaxDate}: A vector of the dates corresponding to the monthly maximum values.
-#'         - \code{monthlyMaxIndx}: A vector of the indices of the monthly maximum values in the original series.
-#'
+#' \describe{
+#' \item{\code{monthlyMax}}{A vector of the monthly maximum values.}
+#' \item{\code{monthlyMaxDate}}{A vector of the dates corresponding to the monthly maximum values.}
+#' \item{\code{monthlyMaxIndx}}{A vector of the indices of the monthly maximum values in the original series.}
+#'}
 #' @examples
 #' timeAndSeries <- ArdecheStMartin
 #' computeMonthlyMaxima(timeAndSeries)
@@ -1262,13 +1270,14 @@ computeMonthlyMaxima<- function(timeAndSeries) {
 #' @param qt A numeric value representing the threshold for peak detection.
 #' @import texmex stats
 #' @return A data frame with information about the peaks, including:
-#' \itemize{
-#'   \item{Q: the peak value},
-#'   \item{max: max time index},
-#'   \item{start: start time index},
-#'   \item{end: end time index},
-#'   \item{dur: duration},
-#'   \item{cluster:cluster information }}
+#' \describe{
+#'   \item{\code{Q}}{the peak value}
+#'   \item{\code{max}}{max time index}
+#'   \item{\code{start}}{start time index}
+#'   \item{\code{end}}{end time index}
+#'   \item{\code{dur}}{duration}
+#'   \item{\code{cluster}}{cluster information }
+#'   }
 #' @examples
 #' data <- c(1, 2, 3, 4, 5, 4, 3, 2, 1)
 #' declustpeaks(data, minpeakdistance = 2, minrundistance = 2, qt = 3)
@@ -1310,16 +1319,16 @@ declustpeaks<-function(data,minpeakdistance = 10 ,minrundistance = 7, qt){
 #' @param nyr An integer representing the number of years in the dataset.
 #'
 #' @return A data frame containing:
-#' \itemize{
-#'   \item{emp.RP: empirical return period},
-#'   \item{haz.RP: Hazen return period},
-#'   \item{cun.RP: Cunnane return period},
-#'   \item{gumbel: Gumbel values},
-#'   \item{emp.f: empirical cumulative density},
-#'   \item{emp.hazen:Hazen cumulative density},
-#'   \item{emp.cunnan: Cunnane cumulative density},
-#'   \item{Q: original data},
-#'   \item{timestamp: time component}
+#' \describe{
+#'   \item{\code{emp.RP}}{empirical return period}
+#'   \item{\code{haz.RP}}{Hazen return period}
+#'   \item{\code{cun.RP}}{Cunnane return period}
+#'   \item{\code{gumbel}}{Gumbel values}
+#'   \item{\code{emp.f}}{empirical cumulative density}
+#'   \item{\code{emp.hazen}}{Hazen cumulative density}
+#'   \item{\code{emp.cunnan}}{Cunnane cumulative density}
+#'   \item{\code{Q}}{original data}
+#'   \item{\code{timestamp}}{time component}
 #'   }
 #' @examples
 #' x <- c(1, 2, 3, 4, 5)
@@ -1357,13 +1366,13 @@ empdis <- function(x, nyr) {
 #' @param nyr An integer representing the number of years.
 #'
 #' @return A data frame containing the following columns:
-#'   \itemize{
-#'     \item{emp.RP: Empirical return period},
-#'     \item{haz.RP: Hazen return period},
-#'     \item{gumbel: Gumbel frequency},
-#'     \item{emp.f: Empirical frequency},
-#'     \item{emp.hazen: Empirical Hazen frequency},
-#'     \item{Q: Discharge values}
+#'   \describe{
+#'     \item{\code{emp.RP}}{Empirical return period}
+#'     \item{\code{haz.RP}}{Hazen return period}
+#'     \item{\code{gumbel}}{Gumbel frequency}
+#'     \item{\code{emp.f}}{Empirical frequency}
+#'     \item{\code{emp.hazen}}{Empirical Hazen frequency}
+#'     \item{\code{Q}}{Discharge values}
 #'   }
 #'
 #' @examples

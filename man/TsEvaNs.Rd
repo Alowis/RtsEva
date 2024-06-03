@@ -29,11 +29,13 @@ corresponding series data.}
 
 \item{transfType}{The transformation type for non-stationary EVA.
 It can be one of the following:
-\itemize{trend: Long-term variations of the timeseries.}
-\itemize{seasonal: Long-term and seasonal variations of extremes.}
-\itemize{trendCIPercentile: Long-term variations of extremes using
-a specified percentile.}
-\itemize{trendPeak: Long-term variations of the peaks.}}
+\describe{
+\item{\code{trend}}{Long-term variations of the timeseries}
+\item{\code{seasonal}}{Long-term and seasonal variations of extremes}
+\item{\code{trendCIPercentile}}{Long-term variations of extremes using
+a specified percentile}
+\item{\code{trendPeak}}{Long-term variations of the peaks}
+}}
 
 \item{minPeakDistanceInDays}{The minimum peak distance in days.}
 
@@ -60,22 +62,24 @@ user or automatically set according to the tail selected.}
 \item{lowdt}{The temporal resolultion used for low values. default is 7 days.}
 
 \item{trans}{The transformation used to fit the EVD. Can be:
-\itemize{
-\item \code{ori}: use of original data.
-\item \code{rev}: Reversing the data (used for low extremes).
-\item \code{inv}: inversing the data (used for low extreme, can lead to unstabilities).
-\item \code{lninv}: log of inverse the data (used for low extreme, under development).
+\describe{
+\item{\code{ori}}{use of original data}
+\item{\code{rev}}{Reversing the data (used for low extremes)}
+\item{\code{inv}}{inversing the data (used for low extreme, can lead to unstabilities)}
+\item{\code{lninv}}{log of inverse the data (used for low extreme, under development)}
 }}
 }
 \value{
 A list containing the results of the non-stationary EVA.
 Containing the following components:
-\itemize{nonStationaryEvaParams: The estimated parameters
+\describe{
+\item{\code{nonStationaryEvaParams}}{The estimated parameters
 for non-stationary EVA.
 Parameters include GEV and GPD parameters for each timestep,
-confidence intervals, and other statistical measures.}
-\itemize{stationaryTransformData: The transformed data for stationary EVA.
-Includes the stationary series, trend, and standard deviation series.}
+confidence intervals, and other statistical measures}
+\item{\code{stationaryTransformData}}{The transformed data for stationary EVA.
+Includes the stationary series, trend, and standard deviation series}
+}
 }
 \description{
 This function performs non-stationary extreme value analysis (EVA) on a

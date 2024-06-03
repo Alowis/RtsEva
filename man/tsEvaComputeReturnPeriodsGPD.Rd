@@ -31,13 +31,13 @@ tsEvaComputeReturnPeriodsGPD(
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{GpdPseudo}: A matrix of pseudo observations obtained from
-the GPD for each peak value at every time step.
-\item \code{returnPeriods}: A matrix of return periods
-corresponding to the pseudo observations.
-\item \code{PseudoObs}: A data frame containing the pseudo
-observations and their corresponding identifiers.
+\describe{
+\item{\code{GpdPseudo}}{A matrix of pseudo observations obtained from
+the GPD for each peak value at every time step.}
+\item{\code{returnPeriods}}{A matrix of return periods
+corresponding to the pseudo observations.}
+\item{\code{PseudoObs}}{A data frame containing the pseudo
+observations and their corresponding identifiers.}
 }
 }
 \description{

@@ -19,10 +19,10 @@ tsEvaComputeReturnLevelsGPDFromAnalysisObj(
 }
 \value{
 A list with the following components:
-\itemize{
-\item \code{returnLevels} A vector of return levels corresponding to the specified return periods.
-\item \code{returnLevelsErrFit} A vector of standard errors for the return levels estimated based on the fit.
-\item \code{returnLevelsErrTransf} A vector of standard errors for the return levels estimated based on the transformed parameters.
+\describe{
+\item{\code{returnLevels}}{A vector of return levels corresponding to the specified return periods.}
+\item{\code{returnLevelsErrFit}}{A vector of standard errors for the return levels estimated based on the fit.}
+\item{\code{returnLevelsErrTransf}}{A vector of standard errors for the return levels estimated based on the transformed parameters.}
 }
 }
 \description{

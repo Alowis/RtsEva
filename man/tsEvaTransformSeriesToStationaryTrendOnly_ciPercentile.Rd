@@ -23,19 +23,19 @@ of the stationary series.}
 }
 \value{
 A list containing the following elements:
-\itemize{
-\item{runningStatsMulteplicity: The running statistics multiplicity.}
-\item{stationarySeries: The transformed stationary trend only series.}
-\item{trendSeries: The trend series.}
-\item{trendSeriesNonSeasonal: The non-seasonal trend series.}
-\item{trendError: The error on the trend.}
-\item{stdDevSeries: The standard deviation series.}
-\item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
-\item{stdDevError: The error on the standard deviation.}
-\item{timeStamps: The time stamps.}
-\item{nonStatSeries: The original non-stationary series.}
-\item{statSer3Mom: The running mean of the third moment of the stationary series.}
-\item{statSer4Mom: The running mean of the fourth moment of the stationary series.}
+\describe{
+\item{\code{runningStatsMulteplicity}}{The running statistics multiplicity}
+\item{\code{stationarySeries}}{The transformed stationary trend only series}
+\item{\code{trendSeries}}{The trend series}
+\item{\code{trendSeriesNonSeasonal}}{The non-seasonal trend series}
+\item{\code{trendError}}{The error on the trend}
+\item{\code{stdDevSeries}}{The standard deviation series}
+\item{\code{stdDevSeriesNonSeasonal}}{The non-seasonal standard deviation series}
+\item{\code{stdDevError}}{The error on the standard deviation}
+\item{\code{timeStamps}}{The time stamps}
+\item{\code{nonStatSeries}}{The original non-stationary series}
+\item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series}
+\item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series}
 }
 }
 \description{

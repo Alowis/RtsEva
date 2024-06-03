@@ -15,10 +15,10 @@ tsEVstatistics(
 }
 \arguments{
 \item{pointData}{A list containing the dataset of extreme values. It should include the following components:
-\itemize{
-\item{annualMax}{A vector of annual maximum values.}
-\item{annualMaxDate}{A vector of dates corresponding to the annual maximum values.}
-\item{monthlyMax}{A matrix of monthly maximum values.}
+\describe{
+\item{\code{annualMax}}{A vector of annual maximum values}
+\item{\code{annualMaxDate}}{A vector of dates corresponding to the annual maximum values}
+\item{\code{monthlyMax}}{A matrix of monthly maximum values}
 }}
 
 \item{alphaCI}{The confidence level for the confidence intervals of the parameter estimates. Default is 0.95.}
@@ -33,28 +33,28 @@ tsEVstatistics(
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{EVmeta}: A list containing metadata about the analysis.
+\describe{
+\item{\code{EVmeta}}{A list containing metadata about the analysis.
 It includes Tr, A vector of return periods for which
-return levels are calculated.
-\item \code{EVdata}: A list containing the calculated statistics and return levels. It includes the following components:
-\itemize{
-\item \code{GEVstat}: A list containing the GEV statistics and return levels:
-\itemize{
-\item \code{method}: The method used for fitting the GEV distribution.
-\item \code{values}: A vector of return levels calculated using the GEV distribution.
-\item \code{parameters}: A vector of parameter estimates for the GEV distribution.
-\item \code{paramCIs}: A matrix of confidence intervals for the parameter estimates.
+return levels are calculated}
+\item{\code{EVdata}}{A list containing the calculated statistics and return levels. It includes the following components:}
+\describe{
+\item{\code{GEVstat}}{A list containing the GEV statistics and return levels:}
+\describe{
+\item{\code{method}}{The method used for fitting the GEV distribution.}
+\item{\code{values}}{A vector of return levels calculated using the GEV distribution.}
+\item{\code{parameters}}{A vector of parameter estimates for the GEV distribution.}
+\item{\code{paramCIs}}{A matrix of confidence intervals for the parameter estimates.}
 }
 }
-\item \code{GPDstat}: list containing the GPD statistics and return levels:
-\itemize{
-\item \code{method}: The method used for fitting the GPD distribution.
-\item \code{values}: A vector of return levels calculated using the GPD distribution.
-\item \code{parameters}: A vector of parameter estimates for the GPD distribution.
-\item \code{paramCIs}: A matrix of confidence intervals for the parameter estimates.
+\item{\code{GPDstat}}{list containing the GPD statistics and return levels:}
+\describe{
+\item{\code{method}}{The method used for fitting the GPD distribution}
+\item{\code{values}}{A vector of return levels calculated using the GPD distribution}
+\item{\code{parameters}}{A vector of parameter estimates for the GPD distribution}
+\item{\code{paramCIs}}{A matrix of confidence intervals for the parameter estimates}
 }
-\item \code{isValid}: A logical value indicating whether the analysis was performed or not.
+\item{\code{isValid}}{A logical value indicating whether the analysis was performed or not.}
 }
 }
 \description{

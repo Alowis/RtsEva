@@ -22,24 +22,24 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile(
 }
 \value{
 A list containing the following components:
-\itemize{
-\item{runningStatsMulteplicity: The size of each sample used to compute the average.}
-\item{stationarySeries: The transformed stationary series.}
-\item{trendSeries: The trend series.}
-\item{trendSeriesNonSeasonal: The non-seasonal trend series.}
-\item{stdDevSeries: The season-dependent standard deviation series.}
-\item{stdDevSeriesNonSeasonal: The non-seasonal standard deviation series.}
-\item{trendError: The error on the trend.}
-\item{stdDevError: The error on the standard deviation.}
-\item{statSer3Mom: The 3rd moment of the transformed stationary series.}
-\item{statSer4Mom: The 4th moment of the transformed stationary series.}
-\item{nonStatSeries: The original non-stationary series.}
-\item{Regime: The regime of the trend seasonality.}
-\item{timeStamps: The time stamps.}
-\item{trendNonSeasonalError: The error on the non-seasonal trend.}
-\item{stdDevNonSeasonalError: The error on the non-seasonal standard deviation.}
-\item{trendSeasonalError: The error on the seasonal trend.}
-\item{stdDevSeasonalError: The error on the seasonal standard deviation.}
+\describe{
+\item{\code{runningStatsMulteplicity}}{The size of each sample used to compute the average}
+\item{\code{stationarySeries}}{The transformed stationary series}
+\item{\code{trendSeries}}{The trend series}
+\item{\code{trendSeriesNonSeasonal}}{The non-seasonal trend series}
+\item{\code{stdDevSeries}}{The season-dependent standard deviation series}
+\item{\code{stdDevSeriesNonSeasonal}}{The non-seasonal standard deviation series}
+\item{\code{trendError}}{The error on the trend}
+\item{\code{stdDevError}}{The error on the standard deviation}
+\item{\code{statSer3Mom}}{The 3rd moment of the transformed stationary series}
+\item{\code{statSer4Mom}}{The 4th moment of the transformed stationary series}
+\item{\code{nonStatSeries}}{The original non-stationary series}
+\item{\code{Regime}}{The regime of the trend seasonality}
+\item{\code{timeStamps}}{The time stamps}
+\item{\code{trendNonSeasonalError}}{The error on the non-seasonal trend}
+\item{\code{stdDevNonSeasonalError}}{The error on the non-seasonal standard deviation}
+\item{\code{trendSeasonalError}}{The error on the seasonal trend}
+\item{\code{stdDevSeasonalError}}{The error on the seasonal standard deviation}
 }
 }
 \description{

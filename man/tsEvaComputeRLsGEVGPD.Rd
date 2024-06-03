@@ -21,10 +21,15 @@ implemented.}
 }
 \value{
 A list containing the following components:
-\itemize{
-\item \code{Fit}: A character string indicating whether the EVD could be fitted to the data ("No fit") or the EVD was successfully fitted to the data ("Fitted").
-\item \code{ReturnLevels}: A data frame containing the target return period (\code{ReturnPeriod}), GEV return level (\code{GEV}), GPD return level (\code{GPD}), GEV return level error (\code{errGEV}), and GPD return level error (\code{errGPD}) for the specified time index.
-\item \code{Params}: A list containing the GEV and GPD parameters for the specified time index, including their standard errors.
+\describe{
+\item{\code{Fit}}{A character string indicating whether the EVD could be
+fitted to the data ("No fit") or the EVD was successfully fitted to the data ("Fitted").}
+\item{\code{ReturnLevels}}{A data frame containing the target
+return period (\code{ReturnPeriod}), GEV return level (\code{GEV}), GPD return level (\code{GPD}),
+GEV return level error (\code{errGEV}), and GPD return level error (\code{errGPD}) for
+the specified time index.}
+\item{\code{Params}}{A list containing the GEV and GPD parameters for the
+specified time index, including their standard errors.}
 }
 }
 \description{

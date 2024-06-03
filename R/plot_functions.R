@@ -17,17 +17,19 @@
 #' transformation or "rev" for reverse transformation.
 #' @param ... Additional arguments to be passed to the function.
 #'
-#' @return Plot 1: RLtstep: return level curve with confidence interval for the
-#'  selected timeIndex
-#'         Plot 2: beam: beam of return level curve for all with highlited curve
-#'          for selected timeIndex
+#' @return
+#' \describe{
+#' \item{Plot 1}{RLtstep: return level curve with confidence interval for the
+#' selected timeIndex}
+#' \item{Plot 2}{}beam: beam of return level curve for all with highlited curve
+#' for selected timeIndex}
 #'
 #' @references
 #' Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio,
 #'  G., and Alfieri, L. (2016). The transformed-stationary approach: a generic
 #'  and simplified methodology for non-stationary extreme value analysis.
-#'   \emph{Hydrology and Earth System Sciences}, 20, 3527-3547.
-#'    doi:10.5194/hess-20-3527-2016.
+#'  \emph{Hydrology and Earth System Sciences}, 20, 3527-3547.
+#'  doi:10.5194/hess-20-3527-2016.
 #' @seealso [tsEvaPlotReturnLevelsGEV()] and [tsEvaPlotAllRLevelsGEV()]
 #' @import ggplot2
 #' @importFrom lubridate yday month
@@ -154,8 +156,12 @@ tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
 #' @param trans The transformation used to fit the EVD. Can be "ori" for no transformation or "rev" for reverse transformation.
 #' @param ... Additional arguments to be passed to the function.
 #'
-#' @return Plot 1: RLtstep: return level curve with confidence interval for the selected timeIndex
-#'         Plot 2: beam: beam of return level curve for all with highlited curve for selected timeIndex
+#' @return
+#' \describe{
+#' \item{Plot 1}{RLtstep: return level curve with confidence interval for the
+#' selected timeIndex}
+#' \item{Plot 2}{}beam: beam of return level curve for all with highlited curve
+#' for selected timeIndex}
 #'
 #' @references
 #' Mentaschi, L., Vousdoukas, M., Voukouvalas, E., Sartini, L., Feyen, L., Besio, G., and Alfieri, L. (2016). The transformed-stationary approach: a generic and simplified methodology for non-stationary extreme value analysis. \emph{Hydrology and Earth System Sciences}, 20, 3527-3547. doi:10.5194/hess-20-3527-2016.

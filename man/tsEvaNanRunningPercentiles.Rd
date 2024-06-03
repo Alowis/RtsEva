@@ -28,12 +28,12 @@ based on the quitting values and incoming values in the window.
 The function also performs smoothing on the output and calculates the standard error.
 
 The function uses the following label parameters:
-\itemize{
-\item{percentDelta: Delta for the computation of a percentile interval around the requested percentage.
+\describe{
+\item{\code{percentDelta}}{Delta for the computation of a percentile interval around the requested percentage.
 If the windowSize is greater than 2000, percentDelta is set to 1.
 If the windowSize is between 1000 and 2000, percentDelta is set to 2.
 If the windowSize is between 100 and 1000, percentDelta is set to 5.}
-\item{nLowLimit: Minimum number of non-NA elements for a window for percentile computation.}
+\item{\code{nLowLimit}}{Minimum number of non-NA elements for a window for percentile computation}
 }
 }
 \examples{
