@@ -1529,6 +1529,13 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   tdim <- attributes(dt1)$units
   if (tdim == "hours") {
     dt <- dt / 24
+    #prevent first year to be previous year
+    firsthour=as.integer(format(timeStamps[1], "%H"))
+    while (firsthour>=19){
+      timeStamps=timeStamps+3600
+      firsthour=as.integer(format(timeStamps[1], "%H"))
+    }
+
   }
   avgYearLength <- avgYearLength / dt
 
