@@ -36,11 +36,11 @@ and show the evolution of exceedance probabilities.
 timeAndSeries <- ArdecheStMartin
 #go from six-hourly values to daily max
 timeAndSeries <- max_daily_value(timeAndSeries)
-#keep only the 40 last years
+#keep only the 20 last years
 yrs <- as.integer(format(timeAndSeries$date, "\%Y"))
-tokeep <- which(yrs>=1980)
+tokeep <- which(yrs>=2000)
 timeAndSeries <- timeAndSeries[tokeep,]
-timeWindow <- 10*365 # 10 years
+timeWindow <- 5*365 # 10 years
 TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 transfType = 'trendPeaks',tail = 'high')
 

@@ -40,7 +40,11 @@
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' timeWindow <- 30*365 # 30 years
+#' #keep only the 30 last years
+#' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
+#' tokeep <- which(yrs>=1990)
+#' timeAndSeries <- timeAndSeries[tokeep,]
+#' timeWindow <- 10*365 # 10 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
 # Define the required function arguments
@@ -174,7 +178,11 @@ tsEvaPlotReturnLevelsGEVFromAnalysisObj <- function(nonStationaryEvaParams,
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' timeWindow <- 30*365 # 30 years
+#' #keep only the 30 last years
+#' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
+#' tokeep <- which(yrs>=1990)
+#' timeAndSeries <- timeAndSeries[tokeep,]
+#' timeWindow <- 10*365 # 10 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
 # Define the required function arguments
@@ -300,7 +308,11 @@ tsEvaPlotReturnLevelsGPDFromAnalysisObj <- function(nonStationaryEvaParams,
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' timeWindow <- 30*365 # 30 years
+#' #keep only the 20 last years
+#' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
+#' tokeep <- which(yrs>=2000)
+#' timeAndSeries <- timeAndSeries[tokeep,]
+#' timeWindow <- 5*365 # 5 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
 # Define the required function arguments
@@ -523,7 +535,11 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' timeWindow <- 30*365 # 30 years
+#' #keep only the 20 last years
+#' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
+#' tokeep <- which(yrs>=2000)
+#' timeAndSeries <- timeAndSeries[tokeep,]
+#' timeWindow <- 5*365 # 5 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #'                       transfType = 'trendPeaks',tail = 'high')
 # Define the required function arguments
@@ -1068,11 +1084,11 @@ tsEvaPlotReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr,
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' #keep only the 40 last years
+#' #keep only the 20 last years
 #' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
-#' tokeep <- which(yrs>=1980)
+#' tokeep <- which(yrs>=2000)
 #' timeAndSeries <- timeAndSeries[tokeep,]
-#' timeWindow <- 10*365 # 10 years
+#' timeWindow <- 5*365 # 10 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
 #'
@@ -1165,11 +1181,11 @@ tsEvaPlotGEVImageScFromAnalysisObj <- function(Y, nonStationaryEvaParams,
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' #keep only the 40 last years
+#' #keep only the 20 last years
 #' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
-#' tokeep <- which(yrs>=1980)
+#' tokeep <- which(yrs>=2000)
 #' timeAndSeries <- timeAndSeries[tokeep,]
-#' timeWindow <- 10*365 # 10 years
+#' timeWindow <- 5*365 # 5 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
 # Define the required function arguments
@@ -1652,7 +1668,11 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' timeWindow <- 30*365 # 30 years
+#' #keep only the 30 last years
+#' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
+#' tokeep <- which(yrs>=1990)
+#' timeAndSeries <- timeAndSeries[tokeep,]
+#' timeWindow <- 10*365 # 10 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
 #' # Define the required function argumentsnonStationaryEvaParams <- TSEVA_data[[1]]
@@ -1786,7 +1806,11 @@ tsEvaPlotTransfToStat <- function(timeStamps, statSeries, srsmean, stdDev, st3mo
 #' timeAndSeries <- ArdecheStMartin
 #' #go from six-hourly values to daily max
 #' timeAndSeries <- max_daily_value(timeAndSeries)
-#' timeWindow <- 30*365 # 30 years
+#' #keep only the 30 last years
+#' yrs <- as.integer(format(timeAndSeries$date, "%Y"))
+#' tokeep <- which(yrs>=1990)
+#' timeAndSeries <- timeAndSeries[tokeep,]
+#' timeWindow <- 10*365 # 10 years
 #' TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 #' transfType = 'trendPeaks',tail = 'high')
 # Define the required function arguments

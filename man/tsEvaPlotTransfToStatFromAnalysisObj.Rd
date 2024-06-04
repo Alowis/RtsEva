@@ -33,7 +33,11 @@ and plots the converted stationary series.
 timeAndSeries <- ArdecheStMartin
 #go from six-hourly values to daily max
 timeAndSeries <- max_daily_value(timeAndSeries)
-timeWindow <- 30*365 # 30 years
+#keep only the 30 last years
+yrs <- as.integer(format(timeAndSeries$date, "\%Y"))
+tokeep <- which(yrs>=1990)
+timeAndSeries <- timeAndSeries[tokeep,]
+timeWindow <- 10*365 # 10 years
 TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,
 transfType = 'trendPeaks',tail = 'high')
 # Define the required function argumentsnonStationaryEvaParams <- TSEVA_data[[1]]

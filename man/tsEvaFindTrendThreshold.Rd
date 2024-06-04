@@ -20,13 +20,29 @@ The trend threshold value.
 This function calculates the optimal trend threshold for a given time series.
 }
 \details{
-This function iterates over different percentiles and calculates the threshold based on each percentile. It then removes data points below the threshold and detrends the time series using the specified time window. The function calculates the correlation between the normalized trend and the time series and stores the correlation coefficient for each percentile. It performs a changepoint analysis to determine if there is a significant change in the correlation coefficients. If a change point is found, the function returns the percentile corresponding to the change point. If no change point is found, the function returns the percentile with the highest correlation coefficient. If there are negative values in the detrended time series, the function returns the percentile with the fewest negative values.
+This function iterates over different percentiles and calculates the
+threshold based on each percentile. It then removes data points below the
+threshold and detrends the time series using the specified time window.
+The function calculates the correlation between the normalized trend
+and the time series and stores the correlation coefficient for each percentile.
+It performs a changepoint analysis to determine if there is a significant change
+in the correlation coefficients. If a change point is found, the function returns
+the percentile corresponding to the change point. If no change point is found,
+the function returns the percentile with the highest correlation coefficient.
+If there are negative values in the detrended time series,
+the function returns the percentile with the fewest negative values.
 }
 \examples{
 timeAndSeries <- ArdecheStMartin
-timeStamps <- ArdecheStMartin[,1]
-series <- ArdecheStMartin[,2]
-timeWindow <- 30*365 # 30 years
+#go from six-hourly values to daily max
+timeAndSeries <- max_daily_value(timeAndSeries)
+#keep only the 30 last years
+yrs <- as.integer(format(timeAndSeries[,1], "\%Y"))
+tokeep <- which(yrs>=1990)
+timeAndSeries <- timeAndSeries[tokeep,]
+timeWindow <- 10*365 # 10 years
+timeStamps <- timeAndSeries[,1]
+series <- timeAndSeries[,2]
 tsEvaFindTrendThreshold(series, timeStamps, timeWindow)
 
 }
