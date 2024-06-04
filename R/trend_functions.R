@@ -1547,8 +1547,8 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   firstTmStmp <- timeStamps[1]
   print(firstTmStmp)
   lastTmStmp <- timeStamps[length(timeStamps)]
-  mond <- format(timeStamps, "%m")
-  caca <- diff(mond)
+  mond <- as.numeric(format(timeStamps, "%m"))
+  # caca <- diff(mond)
   mony <- format(timeStamps, "%Y-%m")
   monthTmStampStart <- c(timeStamps[1], timeStamps[which(diff(mond) != 0) + 1])
   monthTmStampEnd <- c(timeStamps[which(diff(mond) != 0)], timeStamps[length(timeStamps)])
