@@ -1541,12 +1541,12 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   lastTmStmp <- timeStamps[length(timeStamps)]
   mond <- lubridate::month(timeStamps)
   caca <- diff(mond)
-  mony <- tsibble::yearmonth(timeStamps)
+  mony <- format(timeStamps, "%Y-%m")
   monthTmStampStart <- c(timeStamps[1], timeStamps[which(diff(mond) != 0) + 1])
   monthTmStampEnd <- c(timeStamps[which(diff(mond) != 0)], timeStamps[length(timeStamps)])
 
   seasonalitySeries <- data.frame(time = timeStamps, series = seasonalitySeries, month = mony, mond = mond)
-
+  print(seasonalitySeries)
   grpdSsn_ <- aggregate(seasonalitySeries$series,
     by = list(month = seasonalitySeries$month),
     FUN = function(x) mean(x, na.rm = T))
@@ -1612,8 +1612,8 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   avgTmStamp <- as.numeric(avgTmStamp)
   print(avgTmStamp)
   print(monthAvgVec)
-  print(timeStampsN)
   timeStampsN <- as.numeric(timeStamps)
+  print(timeStampsN)
   regime <- pracma::interp1(regimeTmStamp, regimeVec, c(1:365), method = "spline")
   averageSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVec, timeStampsN, method = "spline")
   varyingSeasonalitySeries <- pracma::interp1(avgTmStamp, monthAvgVex, timeStampsN, method = "spline")
