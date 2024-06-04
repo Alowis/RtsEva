@@ -1538,15 +1538,15 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   avgMonthLength <- avgYearLength / nMonthInYear
 
   firstTmStmp <- timeStamps[1]
+  print(firstTmStmp)
   lastTmStmp <- timeStamps[length(timeStamps)]
-  mond <- lubridate::month(timeStamps)
+  mond <- format(timeStamps, "%m")
   caca <- diff(mond)
   mony <- format(timeStamps, "%Y-%m")
   monthTmStampStart <- c(timeStamps[1], timeStamps[which(diff(mond) != 0) + 1])
   monthTmStampEnd <- c(timeStamps[which(diff(mond) != 0)], timeStamps[length(timeStamps)])
 
   seasonalitySeries <- data.frame(time = timeStamps, series = seasonalitySeries, month = mony, mond = mond)
-  print(seasonalitySeries)
   grpdSsn_ <- aggregate(seasonalitySeries$series,
     by = list(month = seasonalitySeries$month),
     FUN = function(x) mean(x, na.rm = T))
