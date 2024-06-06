@@ -1,0 +1,108 @@
+---
+title: "Transformed-stationary EVA workflow example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{general-demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup}
+library(RtsEva)
+```
+
+# Demo of the TSEVA method
+
+
+## Step 1: Argument selection
+
+```{r}
+#| echo: true
+#| warning: false
+
+data=ArdecheStMartin
+haz = "drought"
+tail="low"
+var = "dis"
+timeWindow = 365.25*30; #time windows in days on which to compute trends
+minPeakDistanceInDays=30 # minimum distance between two events/peaks
+lowdt=7 # low flows temporal aggregations
+```
+
+
+## Step 2: Prepare inputs for TSEVA
+
+```{r}
+#| code-fold: true
+timeStamps=data$time
+dt = difftime(timeStamps[2],timeStamps[1],units="days")
+dt= as.numeric(dt)
+percentile=95
+names(data)=c("date","Qs")
+
+if (haz=="drought"){
+  #seasonality divide: frost vs non frost
+  if (!exists("trans")){trans="rev"}
+  print(paste0(trans," transformation used for low flows"))
+  
+  #compute 7days moving average
+  data$Q7=tsEvaNanRunningMean(data$Qs,7/dt)
+  timeAndSeries=data.frame(data$date,data$Q7)
+
+}else if (haz=="flood"){
+  percentile=95
+  timeAndSeries <- max_daily_value(timeAndSeries)
+}
+
+names(timeAndSeries)=c("timestamp","dis")
+dt1=min(diff(timeAndSeries$timestamp),na.rm=T)
+dt=as.numeric(dt1)
+tdim=attributes(dt1)$units
+if (tdim=="hours") dt=dt/24
+if (dt==1){
+  timeDays=timeAndSeries$timestamp
+}else{
+  timeDays=unique(as.Date(timeAndSeries$timestamp))
+}
+
+names(timeAndSeries)=c("timestamp","data")
+trendtypes=c("trend","trendPeaks","trendCIPercentile")
+```
+
+Choose which transformation to use, here we choose the "trendPeaks" transformation
+
+## Step 3: Run TSEVA
+
+```{r}
+#| warning: false
+Nonstat<-TsEvaNs(timeAndSeries, timeWindow, transfType=trendtypes[2],
+                 ciPercentile= 90, minPeakDistanceInDays = minPeakDistanceInDays, tail=tail, lowdt=lowdt,trans=trans)
+
+```
+
+## Step 4: Plot results
+
+```{r}
+#| warning: false
+#| fig.width: 8
+#| fig.height: 4
+
+nonStationaryEvaParams=Nonstat[[1]]
+stationaryTransformData=Nonstat[[2]]
+
+ExRange= c(min(nonStationaryEvaParams$potObj$parameters$peaks),max(nonStationaryEvaParams$potObj$parameters$peaks))
+
+if (haz=="flood") wr2 <- c(seq(min(ExRange),max(ExRange),length.out=700))
+if (haz=="drought") wr2 <- c(seq(1.1*min(ExRange),0.1*max(ExRange),length.out=700))
+
+Plot1= tsEvaPlotGPDImageScFromAnalysisObj(wr2, nonStationaryEvaParams, stationaryTransformData, minYear = '1950',trans=trans)
+Plot1
+timeIndex=1
+Plot2 = tsEvaPlotReturnLevelsGPDFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, timeIndex, trans=trans,ylabel="Discharge (m3/s)")
+Plot2
+Plot3 = tsEvaPlotReturnLevelsGEVFromAnalysisObj(nonStationaryEvaParams, stationaryTransformData, timeIndex, trans=trans,ylabel="Discharge (m3/s)")
+Plot3
+
+```
+

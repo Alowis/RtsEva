@@ -67,7 +67,3 @@ visualize the plots
 
 For any questions or inquiries, please contact the package maintainer at
 <alois.tilloy@ec.europa.eu>
-
-## License
-
-[MIT © Richard McRichface.](../LICENSE)

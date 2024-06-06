@@ -10,7 +10,7 @@ Authors@R:
            email = "alois.tilloy@ec.europa.eu",
            comment = c(ORCID = "https://orcid.org/0000-0002-5881-0642"))
 Maintainer: The package maintainer <alois.tilloy@ec.europa.eu>
-Description: RtsEva is an adaptation of the Matlab tsEVA toolbox
+Description: This packge is an adaptation of the Matlab tsEVA toolbox
     developed by Lorenzo Mentaschi available here:
     <https://github.com/menta78/tsEva>. It contains an implementation of the
     Transformed-Stationary (TS) methodology for non-stationary extreme value
@@ -21,8 +21,8 @@ Description: RtsEva is an adaptation of the Matlab tsEVA toolbox
     (ii) reverse-transforming the result into a non-stationary extreme
     value distribution.
     RtsEva offers several options for trend estimation (mean, extremes, seasonal)
-    and contains multpile plotting functions displaying different aspects
-    of the non-stationnarity of extremes.
+    and contains multiple plotting functions displaying different aspects
+    of the non-stationarity of extremes.
 License: GPL (>= 3)
 URL: https://github.com/r-lib/devtools, https://github.com/Alowis/RtsEva
 Depends: 
@@ -47,6 +47,7 @@ Imports:
 Suggests: 
     knitr,
     ncdf4,
+    rmarkdown,
     rnaturalearth,
     terra,
     testthat (>= 3.0.0)
