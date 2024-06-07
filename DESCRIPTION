@@ -9,7 +9,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "alois.tilloy@ec.europa.eu",
            comment = c(ORCID = "https://orcid.org/0000-0002-5881-0642"))
-Maintainer: The package maintainer <alois.tilloy@ec.europa.eu>
+Maintainer: Alois Tilloy <alois.tilloy@ec.europa.eu>
 Description: This packge is an adaptation of the Matlab tsEVA toolbox
     developed by Lorenzo Mentaschi available here:
     <https://github.com/menta78/tsEva>. It contains an implementation of the
