@@ -14,7 +14,7 @@
 #' \item{\code{seasonal}}{Long-term and seasonal variations of extremes}
 #' \item{\code{trendCIPercentile}}{Long-term variations of extremes using
 #' a specified percentile}
-#'  \item{\code{trendPeak}}{Long-term variations of the peaks}
+#'  \item{\code{trendPeaks}}{Long-term variations of the peaks}
 #' }
 #' @param minPeakDistanceInDays The minimum peak distance in days.
 #' @param seasonalityVar A logical value indicating whether to consider
@@ -150,8 +150,8 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     series[(aloc[1]-50):(aloc[1]+50)]=mean(series)
   }
 
-  if ( transfType != 'trend' | transfType != 'seasonal' | transfType != 'trendCIPercentile' | transfType != 'seasonalCIPercentile' | transfType != 'trendPeak'){
-    stop('\nnonStationaryEvaJRCApproach: transfType can be in (trend, seasonal, trendCIPercentile, trendPeak)')}
+  if ( transfType != 'trend' | transfType != 'seasonal' | transfType != 'trendCIPercentile' | transfType != 'seasonalCIPercentile' | transfType != 'trendPeaks'){
+    stop('\nnonStationaryEvaJRCApproach: transfType can be in (trend, seasonal, trendCIPercentile, trendPeaks)')}
 
   if (minPeakDistanceInDays == -1) print('label parameter minPeakDistanceInDays must be set')
 
