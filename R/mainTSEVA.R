@@ -150,7 +150,8 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     series[(aloc[1]-50):(aloc[1]+50)]=mean(series)
   }
 
-  if ( transfType != 'trend' | transfType != 'seasonal' | transfType != 'trendCIPercentile' | transfType != 'seasonalCIPercentile' | transfType != 'trendPeaks'){
+  if ( transfType != 'trend' & transfType != 'seasonal' & transfType != 'trendCIPercentile'
+       & transfType != 'seasonalCIPercentile' & transfType != 'trendPeaks'){
     stop('\nnonStationaryEvaJRCApproach: transfType can be in (trend, seasonal, trendCIPercentile, trendPeaks)')}
 
   if (minPeakDistanceInDays == -1) print('label parameter minPeakDistanceInDays must be set')

@@ -26,13 +26,14 @@ This function applies the PELT method for change point detection in a time serie
 It returns the mean and variance of the series segments between change points.
 }
 \examples{
-\dontrun{
+\donttest{
 timeAndSeries <- ArdecheStMartin
 timeStamps <- ArdecheStMartin[,1]
 series <- ArdecheStMartin[,2]
 timeWindow <- 30*365 # 30 years
 result <- tsEvaChangepts(series, timeWindow, timeStamps)
-plot(series, type = "l")
+plot(timeAndSeries, type = "l")
+lines(timeStamps,result$trend,col=2)
 points(timeStamps[result$changepoints], result$trend[result$changepoints], col = "red")
 }
 }

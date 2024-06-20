@@ -34,7 +34,7 @@ It can be one of the following:
 \item{\code{seasonal}}{Long-term and seasonal variations of extremes}
 \item{\code{trendCIPercentile}}{Long-term variations of extremes using
 a specified percentile}
-\item{\code{trendPeak}}{Long-term variations of the peaks}
+\item{\code{trendPeaks}}{Long-term variations of the peaks}
 }}
 
 \item{minPeakDistanceInDays}{The minimum peak distance in days.}

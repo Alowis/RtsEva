@@ -4,7 +4,13 @@
 \alias{tsEvaDetrendTimeSeries}
 \title{Detrend a Time Series}
 \usage{
-tsEvaDetrendTimeSeries(timeStamps, series, timeWindow, percent = NA, fast = F)
+tsEvaDetrendTimeSeries(
+  timeStamps,
+  series,
+  timeWindow,
+  percent = NA,
+  fast = TRUE
+)
 }
 \arguments{
 \item{timeStamps}{A vector of time stamps for the time series.}

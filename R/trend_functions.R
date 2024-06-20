@@ -969,12 +969,13 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
 #' @importFrom changepoint cpt.meanvar
 #' @examples
 #' \donttest{
-#'timeAndSeries <- ArdecheStMartin
-#'timeStamps <- ArdecheStMartin[,1]
-#'series <- ArdecheStMartin[,2]
-#'timeWindow <- 30*365 # 30 years
+#' timeAndSeries <- ArdecheStMartin
+#' timeStamps <- ArdecheStMartin[,1]
+#' series <- ArdecheStMartin[,2]
+#' timeWindow <- 30*365 # 30 years
 #' result <- tsEvaChangepts(series, timeWindow, timeStamps)
-#' plot(series, type = "l")
+#' plot(timeAndSeries, type = "l")
+#' lines(timeStamps,result$trend,col=2)
 #' points(timeStamps[result$changepoints], result$trend[result$changepoints], col = "red")
 #' }
 #' @export
@@ -994,7 +995,8 @@ tsEvaChangepts <- function(series, timeWindow, timeStamps) {
   for (s in 1:length(cptsmean)) {
     meants[cpts[s]:cpts[s + 1]] <- cptsmean[s]
   }
-  changepoint <- timeStamps[cpts[-c(1, length(cpts))]]
+  changepointTime <- timeStamps[cpts[-c(1, length(cpts))]]
+  changepoint = cpts[-c(1, length(cpts))]
   return(list(trend = meants, variance = varts, changepoints = changepoint))
 }
 
