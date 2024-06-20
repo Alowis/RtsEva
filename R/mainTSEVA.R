@@ -151,7 +151,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
   }
 
   if ( transfType != 'trend' | transfType != 'seasonal' | transfType != 'trendCIPercentile' | transfType != 'seasonalCIPercentile' | transfType != 'trendPeak'){
-    cat('\nnonStationaryEvaJRCApproach: transfType can be in (trend, seasonal, trendCIPercentile, trendPeak)')}
+    stop('\nnonStationaryEvaJRCApproach: transfType can be in (trend, seasonal, trendCIPercentile, trendPeak)')}
 
   if (minPeakDistanceInDays == -1) print('label parameter minPeakDistanceInDays must be set')
 
@@ -178,7 +178,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
 
   }
   if (transfType == 'trend'){
-    cat('\nevaluating long term variations of extremes')
+    message('\nevaluating long term variations of extremes')
     trasfData = tsEvaTransformSeriesToStationaryTrendOnly(timeStamps, series, timeWindow)
     gevMaxima = 'annual';
     potEventsPerYear = epy;
@@ -186,14 +186,14 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
 
 
   }else  if (transfType == 'trendChange'){
-    cat('\nevaluating long term variations of extremes and change point detection')
+    message('\nevaluating long term variations of extremes and change point detection')
     trasfData = tsEvaTransformSeriesToStationaryTrendAndChangepts(timeStamps, series, timeWindow)
     gevMaxima = 'annual';
     potEventsPerYear = epy;
     minEventsPerYear = 1
 
   }else if (transfType == 'seasonal'){
-    cat('\nevaluating long term an seasonal variations of extremes')
+    message('\nevaluating long term an seasonal variations of extremes')
     trasfData = tsEvaTransformSeriesToStationaryMultiplicativeSeasonality(timeStamps, series, timeWindow, seasonalityVar=seasonalityVar)
     gevMaxima = 'monthly'
     potEventsPerYear = 12
@@ -201,16 +201,16 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
 
   } else if (transfType == 'trendCIPercentile') {
     if (is.na(ciPercentile)){
-      print('For trendCIPercentile transformation the label parameter cipercentile is mandatory')
+      stop('For trendCIPercentile transformation the label parameter cipercentile is mandatory')
     }
-    cat(paste0('\nevaluating long term variations of extremes using the ', ciPercentile, 'th percentile'))
+    message(paste0('\nevaluating long term variations of extremes using the ', ciPercentile, 'th percentile'))
     trasfData = tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile( timeStamps, series, timeWindow, ciPercentile);
     gevMaxima = 'annual'
     potEventsPerYear = epy
     minEventsPerYear = 1
 
   }else if (transfType == 'trendPeaks') {
-    cat(paste0('\nevaluating long term variations of the peaks'))
+    message(paste0('\nevaluating long term variations of the peaks'))
     TrendTh=try(tsEvaFindTrendThreshold(series, timeStamps, timeWindow),T)
     print(TrendTh)
     if(length(TrendTh)==0){
@@ -225,15 +225,15 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     if (is.na(ciPercentile)){
       print('For trendCIPercentile transformation the label parameter cipercentile is mandatory')
     }
-    cat('\n evaluating long term variations of extremes using the ', ciPercentile, 'th percentile and change point detection')
+    message('\n evaluating long term variations of extremes using the ', ciPercentile, 'th percentile and change point detection')
     trasfData = tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps, series, timeWindow,ciPercentile)
     gevMaxima = 'annual';
     potEventsPerYear = epy;
     minEventsPerYear = 0
 
   } else if (transfType == 'seasonalCIPercentile') {
-    if (is.na(ciPercentile)) cat('For seasonalCIPercentile transformation the label parameter cipercentile is mandatory')
-    cat(paste0('\nevaluating long term variations of extremes using the ', ciPercentile, 'th percentile\n'))
+    if (is.na(ciPercentile)) stop('For seasonalCIPercentile transformation the label parameter cipercentile is mandatory')
+    message(paste0('\nevaluating long term variations of extremes using the ', ciPercentile, 'th percentile\n'))
     trasfData = tsEvaTransformSeriesToStatSeasonal_ciPercentile( timeStamps, series, timeWindow, ciPercentile)
     gevMaxima = 'monthly'
     potEventsPerYear = 12
@@ -259,7 +259,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
   minPeakDistance = minPeakDistanceInDays/dtn;
 
   #estimating the non stationary EVA parameters
-  cat('\nExecuting stationary eva')
+  message('\nExecuting stationary eva')
   pointData = tsEvaSampleData(ms, potEventsPerYear, minEventsPerYear, minPeakDistanceInDays,tail);
   evaAlphaCI = .68; # in a gaussian approximation alphaCI~68% corresponds to 1 sigma confidence
   eva = tsEVstatistics(pointData, evaAlphaCI, gevMaxima, gevType, evdType,shape_bnd);
@@ -280,7 +280,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     muGevX <- eva[[2]][[1]]$parameters[1]
     errMuGevX <- muGevX - eva[[2]][[1]]$paramCIs[1, 1]
 
-    cat('\nTransforming to non stationary eva ...\n')
+    message('\nTransforming to non stationary eva ...\n')
     epsilonGevNS = epsilonGevX;
     errEpsilonGevNS = errEpsilonX;
     sigmaGevNS = trasfData$stdDevSeries*sigmaGevX;
@@ -338,7 +338,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     epsilonGevX <- eva[[2]][[1]]$parameters[3]
     sigmaGevX <- eva[[2]][[1]]$parameters[2]
     muGevX <- eva[[2]][[1]]$parameters[1]
-    cat('\nTransforming to non stationary eva ...\n')
+    message('\nTransforming to non stationary eva ...\n')
     epsilonGevNS = epsilonGevX;
     sigmaGevNS = trasfData$stdDevSeries*sigmaGevX;
     muGevNS = trasfData$stdDevSeries*muGevX + trasfData$trendSeries;

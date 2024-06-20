@@ -43,10 +43,10 @@
 #'plot(result$trendSeries)
 #' @export
 tsEvaTransformSeriesToStationaryTrendOnly <- function(timeStamps, series, timeWindow) {
-  cat("computing the trend ...\n")
+  message("computing the trend ...\n")
   rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
   nRunMn <- rs@nRunMn
-  cat("computing the slowly varying standard deviation ...\n")
+  message("computing the slowly varying standard deviation ...\n")
   varianceSeries <- tsEvaNanRunningVariance(rs@detrendSeries, nRunMn)
   # further smoothing
   varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(nRunMn / 2))
@@ -138,7 +138,7 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
   series, timeWindow, percentile) {
 
   # Removing trend from the series
-  cat("\ncomputing the trend on extremes...\n")
+  message("\ncomputing the trend on extremes...\n")
   qtes <- quantile(series, percentile / 100, na.rm = T)
   rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
   meantrend <- mean(series)
@@ -253,7 +253,7 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
 #' @export
 tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWindow, TrendTh) {
   # Removing trend from the series
-  cat("\ncomputing the trend on extremes...\n")
+  message("\ncomputing the trend on extremes...\n")
 
   # fit a trend on the means above a threshold
   # The threshold can be specified as an input
@@ -395,17 +395,17 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
   if (seasonalityVar == TRUE) svar <- 2
   seasonalityTimeWindow <- 2 * 30.4 # 2 months
 
-  cat("computing trend ...\n")
+  message("computing trend ...\n")
   rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
   nRunMn <- rs@nRunMn
-  cat("computing trend seasonality ...\n")
+  message("computing trend seasonality ...\n")
   statSeries <- rs@detrendSeries
   trendSeasonality <- tsEstimateAverageSeasonality(timeStamps, statSeries, nRunMn)
   Regime <- trendSeasonality$regime
   trendSeasonality <- trendSeasonality$Seasonality
   statSeries <- statSeries - trendSeasonality[, svar]
 
-  cat("computing slowly varying standard deviation ...\n")
+  message("computing slowly varying standard deviation ...\n")
   varianceSeries <- tsEvaNanRunningVariance(statSeries, nRunMn)
   # further smoothing
   varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(nRunMn / 2))
@@ -413,7 +413,7 @@ tsEvaTransformSeriesToStationaryMultiplicativeSeasonality <- function(timeStamps
   seasonalVarNRun <- round(nRunMn / timeWindow * seasonalityTimeWindow)
   # seasonalVarSeries is a moving variance computed on a short time
   # window of 1-3 months, able to vary with season.
-  cat("computing standard deviation seasonality ...\n")
+  message("computing standard deviation seasonality ...\n")
   seasonalVarSeries <- tsEvaNanRunningVariance(statSeries, seasonalVarNRun)
   seasonalStdDevSeries <- sqrt(seasonalVarSeries / varianceSeries)
   seasonalStdDevSeries <- tsEstimateAverageSeasonality(timeStamps, seasonalStdDevSeries, nRunMn)$Seasonality
@@ -646,11 +646,11 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
 #'
 #' @export
 tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series, timeWindow) {
-  cat('computing the trend ...\n')
+  message('computing the trend ...\n')
   #ChgPtsRaw=tsEvaChangepts(series,timeWindow/2,timeStamps)
   rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
   nRunMn = rs@nRunMn
-  cat('computing the slowly varying standard deviation ...\n')
+  message('computing the slowly varying standard deviation ...\n')
   varianceSeries <- tsEvaNanRunningVariance(rs@detrendSeries, nRunMn)
   #further smoothing
   varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(nRunMn/2))
@@ -659,7 +659,7 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series
   stdDevSeries_1<-stdDevSeries
   statSeries <- rs@detrendSeries
   statSeries_1=statSeries
-  cat('computing the step change detection...\n')
+  message('computing the step change detection...\n')
   #I normalize the stationary serie before the step change detection
   #Maybe not the best
   statSeries=statSeries/stdDevSeries
@@ -768,11 +768,11 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series
 #' plot(result$trendSeries)
 #' @export
 tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeStamps, series, timeWindow, percentile) {
-  cat('computing the trend ...\n')
+  message('computing the trend ...\n')
   #ChgPtsRaw=tsEvaChangepts(series,timeWindow/2,timeStamps)
   rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow,percent=percentile)
   nRunMn = rs@nRunMn
-  cat('computing the slowly varying standard deviation ...\n')
+  message('computing the slowly varying standard deviation ...\n')
   # Compute the running percentile of the stationary series
   percentileSeries <- tsEvaNanRunningPercentiles(timeStamps, rs@detrendSeries, nRunMn, percentile)
   if(min(percentileSeries$rnprcnt)<0) percentileSeries$rnprcnt=percentileSeries$rnprcnt-min(percentileSeries$rnprcnt)
@@ -785,7 +785,7 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
   stdDevSeries_1<-stdDevSeries
   statSeries <- rs@detrendSeries
   statSeries_1=statSeries
-  cat('computing the step change detection...\n')
+  message('computing the step change detection...\n')
   #I normalize the stationary serie before the step change detection
   #Maybe not the best
   statSeries=statSeries/stdDevSeries
@@ -968,7 +968,7 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
 #'
 #' @importFrom changepoint cpt.meanvar
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
 #'series <- ArdecheStMartin[,2]
@@ -1196,7 +1196,6 @@ tsEvaNanRunningStatistics <- function(series, windowSize) {
   sm4pw <- 0
   n <- 0
   for (ii in c(1:l)) {
-    # cat(paste0(" ",n))
     minindx <- max(ii - dx, 1)
     maxindx <- min(ii + dx, l)
     if (ii == 1) {
@@ -1472,7 +1471,7 @@ methods::setClass(
 #' timeWindow <- 365*30
 #' detrended <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
 #' @export
-tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA, fast = F) {
+tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA, fast = TRUE) {
   extremeLowThreshold <- -Inf
   trendSeries <- tsEvaRunningMeanTrend(timeStamps, series, timeWindow)
   statSeries <- series
@@ -1481,7 +1480,7 @@ tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA,
   tdim <- attributes(dt1)$units
   dtx <- dt
   if (tdim == "hours") dtx <- dt / 24
-  if (fast == F) print(paste0("timestep: ", dt, tdim, " | time window: ", round(trendSeries$nRunMn * dtx / 365.25), " years"))
+  if (fast == FALSE) print(paste0("timestep: ", dt, tdim, " | time window: ", round(trendSeries$nRunMn * dtx / 365.25), " years"))
   statSeries[which(statSeries < extremeLowThreshold)] <- NA
   if (!is.na(percent)) {
     print(paste0("trend on the ", percent, " percentile"))

@@ -809,8 +809,8 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
       }
     }
   }
-  cat(paste0("\nmax threshold is: ", pcts[trip],"%"))
-  cat(paste0("\naverage number of events per year = ",round(numperyear[trip],1) ))
+  message(paste0("\nmax threshold is: ", pcts[trip],"%"))
+  message(paste0("\naverage number of events per year = ",round(numperyear[trip],1) ))
 
   diffNPerYear <- mean(diff(na.omit(rev(numperyear)), na.rm = TRUE))
   if (diffNPerYear == 0) diffNPerYear <- 1
