@@ -548,7 +548,7 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
   sampleTimeHorizon <- as.numeric((thEnd - thStart)/365.2425)
 
   if (nonStationaryEvaParams[[1]]$method=="No fit"){
-    print("could not fit EVD to this pixel")
+    message("could not fit EVD to this pixel")
     ParamGEV=c(epsilonGEV,sigmaGEV,muGEV,NA, NA, NA)
     names(ParamGEV)=c("epsilonGEV","sigmaGEV","muGEV","epsilonStdErrGEV","sigmaStdErrGEV","muStdErrGEV")
 
@@ -642,7 +642,7 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
   meanEventsPerYear = args$meanEventsPerYear
   minEventsPerYear = args$minEventsPerYear
   potPercentiles = args$potPercentiles
-  if(is.na(tail)) print("haz for POT selection needs to be 'high' or 'low'")
+  if(is.na(tail)) stop("tail for POT selection needs to be 'high' or 'low'")
 
   POTData <- tsGetPOT(ms, potPercentiles, meanEventsPerYear,minEventsPerYear,minPeakDistanceInDays, tail)
 
@@ -786,7 +786,6 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
     }
   }
   devpp[1]=NA
-  print(shape_bnd)
   if(is.na(trip)){
     isok=F
     count=0
@@ -804,7 +803,7 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
         if(tail=="low") devpp[which(gpp>=0)]=devpp[which(gpp>=0)]+99999
         devpp[which(abs(dshap)>0.5)]=devpp[which(abs(dshap)>0.5)]+9999
         trip=which.min(devpp)
-        print(paste0("shape outside boudaries: ",round(gpp[trip],2)))
+        message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
         isok=T
       }
     }
@@ -952,12 +951,12 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
         fit <- suppressWarnings(try(evd::fgev(x=tmp$dt,method="L-BFGS-B",lower=c(-Inf,-Inf,shape_bnd[1]),upper=c(Inf,Inf,shape_bnd[2]),std.err = T),TRUE))
         if(inherits(fit, "try-error")){
           stdfit=FALSE
-          print("Not able to fit GEV stderr")
+          message("Not able to fit GEV stderr")
           fit <- suppressWarnings(try(evd::fgev(x=tmp$dt,method="L-BFGS-B",lower=c(-Inf,-Inf,shape_bnd[1]),upper=c(Inf,Inf,shape_bnd[2]),std.err = F),TRUE))
         }
         if(inherits(fit, "try-error")){
           stdfit=FALSE
-          print("Not able to fit GEV with constrained parameters")
+          message("Not able to fit GEV with constrained parameters")
           fit <- suppressWarnings(try(evd::fgev(x=tmp$dt,std.err = F),TRUE))
         }
         paramEsts <- c(mu=fit$par[1],sigma=fit$par[2],xi=fit$par[3])
@@ -984,11 +983,11 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
         probs <- c(alphaCIx/2, 1-alphaCIx/2)
         # Compute the CI for k using a normal distribution for khat.
         if(is.character(fit$se[1])){
-          print("Gumbel fitted")
+          message("Gumbel fitted")
           #methodname <- 'No fit'
           gevType = "gumbel"
         }else{
-          print("Gumbel fitted")
+          message("Gumbel fitted")
           #gevType = "gumbel"
           kci <- c(NA,NA)
           # Compute the CI for sigma using a normal approximation for log(sigmahat)
@@ -1005,7 +1004,7 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
       rlvls <- qgev(1-1/Tr, paramEsts[1], paramEsts[2], paramEsts[3])
 
     }else{
-      print("Could not fit GEV")
+      message("Could not fit GEV")
       methodname <- 'No fit'
       rlvls=NA
       paramEsts=NA
@@ -1029,7 +1028,7 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
 
   if (('GPD' %in% evdType) && !is.null(pointData$annualMax)) {
     # Perform GPD fitting and computation of return levels
-    print("Fitted GPD")
+    message("Fitted GPD")
     ik <- 1
     th=pointData$POT$threshold
     d1 <- pointData$POT$peaks
@@ -1072,7 +1071,7 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
                               values=NA,
                               parameters=paramEstsall,
                               paramCIs = NA)
-      print("could not estimate GPD: bounded distribution")
+      message("could not estimate GPD: bounded distribution")
     }
   } else {
     methodname <- 'No fit'
@@ -1086,7 +1085,7 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
                             values=NA,
                             parameters=paramEstsall,
                             paramCIs = NA)
-    print("could not estimate GPD: bounded distribution")
+    message("could not estimate GPD: bounded distribution")
   }
 
   # Return outputs

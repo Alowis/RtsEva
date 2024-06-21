@@ -145,8 +145,8 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
   x = anmax[1]/anmax[2]
   if (x > 100)
   {
-    print(paste0("biggest event ", x, " times bigger than second biggest"))
-    print ("removing this event from timeserie, reruning first steps")
+    message(paste0("biggest event ", x, " times bigger than second biggest"))
+    message ("removing this event from timeserie, reruning first steps")
     series[(aloc[1]-50):(aloc[1]+50)]=mean(series)
   }
 
@@ -154,7 +154,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
        & transfType != 'seasonalCIPercentile' & transfType != 'trendPeaks'){
     stop('\nnonStationaryEvaJRCApproach: transfType can be in (trend, seasonal, trendCIPercentile, trendPeaks)')}
 
-  if (minPeakDistanceInDays == -1) print('label parameter minPeakDistanceInDays must be set')
+  if (minPeakDistanceInDays == -1) stop('label parameter minPeakDistanceInDays must be set')
 
   nonStationaryEvaParams = c()
   stationaryTransformData = c()
@@ -213,7 +213,6 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
   }else if (transfType == 'trendPeaks') {
     message(paste0('\nevaluating long term variations of the peaks'))
     TrendTh=try(tsEvaFindTrendThreshold(series, timeStamps, timeWindow),T)
-    print(TrendTh)
     if(length(TrendTh)==0){
       TrendTh=NA
     }
@@ -224,7 +223,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
 
   } else  if (transfType == 'trendChangeCIPercentile'){
     if (is.na(ciPercentile)){
-      print('For trendCIPercentile transformation the label parameter cipercentile is mandatory')
+      stop('For trendCIPercentile transformation the label parameter cipercentile is mandatory')
     }
     message('\n evaluating long term variations of extremes using the ', ciPercentile, 'th percentile and change point detection')
     trasfData = tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile(timeStamps, series, timeWindow,ciPercentile)
@@ -266,7 +265,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
   eva = tsEVstatistics(pointData, evaAlphaCI, gevMaxima, gevType, evdType,shape_bnd);
 
   if (eva$isValid==FALSE) {
-    print("problem in the computation of EVA statistics")
+    message("problem in the computation of EVA statistics")
   }
 
   eva[[2]]$GPDstat$thresholdError <- pointData$POT$thresholdError
@@ -384,9 +383,6 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
 
     dtPeaks = minPeakDistance;
     timeStamps=as.Date(timeStamps)
-    print(length(timeStamps))
-    print(length(series))
-    print(dtPeaks)
     dtPotX = as.numeric(timeStamps[length(timeStamps)] - timeStamps[1])/length(series)*dtPeaks;
     epsilonPotNS = epsilonPotX;
     errEpsilonPotNS = errEpsilonPotX;

@@ -261,7 +261,7 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
   if (is.na(TrendTh)) {
     TrendTh <- 0.5
   }
-  print(paste0("trend threshold= ", TrendTh))
+  message(paste0("trend threshold= ", TrendTh))
   qd <- quantile(series, TrendTh, na.rm = T)
   serieb <- series
   serieb[which(serieb < qd)] <- NA
@@ -529,21 +529,21 @@ tsEvaTransformSeriesToStatSeasonal_ciPercentile <- function(timeStamps, series, 
 
   seasonalityTimeWindow <- 2 * 30.4 # 2 months
 
-  print("computing trend...")
+  message("computing trend...")
   rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow, percent = percentile)
   nRunMn <- rs@nRunMn
-  print("computing trend seasonality...")
+  message("computing trend seasonality...")
   trendSeasonality <- tsEstimateAverageSeasonality(timeStamps, rs@detrendSeries, nRunMn)
   Regime <- trendSeasonality$regime
   trendSeasonality <- trendSeasonality$Seasonality
   statSeries <- rs@detrendSeries - trendSeasonality[, 1]
-  print(paste0("computing the slowly varying ", percentile, "th percentile..."))
+  message(paste0("computing the slowly varying ", percentile, "th percentile..."))
   percentileSeries <- tsEvaNanRunningPercentiles(timeStamps, statSeries, nRunMn, percentile)
 
   seasonalVarNRun <- round(nRunMn / timeWindow * seasonalityTimeWindow)
   # seasonalVarSeries is a moving variance computed on a short time
   # window of 1-3 months, able to vary with season.
-  print("computing standard deviation seasonality...")
+  message("computing standard deviation seasonality...")
   seasonalVarSeries <- tsEvaNanRunningVariance(statSeries, seasonalVarNRun)
   seasonalStdDevSeries <- sqrt(seasonalVarSeries / percentileSeries$rnprcnt)
   seasonalStdDevSeries <- tsEstimateAverageSeasonality(timeStamps, seasonalStdDevSeries, nRunMn)
@@ -939,14 +939,13 @@ tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
     rval=pctd[which.max(sts[-1])]
 
   }else if(cptm@cpts[1] == length(sts)) {
-    print("no change point")
+    message("no change point")
     cptm@cpts[1] <- length(sts)/2
     rval=pctd[cptm@cpts[1]]
   }
   if (sum(lnegs)>1){
     rval=pctd[which.min(lnegs)]
   }
-  print(rval)
   return(rval)
 }
 
@@ -1482,10 +1481,10 @@ tsEvaDetrendTimeSeries <- function(timeStamps, series, timeWindow, percent = NA,
   tdim <- attributes(dt1)$units
   dtx <- dt
   if (tdim == "hours") dtx <- dt / 24
-  if (fast == FALSE) print(paste0("timestep: ", dt, tdim, " | time window: ", round(trendSeries$nRunMn * dtx / 365.25), " years"))
+  if (fast == FALSE) message(paste0("timestep: ", dt, tdim, " | time window: ", round(trendSeries$nRunMn * dtx / 365.25), " years"))
   statSeries[which(statSeries < extremeLowThreshold)] <- NA
   if (!is.na(percent)) {
-    print(paste0("trend on the ", percent, " percentile"))
+    message(paste0("trend on the ", percent, " percentile"))
     trendSeries_perc <- tsEvaNanRunningPercentiles(timeStamps, series, trendSeries$nRunMn, percent)
     meanTrperc <- mean(trendSeries_perc$rnprcnt)
     # trend of the extremes
@@ -1562,7 +1561,6 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   avgMonthLength <- avgYearLength / nMonthInYear
 
   firstTmStmp <- timeStamps[1]
-  print(firstTmStmp)
   lastTmStmp <- timeStamps[length(timeStamps)]
   mond <- as.numeric(format(timeStamps, "%m"))
   # caca <- diff(mond)
