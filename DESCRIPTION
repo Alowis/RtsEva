@@ -9,14 +9,14 @@ Authors@R:
            email = "alois.tilloy@ec.europa.eu",
            comment = c(ORCID = "https://orcid.org/0000-0002-5881-0642"))
 Maintainer: Alois Tilloy <alois.tilloy@ec.europa.eu>
-Description: Adaptation of the 'Matlab' tsEVA toolbox developed by Lorenzo Mentaschi
+Description: Adaptation of the 'Matlab' 'tsEVA' toolbox developed by Lorenzo Mentaschi
     available here:
     <https://github.com/menta78/tsEva>. It contains an implementation of the
     Transformed-Stationary (TS) methodology for non-stationary extreme 
     value Analysis (EVA) as described in Mentaschi et al. (2016) <doi:10.5194/hess-20-3527-2016>.  
     In synthesis this approach consists in:
     (i) transforming a non-stationary time series into a
-    stationary one to which the stationary EVA theory can be applied; and
+    stationary one to which the stationary extreme value theory can be applied; and
     (ii) reverse-transforming the result into a non-stationary extreme
     value distribution.
     'RtsEva' offers several options for trend estimation (mean, extremes, seasonal)
