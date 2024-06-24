@@ -39,7 +39,7 @@ You can install the released version of mobirep from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("mobirep")
+install.packages("RtsEva")
 ```
 Alternatively, you can install the development version of RtsEva from
 [GitHub](https://github.com/) with:
