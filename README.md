@@ -7,6 +7,8 @@
 
 [![R-CMD-check](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml)
 [![PRsWelcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com/)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RtsEva)](https://cran.r-project.org/package=RtsEva)
+![](https://cranlogs.r-pkg.org/badges/RtsEva)
 
 <!-- badges: end -->
 
