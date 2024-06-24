@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml)
 [![PRsWelcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com/)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RtsEva)](https://cran.r-project.org/package=RtsEva)
-![](https://cranlogs.r-pkg.org/badges/RtsEva)
+![](https://cranlogs.r-pkg.org/badges/grand-total/RtsEva)
 
 <!-- badges: end -->
 
@@ -35,7 +35,13 @@ doi:10.5194/hess-20-3527-2016,
 
 ## Installation
 
-You can install the development version of RtsEva from
+You can install the released version of mobirep from
+[CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("mobirep")
+```
+Alternatively, you can install the development version of RtsEva from
 [GitHub](https://github.com/) with:
 
 ``` r
