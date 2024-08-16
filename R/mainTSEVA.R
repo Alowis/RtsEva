@@ -82,7 +82,7 @@
 TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDistanceInDays=10,
                    seasonalityVar=NA,minEventsPerYear=-1, gevMaxima='annual',
                    ciPercentile=90, gevType = 'GEV', evdType = c('GEV', 'GPD'),
-                   tail="high", epy=-1, lowdt=7, trans=NULL){
+                   tail="high", epy=-1, lowdt=7, trans=NULL, TrendTh=NA){
 
   # ota=list(transfType = transfType,
   #          minPeakDistanceInDays = minPeakDistanceInDays,
@@ -212,9 +212,11 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
 
   }else if (transfType == 'trendPeaks') {
     message(paste0('\nevaluating long term variations of the peaks'))
-    TrendTh=try(tsEvaFindTrendThreshold(series, timeStamps, timeWindow),T)
-    if(length(TrendTh)==0){
-      TrendTh=NA
+    if (is.na(TrendTh)){
+      TrendTh=try(tsEvaFindTrendThreshold(series, timeStamps, timeWindow),T)
+      if(length(TrendTh)==0){
+        TrendTh=NA
+      }
     }
     trasfData = tsEvaTransformSeriesToStationaryPeakTrend( timeStamps, series, timeWindow, TrendTh);
     gevMaxima = 'annual'
