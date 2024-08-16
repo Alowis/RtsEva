@@ -71,6 +71,10 @@ transfType = 'trendPeaks',tail = 'high')
 After fitting the non-stationnay EVA, the package offers functions to
 visualize the plots
 
+## More
+
+https://alowis.quarto.pub/rtseva-package-demo/
+
 ## Contact
 
 For any questions or inquiries, please contact the package maintainer at
