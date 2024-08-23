@@ -86,6 +86,10 @@ for flood and drought analysis is available here:
 A shiny app allowing the user to select different input timeseries and
 parameters: <https://alowis.shinyapps.io/RtsEva_demo/>
 
+## More
+
+https://alowis.quarto.pub/rtseva-package-demo/
+
 ## Contact
 
 For any questions or inquiries, please contact the package maintainer at
