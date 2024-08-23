@@ -7,9 +7,8 @@
 
 [![R-CMD-check](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml)
 [![PRsWelcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com/)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RtsEva)](https://cran.r-project.org/package=RtsEva)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RtsEva)](https://cran.r-project.org/package=RtsEva)
 ![](https://cranlogs.r-pkg.org/badges/grand-total/RtsEva)
-
 <!-- badges: end -->
 
 <img src="man/figures/RtsEVA.png" align="right" height="200"/>
@@ -35,12 +34,14 @@ doi:10.5194/hess-20-3527-2016,
 
 ## Installation
 
-You can install the released version of mobirep from
+You can install the released version of RtsEva from
+
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 install.packages("RtsEva")
 ```
+
 Alternatively, you can install the development version of RtsEva from
 [GitHub](https://github.com/) with:
 
@@ -69,7 +70,21 @@ transfType = 'trendPeaks',tail = 'high')
 ```
 
 After fitting the non-stationnay EVA, the package offers functions to
-visualize the plots
+visualize the plots.
+
+Other resources are available for users to get a grasp of RtsEva and
+what can be done with it:
+
+### Quarto document
+
+A quarto document showing a step-by-step real world application of TSEVA
+for flood and drought analysis is available here:
+<https://alowis.github.io/RTSEVA_guide/RtsEVA_demo.html>
+
+### Shiny demo app
+
+A shiny app allowing the user to select different input timeseries and
+parameters: <https://alowis.shinyapps.io/RtsEva_demo/>
 
 ## Contact
 

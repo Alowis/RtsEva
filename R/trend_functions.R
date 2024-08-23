@@ -886,66 +886,50 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
 #'tsEvaFindTrendThreshold(series, timeStamps, timeWindow)
 #'
 #' @export
-tsEvaFindTrendThreshold <- function(series, timeStamps, timeWindow){
-  # Initialize variables
-  ptn=timeStamps[which(!is.na(series))]
-  bounds=unique(lubridate::year(ptn))
+tsEvaFindTrendThreshold<-function(series, timeStamps, timeWindow){
+  ptn = timeStamps[which(!is.na(series))]
+  bounds = unique(lubridate::year(ptn))
   nr <- rep(1, length(series))
-  nr=nr +rnorm(length(series),0,1e-5)
+  nr = nr + rnorm(length(series), 0, 1e-05)
   sts <- c()
-  lnegs=c()
-  pctd=c()
-  pcts <- seq(0.40, 0.95, by=0.05)
-  # Iterate over each percentile
-  for (iter in 1:length(pcts)){
-    # Calculate the threshold based on the current percentile
-    thrsdt <- quantile(series, pcts[iter], na.rm=TRUE)
-    # Assign a flag value to missing data
+  lnegs = c()
+  pctd = c()
+  pcts <- seq(0.4, 0.95, by = 0.05)
+  for (iter in 1:length(pcts)) {
+    thrsdt <- quantile(series, pcts[iter], na.rm = TRUE)
     series_no_na <- series
     series_no_na[which(is.na(series_no_na))] <- -9999
-    # Remove data points below the threshold
     serieb <- series_no_na
-    timeb=timeStamps
-    timeb=timeb[-which(serieb < thrsdt)]
+    timeb = timeStamps
+    timeb = timeb[-which(serieb < thrsdt)]
     serieb[which(serieb < thrsdt)] <- NA
-    # Test that all years are represented
-    checkY=check_timeseries(timeb,bounds)
-    if (checkY==FALSE){
+    checkY=check_timeserie2(timeb,bounds)
+    if (checkY == FALSE) {
+      print(paste0("not all years - q= ",pcts[iter]))
       break
     }
-    # Detrend the time series
-    rs <- tsEvaDetrendTimeSeries(timeStamps, serieb, timeWindow,fast=T)
-    varianceSeries <- tsEvaNanRunningVariance(serieb, rs@nRunMn)
-    varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(rs@nRunMn/2))
-    norm_trend <- rs@trendSeries/mean(rs@trendSeries, na.rm=TRUE)
-    dtr1=serieb-rs@trendSeries
-    lneg=length(which(dtr1<0))
-    # Calculate the correlation between the normalized trend and the time series
-    stab <- cor(nr, norm_trend, use = 'pairwise.complete.obs')
-    # Update nr with the current norm_trend if it's the first iteration
-    if(iter == 1) nr <- norm_trend
-    # Store the correlation coefficient in sts
-    if (lneg>=1) lnegs=c(lnegs,lneg)
-    sts <- c(sts, stab)
-    pctd=c(pctd,pcts[iter])
-
-
+    rs <- tsEvaDetrendTimeSeries(timeStamps, serieb, timeWindow,
+                                 fast = T)
+    # varianceSeries <- tsEvaNanRunningVariance(serieb, rs@nRunMn)
+    # varianceSeries <- tsEvaNanRunningMean(varianceSeries,
+    #                                       ceiling(rs@nRunMn/2))
+    # norm_trend <- rs@trendSeries/mean(rs@trendSeries, na.rm = TRUE)
+    dtr1 = serieb - rs@trendSeries
+    lneg = length(which(dtr1 < 0))
+    # stab <- cor(nr, norm_trend, use = "pairwise.complete.obs")
+    # if (iter == 1)
+    #   nr <- norm_trend
+    if (lneg >= 1)
+      lnegs = c(lnegs, lneg)
+    # sts <- c(sts, stab)
+    pctd = c(pctd, pcts[iter])
   }
-  # Set the first correlation coefficient to 1
-  sts[1] <- 1
-  # Perform a changepoint analysis
-  cptm <- try(changepoint::cpt.var(sts, method='AMOC',penalty="BIC", minseglen=3),T)
-  if(inherits(cptm, "try-error")){
-    rval=pctd[which.max(sts[-1])]
 
-  }else if(cptm@cpts[1] == length(sts)) {
-    message("no change point")
-    cptm@cpts[1] <- length(sts)/2
-    rval=pctd[cptm@cpts[1]]
+  rval = pctd[length(pctd)]
+  if (sum(lnegs) > 1) {
+    rval = pctd[which.min(lnegs)]
   }
-  if (sum(lnegs)>1){
-    rval=pctd[which.min(lnegs)]
-  }
+
   return(rval)
 }
 

@@ -37,6 +37,9 @@
 #'  \item{\code{lninv}}{log of inverse the data (used for low extreme, under development)}
 #'  }
 #' @param lowdt The temporal resolultion used for low values. default is 7 days.
+#' @param TrendTh The threshold used to compute the trend on extreme events
+#' (only valid if transftype==trendPeaks). If not specified, the optimal
+#' threshold is identified within the function
 #'
 #' @return A list containing the results of the non-stationary EVA.
 #' Containing the following components:

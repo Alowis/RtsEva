@@ -83,20 +83,15 @@ tsEasyParseNamedArgs <- function(args, argStruct) {
 #'
 #' @importFrom lubridate year
 #' @export
-check_timeseries <- function(timeseries, yro) {
-  # Create a vector of all years in the time series
-  all_years <- yro
-
-  # Extract the years from the time series index
+check_timeserie2=function(timeseries,yro){
   ts_years <- as.integer((lubridate::year(timeseries)))
-
-  # Check if each year in all_years is in ts_years
-  year_check <- all_years %in% ts_years
-
-  # If any year is not in ts_years, return FALSE. Otherwise, return TRUE.
-  if(any(!year_check)) {
+  year_check <- yro %in% ts_years
+  runs <- rle(year_check)
+  rf=which(runs$values==FALSE)
+  if (any(runs$lengths[rf] >= 4)) {
     return(FALSE)
-  } else {
+  }
+  else {
     return(TRUE)
   }
 }
