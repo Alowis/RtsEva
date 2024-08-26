@@ -83,7 +83,7 @@ tsEasyParseNamedArgs <- function(args, argStruct) {
 #'
 #' @importFrom lubridate year
 #' @export
-check_timeserie=function(timeseries,yro){
+check_timeseries=function(timeseries,yro){
   ts_years <- as.integer((lubridate::year(timeseries)))
   year_check <- yro %in% ts_years
   runs <- rle(year_check)
