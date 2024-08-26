@@ -221,6 +221,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
         TrendTh=NA
       }
     }
+    print(TrendTh)
     trasfData = tsEvaTransformSeriesToStationaryPeakTrend( timeStamps, series, timeWindow, TrendTh);
     gevMaxima = 'annual'
     potEventsPerYear = epy

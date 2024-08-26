@@ -903,7 +903,7 @@ tsEvaFindTrendThreshold<-function(series, timeStamps, timeWindow){
     timeb = timeStamps
     timeb = timeb[-which(serieb < thrsdt)]
     serieb[which(serieb < thrsdt)] <- NA
-    checkY=check_timeserie2(timeb,bounds)
+    checkY=check_timeseries(timeb,bounds)
     if (checkY == FALSE) {
       print(paste0("not all years - q= ",pcts[iter]))
       break

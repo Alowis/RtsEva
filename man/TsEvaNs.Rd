@@ -18,7 +18,8 @@ TsEvaNs(
   tail = "high",
   epy = -1,
   lowdt = 7,
-  trans = NULL
+  trans = NULL,
+  TrendTh = NA
 )
 }
 \arguments{
@@ -68,6 +69,10 @@ user or automatically set according to the tail selected.}
 \item{\code{inv}}{inversing the data (used for low extreme, can lead to unstabilities)}
 \item{\code{lninv}}{log of inverse the data (used for low extreme, under development)}
 }}
+
+\item{TrendTh}{The threshold used to compute the trend on extreme events
+(only valid if transftype==trendPeaks). If not specified, the optimal
+threshold is identified within the function}
 }
 \value{
 A list containing the results of the non-stationary EVA.
