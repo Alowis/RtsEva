@@ -383,16 +383,16 @@ tsEvaComputeReturnLevelsGPD <- function(epsilon, sigma, threshold, epsilonStdErr
   npars <- length(sigma)
   nt <- length(returnPeriods)
 
-  #XX_ <- rep(XX, each = npars)
-  XX_<-(matrix(XX, nrow = npars, ncol = nt, byrow = TRUE))
-  sigma_ <- t(matrix(sigma, nrow = nt, ncol = npars, byrow = TRUE))
-  sigmaStdErr_ <- t(matrix(sigmaStdErr, nrow = nt, ncol = npars, byrow = TRUE))
-  #sigma_ <- rep(sigma, times = nt)
-  #sigmaStdErr_ <- rep(sigmaStdErr, times = nt)
-  # threshold_ <- rep(threshold, times = nt)
-  # thresholdStdErr_ <- rep(thresholdStdErr, times = nt)
-  threshold_ <- t(matrix(threshold, nrow = nt, ncol = npars, byrow = TRUE))
-  thresholdStdErr_ <- t(matrix(thresholdStdErr, nrow = nt, ncol = npars, byrow = TRUE))
+  XX_ <- rep(XX, each = npars)
+  #XX_<-(matrix(XX, nrow = npars, ncol = nt, byrow = TRUE))
+  #sigma_ <- t(matrix(sigma, nrow = nt, ncol = npars, byrow = TRUE))
+  #sigmaStdErr_ <- t(matrix(sigmaStdErr, nrow = nt, ncol = npars, byrow = TRUE))
+  sigma_ <- rep(sigma, times = nt)
+  sigmaStdErr_ <- rep(sigmaStdErr, times = nt)
+  threshold_ <- rep(threshold, times = nt)
+  thresholdStdErr_ <- rep(thresholdStdErr, times = nt)
+  #threshold_ <- t(matrix(threshold, nrow = nt, ncol = npars, byrow = TRUE))
+  #thresholdStdErr_ <- t(matrix(thresholdStdErr, nrow = nt, ncol = npars, byrow = TRUE))
 
   if (epsilon != 0) {
     # estimating the return levels
