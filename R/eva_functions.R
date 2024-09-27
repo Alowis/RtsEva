@@ -781,11 +781,18 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
           perfpen=9999*(pcts[ipp]*100)
         }
         if(numperyear[ipp]<=desiredEventsPerYear+1 & dej==0){
-          fgpd=suppressWarnings(POT::fitgpd(pks[,1], threshold = thrsdt, est = "mle",method="BFGS",std.err.type = "expected"))
-          gpdpar=fgpd$fitted.values
-          deviance=fgpd$deviance
-          devpp[ipp]=AIC(fgpd)+perfpen
-          gpp[ipp]=gpdpar[2]
+          fgpd=suppressWarnings(try(POT::fitgpd(pks[,1], threshold = thrsdt, est = "mle",method="BFGS",std.err.type = "expected")))
+          if(inherits(fgpd, "try-error")){
+            gpdpar=9999
+            deviance=9999
+            devpp[ipp]=1e9
+            gpp[ipp]=9999
+          }else {
+            gpdpar=fgpd$fitted.values
+            deviance=fgpd$deviance
+            devpp[ipp]=AIC(fgpd)+perfpen
+            gpp[ipp]=gpdpar[2]
+          }
           nperYear <- tsGetNumberPerYear(ms, pks[,2])
           minnumperyear[ipp] <- min(nperYear$Freq, na.rm = TRUE)
         }
