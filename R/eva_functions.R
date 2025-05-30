@@ -770,15 +770,16 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
         }
         if(tail=="low") {
           pks <- declustpeaks(data = ms[,2] ,minpeakdistance = minPeakDistance ,minrundistance = minRunDistance, qt=thrsdt)
-          shape_bnd=c(-1.5,0)
+          shape_bnd=c(-2,0)
         }
         numperyear[ipp] <- length(pks[,1])/nyears
+        #print(numperyear[ipp])
         if(numperyear[ipp]>=3*desiredEventsPerYear & ipp<(length(pcts)-5)) skip = floor(length(pcts)/8)
-        if(numperyear[ipp]<minEventsPerYear) {
-          perfpen=(pcts[ipp]*100)
+        if(numperyear[ipp]<0.9*minEventsPerYear) {
+          perfpen=(pcts[ipp])*100
         }
         if(numperyear[ipp]<(0.7*minEventsPerYear)) {
-          perfpen=9999*(pcts[ipp]*100)
+          perfpen=(pcts[ipp])*1000
         }
         if(numperyear[ipp]<=desiredEventsPerYear+1 & dej==0){
           fgpd=suppressWarnings(try(POT::fitgpd(pks[,1], threshold = thrsdt, est = "mle",method="BFGS",std.err.type = "expected")))
@@ -799,29 +800,50 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
       }
     }
   }
+  md= abs(pks[1,1]-pks[2,1])
   devpp[1]=NA
   if(is.na(trip)){
     isok=F
-    count=0
     devpx=devpp
-    #discard the fits that provide negative values
+    count=length(devpx)
     while(isok==F){
-      trip=which.min(devpx)
-      isok=dplyr::between(gpp[trip], shape_bnd[1], shape_bnd[2])
+      #safety measure for stability of parameter
+      dshap=c(0,diff(gpp))
+      #Penalizing fits with positive shape parameters for low tail
+      if(tail=="low") {
+        #for very bounded distributions
+        if (md<0.1){
+          devpp[which(gpp>=-0.5)]=devpp[which(gpp>=-0.5)]+9999
+        }else{
+          devpp[which(gpp>=0)]=devpp[which(gpp>=0)]+9999
+        }
+
+      }
+      devpp[which(abs(dshap)>0.5)]=devpp[which(abs(dshap)>0.5)]+99999
+      trip=which.min(devpp)
+      #message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
+      #isok=T
+      #trip=which.min(devpx)
+      isok=dplyr::between(round(gpp[trip],1), shape_bnd[1], shape_bnd[2])
       count=count+1
       if(isok==F)devpx[trip]=devpx[trip]+9999
-      if(count>(length(devpx)-1)){
-        #safety measure for stability of parameter
-        dshap=c(0,diff(gpp))
-        #Penalizing fits with positive shape parameters for low tail
-        if(tail=="low") devpp[which(gpp>=0)]=devpp[which(gpp>=0)]+99999
-        devpp[which(abs(dshap)>0.5)]=devpp[which(abs(dshap)>0.5)]+9999
-        trip=which.min(devpp)
-        message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
-        isok=T
-      }
+      # if(count>(length(devpx)-1)){
+      #   #safety measure for stability of parameter
+      #   dshap=c(0,diff(gpp))
+      #   plot(pcts,dshap)
+      #   #Penalizing fits with positive shape parameters for low tail
+      #   if(tail=="low") devpp[which(gpp>=0)]=devpp[which(gpp>=0)]+99999
+      #   devpp[which(abs(dshap)>0.5)]=devpp[which(abs(dshap)>0.5)]+9999
+      #   trip=which.min(devpp)
+      #   message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
+      #   isok=T
+      # }
     }
   }
+  # plot(pcts,devpp,ylim=c(0,1e5))
+  # plot(pcts,gpp)
+  # print(devpp)
+  # print(pcts)
   message(paste0("\nmax threshold is: ", pcts[trip],"%"))
   message(paste0("\naverage number of events per year = ",round(numperyear[trip],1) ))
 
@@ -846,7 +868,6 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
   locs <- pks_and_locs[,2]
   st<-pks_and_locs[,3]
   end=pks_and_locs[,4]
-
   # Create a list to store results
   POTdata <- list()
   # Assign values to the fields of the list
@@ -1250,9 +1271,13 @@ computeAnnualMaxima <- function(timeAndSeries) {
 #' @export
 computeMonthlyMaxima<- function(timeAndSeries) {
   timeStamps <- timeAndSeries[,1]
+  dt1=min(diff(timeStamps),na.rm=T)
+  dt=as.numeric(dt1)
+  tdim=attributes(dt1)$units
+  tmvec <- as.Date(timeStamps)
+  if (tdim!="days")   tmvec <- as.Date(timeStamps+3600)
   srs <- timeAndSeries[,2]
 
-  tmvec <- as.Date(timeStamps+3600)
   yrs <- as.integer(format(tmvec, "%Y"))
   mnts <- as.integer(format(tmvec, "%m"))
   mnttmvec <- data.frame(yrs, mnts)
