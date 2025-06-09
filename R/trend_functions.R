@@ -215,7 +215,7 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
 #' @param series A vector of the time series data.
 #' @param timeWindow The size of the time window used for detrending.
 #' @param TrendTh The threshold for fitting the trend on the means above a
-#' given quantile. Default is 0.5.
+#' given quantile. If "NA", default to 0.5.
 #'
 #' @return A list containing the following components:
 #'   \describe{
@@ -263,53 +263,160 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
   }
   message(paste0("trend threshold= ", TrendTh))
   qd <- quantile(series, TrendTh, na.rm = T)
-  serieb <- series
-  serieb[which(serieb < qd)] <- NA
+  series_above_threshold <- series
+  series_above_threshold[which(series_above_threshold < threshold)] <- NA
 
 
-  rs <- tsEvaDetrendTimeSeries(timeStamps, serieb, timeWindow)
+  detrend_result <- tsEvaDetrendTimeSeries(timeStamps, series_above_threshold, timeWindow)
 
-  # adding the threshold to avoid values on the zero
-  detrendSeries <- series - rs@trendSeries
-  detrendSerie1 <- serieb - rs@trendSeries
-  qd2 <- min(detrendSerie1, na.rm = T)
-  nRunMn <- rs@nRunMn
+  # Detrend the series
+  detrended_series <- series - detrend_result@trendSeries
+  detrended_series_above_threshold <- series_above_threshold - detrend_result@trendSeries
 
-  varianceSeries <- tsEvaNanRunningVariance(detrendSerie1, nRunMn)
-  # further smoothing
-  varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(nRunMn / 2))
-
-  stdDevSeries1 <- varianceSeries^.5
-  stdDevSeries <- stdDevSeries1
-  avgStdDev <- mean(stdDevSeries)
+  # Calculate running variance and standard deviation
+  n_run_mean <- detrend_result@nRunMn
+  variance_series <- tsEvaNanRunningVariance(detrended_series_above_threshold, n_run_mean)
+  variance_series <- tsEvaNanRunningMean(variance_series, ceiling(n_run_mean / 2))
+  std_dev_series <- sqrt(variance_series)
+  avg_std_dev <- mean(std_dev_series, na.rm = TRUE)
   S <- 2
 
-  # N is the size of each sample used to compute the average
-  # Counts the real amount of timstep, need to specify original temporal resolution
+  # Calculate error on standard deviation
   N <- timeWindow * 4
-  # computation of the error on the standard deviation explained in
-  # Mentaschi et al 2016
+  std_dev_error <- avg_std_dev * (2 * S^2 / N^3)^(1 / 4)
+
+  # Compute running statistics of the stationary series
+  stationary_series <- detrended_series / std_dev_series
+  stationary_series_no_na <- na.omit(stationary_series)
+
+  running_moments <- tsEvaNanRunningStatistics(stationary_series_no_na, n_run_mean)
+  stat_ser_3_mom <- tsEvaNanRunningMean(running_moments$rn3mom, ceiling(n_run_mean))
+  stat_ser_4_mom <- tsEvaNanRunningMean(running_moments$rn4mom, ceiling(n_run_mean))
+
+  # Calculate error on the trend
+  trend_error <- avg_std_dev / sqrt(N)
+
+  # Store the results in a list
+  transformed_data <- list(
+    runningStatsMulteplicity = n_run_mean,
+    stationarySeries = stationary_series,
+    trendSeries = detrend_result@trendSeries,
+    trendSeriesNonSeasonal = NULL,
+    trendError = trend_error,
+    stdDevSeries = std_dev_series,
+    stdDevSeriesNonSeasonal = NULL,
+    stdDevError = std_dev_error * rep(1, length(std_dev_series)),
+    timeStamps = timeStamps,
+    nonStatSeries = series,
+    statSer3Mom = stat_ser_3_mom,
+    statSer4Mom = stat_ser_4_mom
+  )
+
+  return(transformed_data)
+}
+
+#' tsEvaTransformSeriesToStationaryMMXTrend
+#'
+#' \code{tsEvaTransformSeriesToStationaryMMXTrend}
+#' transforms a time series to a stationary one by focusing on the monthly maximum values.
+#' The trend and slowly varying amplitude are computed on the monthly maximum values.
+#'
+#' @param timeStamps A vector of time stamps corresponding to the observations in the series.
+#' @param series A vector of the time series data.
+#' @param timeWindow The size of the time window used for detrending.
+#'
+#' @return A list containing the following components:
+#'   \describe{
+#'    \item{\code{runningStatsMulteplicity}}{The multiplicity of running statistics.}
+#'    \item{\code{stationarySeries}}{The stationary series after removing the trend.}
+#'    \item{\code{trendSeries}}{The trend component of the series.}
+#'    \item{\code{trendSeriesNonSeasonal}}{NULL (not used).}
+#'    \item{\code{trendError}}{The error on the trend component.}
+#'    \item{\code{stdDevSeries}}{The standard deviation series.}
+#'    \item{\code{stdDevSeriesNonSeasonal}}{NULL (not used).}
+#'    \item{\code{stdDevError}}{The error on the standard deviation series.}
+#'    \item{\code{timeStamps}}{The time stamps.}
+#'    \item{\code{nonStatSeries}}{The original non-stationary series.}
+#'    \item{\code{statSer3Mom}}{The running mean of the third moment of the stationary series.}
+#'    \item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series.}
+#'   }
+#'
+#' @import stats
+#' @importFrom dplyr mutate group_by summarise
+#' @importFrom lubridate floor_date
+#' @examples
+#' timeAndSeries <- ArdecheStMartin
+#' timeStamps <- ArdecheStMartin[,1]
+#' series <- ArdecheStMartin[,2]
+#' # select only the 5 latest years
+#' yrs <- as.integer(format(timeStamps, "%Y"))
+#' tokeep <- which(yrs >= 2015)
+#' timeStamps <- timeStamps[tokeep]
+#' series <- series[tokeep]
+#' timeWindow <- 365 # 1 year
+#' result <- tsEvaTransformSeriesToStationaryMMXTrend(timeStamps, series, timeWindow)
+#' plot(result$trendSeries)
+#'
+#' @seealso [tsEvaDetrendTimeSeries()], [tsEvaNanRunningVariance()],
+#' [tsEvaNanRunningMean()], [tsEvaNanRunningStatistics()], [mutate()], [group_by()],
+#' [summarise()], [floor_date()]
+#' @export
+tsEvaTransformSeriesToStationaryMMXTrend <- function(timeStamps, series, timeWindow) {
+  # Check if timeStamps and series are of the same length
+  if (length(timeStamps) != length(series)) {
+    stop("timeStamps and series must be of the same length.")
+  }
+
+  # Check if timeWindow is a positive integer
+  if (!is.numeric(timeWindow) || timeWindow <= 0) {
+    stop("timeWindow must be a positive integer.")
+  }
+
+  # Create a data frame with timeStamps and series
+  tserie <- data.frame(timeStamps, series)
+
+  # Calculate monthly maximum values
+  monthly_max <- tserie %>%
+    mutate(month = floor_date(timeStamps, "month")) %>%
+    group_by(month) %>%
+    summarise(max_value = max(series, na.rm = TRUE))
+
+  # Create a series with only the monthly maximum values
+  serieb <- series
+  tm <- na.omit(match(as.Date(as.character(monthly_max$month)), as.Date(timeStamps)))
+  serieb[-tm] <- NA
+
+  # Detrend the series based on monthly maximum values
+  rs <- tsEvaDetrendTimeSeries(timeStamps, serieb, timeWindow)
+  detrendSeries <- series - rs@trendSeries
+  detrendSerie1 <- serieb - rs@trendSeries
+
+  # Calculate running variance and standard deviation
+  nRunMn <- rs@nRunMn
+  varianceSeries <- tsEvaNanRunningVariance(detrendSerie1, nRunMn)
+  varianceSeries <- tsEvaNanRunningMean(varianceSeries, ceiling(nRunMn / 2))
+  stdDevSeries1 <- varianceSeries^0.5
+  stdDevSeries <- stdDevSeries1
+  avgStdDev <- mean(stdDevSeries, na.rm = TRUE)
+  S <- 2
+
+  # Calculate error on standard deviation
+  N <- timeWindow * 4
   stdDevError <- avgStdDev * (2 * S^2 / N^3)^(1 / 4)
 
   # Compute running statistics of the stationary series
   statSeries <- detrendSeries / stdDevSeries
+  statSeries_no_na <- na.omit(statSeries)
 
-  xtremS <- statSeries
-  xtremS <- na.omit(xtremS)
-  allS <- na.omit(serieb)
+  running_moments <- tsEvaNanRunningStatistics(statSeries_no_na, nRunMn)
+  statSer3Mom <- tsEvaNanRunningMean(running_moments$rn3mom, ceiling(nRunMn))
+  statSer4Mom <- tsEvaNanRunningMean(running_moments$rn4mom, ceiling(nRunMn))
 
-  statSer3Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn3mom
-  statSer4Mom <- tsEvaNanRunningStatistics(statSeries, nRunMn)$rn4mom
-  statSer3Mom <- tsEvaNanRunningMean(statSer3Mom, ceiling(nRunMn))
-  statSer4Mom <- tsEvaNanRunningMean(statSer4Mom, ceiling(nRunMn))
-
-
-  # the error on the trend is computed as the error on the average:
-  #  error(average) = stdDev/sqrt(N)
-  trendError <- mean(stdDevSeries) / N^.5
+  # Calculate error on the trend
+  trendError <- avgStdDev / sqrt(N)
 
   # Store the results in a list
-  trasfData <- list(
+  transformed_data <- list(
     runningStatsMulteplicity = nRunMn,
     stationarySeries = statSeries,
     trendSeries = rs@trendSeries,
@@ -324,7 +431,7 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
     statSer4Mom = statSer4Mom
   )
 
-  return(trasfData)
+  return(transformed_data)
 }
 
 
