@@ -624,7 +624,7 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
 #'     \item{\code{monthlyMaxIndx}}{The indices of the monthly maximum values.}
 #'   }
 #' @seealso [tsGetPOT()]
-#' @import stats
+
 #' @examples
 #' # Generate sample data
 #' data <- ArdecheStMartin
@@ -653,7 +653,7 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 
   POTData <- tsGetPOT(ms, potPercentiles, meanEventsPerYear,minEventsPerYear,minPeakDistanceInDays, tail)
 
-  vals <- quantile(ms[,2], pctsDesired/100,na.rm=T)
+  vals <- stats::quantile(ms[,2], pctsDesired/100,na.rm=T)
   percentiles <- list(precentiles = pctsDesired, values = vals)
 
   pointData <- list()
@@ -705,7 +705,6 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 #'   fitted to the peaks.}
 #' }
 #'
-#' @import stats
 #' @importFrom POT fitgpd
 #' @seealso [tsEvaSampleData()]
 #' @examples
@@ -756,7 +755,7 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
       skip=skip-1
     }else{
       if(dej==0){
-        thrsdt <- quantile(ms[,2],pcts[ipp]/100,na.rm=T)
+        thrsdt <- stats::quantile(ms[,2],pcts[ipp]/100,na.rm=T)
         thrsdts[ipp] <- thrsdt
         ms[,2][which(is.na(ms[,2]))]=-9999
         minEventsPerYear=1
@@ -788,7 +787,7 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
           }else {
             gpdpar=fgpd$fitted.values
             deviance=fgpd$deviance
-            devpp[ipp]=AIC(fgpd)+perfpen
+            devpp[ipp]=stats::AIC(fgpd)+perfpen
             gpp[ipp]=gpdpar[2]
           }
           nperYear <- tsGetNumberPerYear(ms, pks[,2])
@@ -799,7 +798,7 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
   }
 
   #peaks with lowest threshold (retrieving the two largest peaks)
-  pkx <- declustpeaks(data = ms[,2] ,minpeakdistance = minPeakDistance ,minrundistance = minRunDistance, qt=quantile(ms[,2],pcts[1]/100,na.rm=T))
+  pkx <- declustpeaks(data = ms[,2] ,minpeakdistance = minPeakDistance ,minrundistance = minRunDistance, qt=stats::quantile(ms[,2],pcts[1]/100,na.rm=T))
   md= abs(pkx[1,1]-pkx[2,1])
   devpp[1]=NA
   if(is.na(trip)){
@@ -839,13 +838,13 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
   message(paste0("\nshape parameter is: ", round(gpp[trip],2)))
   message(paste0("\naverage number of events per year = ",round(numperyear[trip],1) ))
 
-  diffNPerYear <- mean(diff(na.omit(rev(numperyear)), na.rm = TRUE))
+  diffNPerYear <- mean(diff(stats::na.omit(rev(numperyear)), na.rm = TRUE))
   if (diffNPerYear == 0) diffNPerYear <- 1
   diffNPerYear <- 1
-  thresholdError <- -mean(diff(na.omit(thrsdts))/diffNPerYear)/2
+  thresholdError <- -mean(diff(stats::na.omit(thrsdts))/diffNPerYear)/2
   indexp <- trip
   if (!is.na(indexp)) {
-    thrsd <- quantile(ms[,2],pcts[indexp]/100)
+    thrsd <- stats::quantile(ms[,2],pcts[indexp]/100)
     pct <- pcts[indexp]
   } else {
     thrsd <- 0
@@ -991,19 +990,19 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
         if (stdfit==TRUE){
           probs <- c(alphaCIx/2, 1-alphaCIx/2)
           # Compute the CI for k using a normal distribution for khat.
-          kci <- try(qnorm(probs, paramEsts[3], fit$std.err[3]),TRUE)
+          kci <- try(stats::qnorm(probs, paramEsts[3], fit$std.err[3]),TRUE)
           kci[kci < -1] <- -1
           # Compute the CI for sigma using a normal approximation for log(sigmahat)
           # and transform back to the original scale.
-          lnsigci <- try(qnorm(probs, log(paramEsts[2]), fit$std.err[2]/paramEsts[2]),silent=T)
-          muci <- qnorm(probs, paramEsts[1], fit$std.err[1])
+          lnsigci <- try(stats::qnorm(probs, log(paramEsts[2]), fit$std.err[2]/paramEsts[2]),silent=T)
+          muci <- stats::qnorm(probs, paramEsts[1], fit$std.err[1])
           paramCIs <- cbind(muci=muci, sigci=exp(lnsigci), kci=kci)
         }else{
           #not able to generate parameters CI
           paramCIs <- cbind(muci=NA, sigci=NA, kci=NA)
         }
       } else if (gevType == "gumbel"){
-        fit <- texmex::evm(y = dt, data = tmp, family = gumbel)
+        fit <- texmex::evm(y = .data$dt, data = tmp, family = gumbel)
         paramEsts <- c(fit$par[1], exp(fit$par[2]),0)
 
         alphaCIx=1-alphaCI
@@ -1019,9 +1018,9 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
           kci <- c(NA,NA)
           # Compute the CI for sigma using a normal approximation for log(sigmahat)
           # and transform back to the original scale.
-          lnsigci <- try(qnorm(probs, log(paramEsts[2]), fit$se[2]))
+          lnsigci <- try(stats::qnorm(probs, log(paramEsts[2]), fit$se[2]))
 
-          muci <- qnorm(probs, paramEsts[1], fit$se[1])
+          muci <- stats::qnorm(probs, paramEsts[1], fit$se[1])
           paramCIs <- cbind(muci=muci, sigci=exp(lnsigci), kci=kci)
         }
       }
@@ -1068,11 +1067,11 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
       sgm <- fit$par[1]
       alphaCIx=1-alphaCI
       probs <- c(alphaCIx/2, 1-alphaCIx/2)
-      kci <- try(qnorm(probs, ksi, fit$std.err[2]),silent=T)
+      kci <- try(stats::qnorm(probs, ksi, fit$std.err[2]),silent=T)
       kci[kci < -1] <- -1
       # Compute the CI for sigma using a normal approximation for log(sigmahat)
       # and transform back to the original scale.
-      lnsigci <- try(qnorm(probs, log(sgm), fit$std.err[1]/sgm))
+      lnsigci <- try(stats::qnorm(probs, log(sgm), fit$std.err[1]/sgm))
       paramCIs <- cbind(kci, sigci=exp(lnsigci))
 
       # Create output structures for GPD statistics
@@ -1274,7 +1273,7 @@ computeMonthlyMaxima<- function(timeAndSeries) {
   mnts <- as.integer(format(tmvec, "%m"))
   mnttmvec <- data.frame(yrs, mnts)
   valsIndxs <- 1:length(srs)
-  monthlyMaxIndx <- aggregate(valsIndxs ~ yrs + mnts, data = mnttmvec, function(x) {
+  monthlyMaxIndx <- stats::aggregate(valsIndxs ~ yrs + mnts, data = mnttmvec, function(x) {
     findMax(x,srs)
   })
   monthlyMaxIndx$valsIndxs=as.numeric(monthlyMaxIndx$valsIndxs)
@@ -1298,7 +1297,7 @@ computeMonthlyMaxima<- function(timeAndSeries) {
 #' @param minpeakdistance An integer specifying the minimum distance between peaks.
 #' @param minrundistance An integer specifying the minimum distance between runs.
 #' @param qt A numeric value representing the threshold for peak detection.
-#' @import texmex stats
+#' @import texmex
 #' @return A data frame with information about the peaks, including:
 #' \describe{
 #'   \item{\code{Q}}{the peak value}
@@ -1322,7 +1321,7 @@ declustpeaks<-function(data,minpeakdistance = 10 ,minrundistance = 7, qt){
   peakex=data.frame(Qval,intcl, peakev$clusters,peakev$isClusterMax,peakev$exceedanceTimes)
   names(peakex)=c("Qs","Istart","clusters","IsClustermax","exceedances")
   evmax=peakex[which(peakex$IsClustermax==T),]
-  ziz=aggregate(peakex$exceedance,
+  ziz=stats::aggregate(peakex$exceedance,
                 by=list(clust=peakex$clusters), FUN=function(x) c(max(x)-min(x)+1))
   st=stats::aggregate(peakex$exceedance,
                by=list(clust=peakex$clusters), FUN=function(x) c(min(x)))

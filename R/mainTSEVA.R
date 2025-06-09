@@ -180,6 +180,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
       if(length(TrendTh)==0){
         TrendTh=0.1
       }
+      print(TrendTh)
       trasfData = tsEvaTransformSeriesToStationaryPeakTrend( timeStamps, series, timeWindow, TrendTh);
     }else{
       if (TrendTh=="MMX"){

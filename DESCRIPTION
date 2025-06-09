@@ -40,7 +40,6 @@ Imports:
     tsibble,
     xts,
     grDevices,
-    stats,
     rlang,
     changepoint
 Suggests: 

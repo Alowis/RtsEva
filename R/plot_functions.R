@@ -477,7 +477,7 @@ tsEvaPlotAllRLevelsGEV <- function(nonStationaryEvaParams, stationaryTransformDa
   IndexCurve <- data.frame(returnPeriodsInYears = returnPeriodsInYears, returnLevels = IndexCurve)
   epslab=as.character(paste0("shape = ", as.character(round(epsilon, 3))))
   epslab=enc2utf8(epslab)
-  f <- ggplot2::ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = ts, group = .data$group)) +
+  f <- ggplot2::ggplot(rLevAll, aes(x = returnPeriodsInYears, y = returnLevels, color = .data$ts, group = .data$group)) +
     ggtitle(title) +
     geom_line(lwd = 1.5, alpha = 0.2) +
     geom_line(data = IndexCurve, aes(x = returnPeriodsInYears, y = returnLevels, group = 1), colour = spc, lwd = 1.5, alpha = 1) +
@@ -1301,7 +1301,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
     epsilon0 <- apply(epsilonMtx, 2, mean, na.rm = TRUE)
   }
 
-  sigma_ <- approx(timeStamps, sigma, timeStamps_plot)$y
+  sigma_ <- stats::approx(timeStamps, sigma, timeStamps_plot)$y
   sigmaMtx <- matrix(sigma_, navg, ncol = npdf)
   if (length(sigmaMtx) > 1) {
     sigma0 <- apply(sigmaMtx, 2, mean, na.rm = TRUE)
@@ -1309,7 +1309,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
     sigma0 <- sigmaMtx
   }
 
-  threshold_ <- approx(timeStamps, threshold, timeStamps_plot)$y
+  threshold_ <- stats::approx(timeStamps, threshold, timeStamps_plot)$y
   thresholdMtx <- matrix(threshold_, navg, ncol = npdf)
   if (length(thresholdMtx) > 1) {
     threshold0 <- apply(thresholdMtx, 2, mean, na.rm = TRUE)
@@ -1388,7 +1388,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
   } else if (trans == "rev") {
     peakplot$value <- -peakplot$value
     serie$serio <- -serie$serix
-    ylims <- c(max(min(serie$serio, na.rm = T) - sd(peakplot$value, na.rm = T), 0), min(max(-Y)))
+    ylims <- c(max(min(serie$serio, na.rm = T) - stats::sd(peakplot$value, na.rm = T), 0), min(max(-Y)))
     #print(ylims)
     ey <- ylims[2]
   } else if (trans == "lninv") {
@@ -1414,7 +1414,7 @@ tsEvaPlotGPDImageSc <- function(Y, timeStamps, serix, epsilon, sigma,
     ) +
     ggtitle(paste0("GPD - ", args$Title)) +
     geom_point(
-      data = peakplot, aes(x = as.Date(time), y = .data$value), shape = 21, fill = "white",
+      data = peakplot, aes(x = as.Date(.data$time), y = .data$value), shape = 21, fill = "white",
       color = "black", size = 2, stroke = 2
     ) +
     scale_y_continuous(
@@ -1507,7 +1507,7 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
     epsilon0 <- apply(epsilonMtx, 2, mean, na.rm = TRUE)
   }
 
-  sigma_ <- approx(timeStamps, sigma, timeStamps_plot)$y
+  sigma_ <- stats::approx(timeStamps, sigma, timeStamps_plot)$y
   sigmaMtx <- matrix(sigma_, navg, ncol = npdf)
   if (length(sigmaMtx) > 1) {
     sigma0 <- apply(sigmaMtx, 2, mean, na.rm = TRUE)
@@ -1515,7 +1515,7 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
     sigma0 <- sigmaMtx
   }
 
-  mu_ <- approx(timeStamps, mu, timeStamps_plot)$y
+  mu_ <- stats::approx(timeStamps, mu, timeStamps_plot)$y
   muMtx <- matrix(mu_, navg, ncol = npdf)
   if (length(muMtx) > 1) {
     mu0 <- apply(muMtx, 2, mean, na.rm = TRUE)
@@ -1622,7 +1622,7 @@ tsEvaPlotGEVImageSc <- function(Y, timeStamps, serix, epsilon, sigma, mu, return
     ) +
     ggtitle(paste0("GEV - ", args$Title)) +
     geom_point(
-      data = maxObs, aes(x = as.Date(time), y = .data$value), shape = 21, fill = "white",
+      data = maxObs, aes(x = as.Date(.data$time), y = .data$value), shape = 21, fill = "white",
       color = "black", size = 1, stroke = 2
     ) +
     scale_y_continuous(

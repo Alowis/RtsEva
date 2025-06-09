@@ -132,14 +132,13 @@ tsEvaTransformSeriesToStationaryTrendOnly <- function(timeStamps, series, timeWi
 #'result <- tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile(timeStamps,
 #'series, timeWindow, percentile)
 #'plot(result$trendSeries)
-#' @import stats
 #' @export
 tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
   series, timeWindow, percentile) {
 
   # Removing trend from the series
   message("\ncomputing the trend on extremes...\n")
-  qtes <- quantile(series, percentile / 100, na.rm = T)
+  qtes <- stats::quantile(series, percentile / 100, na.rm = T)
   rs <- tsEvaDetrendTimeSeries(timeStamps, series, timeWindow)
   meantrend <- mean(series)
   trendseriesf <- rs@trendSeries
@@ -147,7 +146,7 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
   nRunMn <- rs@nRunMn
 
   # Compute the extreme trend of the stationary series
-  qtes <- quantile(detrendSeries, percentile / 100, na.rm = T)
+  qtes <- stats::quantile(detrendSeries, percentile / 100, na.rm = T)
   detrendseriep <- detrendSeries
   detrendseriep[which(detrendseriep < qtes)] <- NA
   percentileSeries <- tsEvaNanRunningMean(detrendseriep, nRunMn)
@@ -158,7 +157,7 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
   if (min(percentileSeries, na.rm = T) < 0) percentileSeries <- percentileSeries - min(percentileSeries)
 
   meanperc <- mean(detrendseriep, na.rm = T)
-  stdDev <- sd(detrendSeries, na.rm = T)
+  stdDev <- stats::sd(detrendSeries, na.rm = T)
 
   # real std
   varianceSeries <- tsEvaNanRunningVariance(detrendSeries, nRunMn)
@@ -233,7 +232,6 @@ tsEvaTransformSeriesToStationaryTrendOnly_ciPercentile <- function(timeStamps,
 #'    \item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series.}
 #'   }
 #'
-#' @import stats
 #' @examples
 #'timeAndSeries <- ArdecheStMartin
 #'timeStamps <- ArdecheStMartin[,1]
@@ -262,9 +260,9 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
     TrendTh <- 0.5
   }
   message(paste0("trend threshold= ", TrendTh))
-  qd <- quantile(series, TrendTh, na.rm = T)
+  qd <- stats::quantile(series, TrendTh, na.rm = T)
   series_above_threshold <- series
-  series_above_threshold[which(series_above_threshold < threshold)] <- NA
+  series_above_threshold[which(series_above_threshold < qd)] <- NA
 
 
   detrend_result <- tsEvaDetrendTimeSeries(timeStamps, series_above_threshold, timeWindow)
@@ -287,7 +285,7 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 
   # Compute running statistics of the stationary series
   stationary_series <- detrended_series / std_dev_series
-  stationary_series_no_na <- na.omit(stationary_series)
+  stationary_series_no_na <- stats::na.omit(stationary_series)
 
   running_moments <- tsEvaNanRunningStatistics(stationary_series_no_na, n_run_mean)
   stat_ser_3_mom <- tsEvaNanRunningMean(running_moments$rn3mom, ceiling(n_run_mean))
@@ -341,7 +339,7 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 #'    \item{\code{statSer4Mom}}{The running mean of the fourth moment of the stationary series.}
 #'   }
 #'
-#' @import stats
+#' @import dplyr
 #' @importFrom dplyr mutate group_by summarise
 #' @importFrom lubridate floor_date
 #' @examples
@@ -377,13 +375,13 @@ tsEvaTransformSeriesToStationaryMMXTrend <- function(timeStamps, series, timeWin
 
   # Calculate monthly maximum values
   monthly_max <- tserie %>%
-    mutate(month = floor_date(timeStamps, "month")) %>%
-    group_by(month) %>%
-    summarise(max_value = max(series, na.rm = TRUE))
+    dplyr::mutate(month = lubridate::floor_date(timeStamps, "month")) %>%
+    dplyr::group_by(month) %>%
+    dplyr::summarise(max_value = max(series, na.rm = TRUE))
 
   # Create a series with only the monthly maximum values
   serieb <- series
-  tm <- na.omit(match(as.Date(as.character(monthly_max$month)), as.Date(timeStamps)))
+  tm <- stats::na.omit(match(as.Date(as.character(monthly_max$month)), as.Date(timeStamps)))
   serieb[-tm] <- NA
 
   # Detrend the series based on monthly maximum values
@@ -406,7 +404,7 @@ tsEvaTransformSeriesToStationaryMMXTrend <- function(timeStamps, series, timeWin
 
   # Compute running statistics of the stationary series
   statSeries <- detrendSeries / stdDevSeries
-  statSeries_no_na <- na.omit(statSeries)
+  statSeries_no_na <- stats::na.omit(statSeries)
 
   running_moments <- tsEvaNanRunningStatistics(statSeries_no_na, nRunMn)
   statSer3Mom <- tsEvaNanRunningMean(running_moments$rn3mom, ceiling(nRunMn))
@@ -773,7 +771,7 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts <- function(timeStamps, series
   ChgPts=tsEvaChangepts(statSeries,nRunMn/1.5,timeStamps)
 
   #static std
-  statSD=sd(statSeries)
+  statSD=stats::sd(statSeries)
   #ChgptStdDevSeries <- sqrt(ChgPts$variance)/statSD
   ChgptStdDevSeries=1
   statSeries=statSeries-ChgPts$trend
@@ -886,7 +884,7 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
   meanperc=mean(percentileSeries$rnprcnt,na.rm=T)
 
   #here there is a problem
-  stdDev = sd(rs@detrendSeries,na.rm=T);
+  stdDev = stats::sd(rs@detrendSeries,na.rm=T);
   stdDevSeries <- percentileSeries$rnprcnt/meanperc*stdDev
   stdDevError =percentileSeries$stdError/meanperc*stdDev;
   stdDevSeries_1<-stdDevSeries
@@ -899,7 +897,7 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
   ChgPts=tsEvaChangepts(statSeries,nRunMn/1.5,timeStamps)
 
   #static std
-  statSD=sd(statSeries)
+  statSD=stats::sd(statSeries)
   #ChgptStdDevSeries <- sqrt(ChgPts$variance)/statSD
   ChgptStdDevSeries=1
   statSeries=statSeries-ChgPts$trend
@@ -963,7 +961,6 @@ tsEvaTransformSeriesToStationaryTrendAndChangepts_ciPercentile <- function(timeS
 #' @param timeStamps The timestamps corresponding to the time series data.
 #' @param timeWindow The time window for detrending the time series.
 #'
-#' @import stats
 #' @importFrom changepoint cpt.var
 #' @return The trend threshold value.
 #'
@@ -997,13 +994,13 @@ tsEvaFindTrendThreshold<-function(series, timeStamps, timeWindow){
   ptn = timeStamps[which(!is.na(series))]
   bounds = unique(lubridate::year(ptn))
   nr <- rep(1, length(series))
-  nr = nr + rnorm(length(series), 0, 1e-05)
+  nr = nr + stats::rnorm(length(series), 0, 1e-05)
   sts <- c()
   lnegs = c()
   pctd = c()
   pcts <- seq(0.4, 0.95, by = 0.05)
   for (iter in 1:length(pcts)) {
-    thrsdt <- quantile(series, pcts[iter], na.rm = TRUE)
+    thrsdt <- stats::quantile(series, pcts[iter], na.rm = TRUE)
     series_no_na <- series
     series_no_na[which(is.na(series_no_na))] <- -9999
     serieb <- series_no_na
@@ -1021,7 +1018,7 @@ tsEvaFindTrendThreshold<-function(series, timeStamps, timeWindow){
     norm_trend <- rs@trendSeries/mean(rs@trendSeries, na.rm = TRUE)
     dtr1 = serieb - rs@trendSeries
     lneg = length(which(dtr1 < 0))
-    stab <- cor(nr, norm_trend, use = "pairwise.complete.obs")
+    stab <- stats::cor(nr, norm_trend, use = "pairwise.complete.obs")
     if (iter == 1)
       nr <- norm_trend
     if (lneg >= 1)
@@ -1122,9 +1119,9 @@ initPercentiles <- function(subsrs, percentM, percent, percentP) {
   probObj$prob <- percent / 100
   probObj$probP <- percentP / 100
 
-  probObj$tM <- quantile(subsrs, probs = percentM / 100, na.rm = T)
-  probObj$t <- quantile(subsrs, probs = percent / 100, na.rm = T)
-  probObj$tP <- quantile(subsrs, probs = percentP / 100, na.rm = T)
+  probObj$tM <- stats::quantile(subsrs, probs = percentM / 100, na.rm = T)
+  probObj$t <- stats::quantile(subsrs, probs = percent / 100, na.rm = T)
+  probObj$tP <- stats::quantile(subsrs, probs = percentP / 100, na.rm = T)
 
   probObj$N <- sum(!is.na(subsrs))
   return(probObj)
@@ -1491,7 +1488,7 @@ tsEvaNanRunningPercentiles <- function(timeStamps, series, windowSize, percent) 
   }
   # smoothing output
   rnprcnt <- tsEvaNanRunningMean(rnprcnt0, windowSize)
-  stdError <- sd(rnprcnt0 - rnprcnt)
+  stdError <- stats::sd(rnprcnt0 - rnprcnt)
   return(list(rnprcnt = rnprcnt, stdError = stdError))
 }
 
@@ -1664,7 +1661,7 @@ tsEstimateAverageSeasonality <- function(timeStamps, seasonalitySeries, timeWind
   monthTmStampEnd <- c(timeStamps[which(diff(mond) != 0)], timeStamps[length(timeStamps)])
 
   seasonalitySeries <- data.frame(time = timeStamps, series = seasonalitySeries, month = mony, mond = mond)
-  grpdSsn_ <- aggregate(seasonalitySeries$series,
+  grpdSsn_ <- stats::aggregate(seasonalitySeries$series,
     by = list(month = seasonalitySeries$month),
     FUN = function(x) mean(x, na.rm = T))
 
