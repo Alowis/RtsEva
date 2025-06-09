@@ -677,8 +677,6 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
   return(pointData)
 }
 
-
-
 #' tsGetPOT Function
 #'
 #' \code{tsGetPOT} is a function that calculates the Peaks Over Threshold (POT)
@@ -773,7 +771,6 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
           shape_bnd=c(-2,0)
         }
         numperyear[ipp] <- length(pks[,1])/nyears
-        #print(numperyear[ipp])
         if(numperyear[ipp]>=3*desiredEventsPerYear & ipp<(length(pcts)-5)) skip = floor(length(pcts)/8)
         if(numperyear[ipp]<0.9*minEventsPerYear) {
           perfpen=(pcts[ipp])*100
@@ -800,12 +797,15 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
       }
     }
   }
-  md= abs(pks[1,1]-pks[2,1])
+
+  #peaks with lowest threshold (retrieving the two largest peaks)
+  pkx <- declustpeaks(data = ms[,2] ,minpeakdistance = minPeakDistance ,minrundistance = minRunDistance, qt=quantile(ms[,2],pcts[1]/100,na.rm=T))
+  md= abs(pkx[1,1]-pkx[2,1])
   devpp[1]=NA
   if(is.na(trip)){
     isok=F
     devpx=devpp
-    count=length(devpx)
+    count=1
     while(isok==F){
       #safety measure for stability of parameter
       dshap=c(0,diff(gpp))
@@ -827,24 +827,16 @@ tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDis
       isok=dplyr::between(round(gpp[trip],1), shape_bnd[1], shape_bnd[2])
       count=count+1
       if(isok==F)devpx[trip]=devpx[trip]+9999
-      # if(count>(length(devpx)-1)){
-      #   #safety measure for stability of parameter
-      #   dshap=c(0,diff(gpp))
-      #   plot(pcts,dshap)
-      #   #Penalizing fits with positive shape parameters for low tail
-      #   if(tail=="low") devpp[which(gpp>=0)]=devpp[which(gpp>=0)]+99999
-      #   devpp[which(abs(dshap)>0.5)]=devpp[which(abs(dshap)>0.5)]+9999
-      #   trip=which.min(devpp)
-      #   message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
-      #   isok=T
-      # }
+      if(count>(length(devpx)-1)){
+        #safety measure for stability of parameter
+        trip=which.min(devpp)
+        message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
+        isok=T
+      }
     }
   }
-  # plot(pcts,devpp,ylim=c(0,1e5))
-  # plot(pcts,gpp)
-  # print(devpp)
-  # print(pcts)
   message(paste0("\nmax threshold is: ", pcts[trip],"%"))
+  message(paste0("\nshape parameter is: ", round(gpp[trip],2)))
   message(paste0("\naverage number of events per year = ",round(numperyear[trip],1) ))
 
   diffNPerYear <- mean(diff(na.omit(rev(numperyear)), na.rm = TRUE))

@@ -905,27 +905,31 @@ tsEvaFindTrendThreshold<-function(series, timeStamps, timeWindow){
     serieb[which(serieb < thrsdt)] <- NA
     checkY=check_timeseries(timeb,bounds)
     if (checkY == FALSE) {
-      print(paste0("not all years - q= ",pcts[iter]))
+      message(paste0("not all years - q= ",pcts[iter]))
       break
     }
     rs <- tsEvaDetrendTimeSeries(timeStamps, serieb, timeWindow,
                                  fast = T)
-    # varianceSeries <- tsEvaNanRunningVariance(serieb, rs@nRunMn)
-    # varianceSeries <- tsEvaNanRunningMean(varianceSeries,
-    #                                       ceiling(rs@nRunMn/2))
-    # norm_trend <- rs@trendSeries/mean(rs@trendSeries, na.rm = TRUE)
+
+    norm_trend <- rs@trendSeries/mean(rs@trendSeries, na.rm = TRUE)
     dtr1 = serieb - rs@trendSeries
     lneg = length(which(dtr1 < 0))
-    # stab <- cor(nr, norm_trend, use = "pairwise.complete.obs")
-    # if (iter == 1)
-    #   nr <- norm_trend
+    stab <- cor(nr, norm_trend, use = "pairwise.complete.obs")
+    if (iter == 1)
+      nr <- norm_trend
     if (lneg >= 1)
       lnegs = c(lnegs, lneg)
-    # sts <- c(sts, stab)
+    sts <- c(sts, stab)
     pctd = c(pctd, pcts[iter])
   }
+  dow=abs(diff(sts))[-1]
 
   rval = pctd[length(pctd)]
+
+  if(max(dow)>0.2){
+    message("breaking point")
+    rval = pctd[which.max(dow)+1]
+  }
   if (sum(lnegs) > 1) {
     rval = pctd[which.min(lnegs)]
   }

@@ -88,14 +88,13 @@ check_timeseries=function(timeseries,yro){
   year_check <- yro %in% ts_years
   runs <- rle(year_check)
   rf=which(runs$values==FALSE)
-  if (any(runs$lengths[rf] >= 4)) {
+  if (any(runs$lengths[rf] >= 2)) {
     return(FALSE)
   }
   else {
     return(TRUE)
   }
 }
-
 #' Max Daily Value Function
 #'
 #' This function converts a 6-hourly time series to a daily time series and

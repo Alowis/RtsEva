@@ -87,45 +87,6 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
                    ciPercentile=90, gevType = 'GEV', evdType = c('GEV', 'GPD'),
                    tail="high", epy=-1, lowdt=7, trans=NULL, TrendTh=NA){
 
-  # ota=list(transfType = transfType,
-  #          minPeakDistanceInDays = minPeakDistanceInDays,
-  #          seasonalityVar = seasonalityVar,
-  #          minEventsPerYear = minEventsPerYear,
-  #          gevMaxima = gevMaxima,
-  #          ciPercentile = ciPercentile,
-  #          gevType = gevType,
-  #          evdType =evdType,
-  #          tail= tail,
-  #          epy= epy,
-  #          lowdt=lowdt,
-  #          trans=trans
-  #          )
-  # args <- list(transfType = 'trendPeaks',
-  #              minPeakDistanceInDays = -1,
-  #              seasonalityVar = F,
-  #              minEventsPerYear = -1,
-  #              gevMaxima = 'annual',
-  #              ciPercentile = 90,
-  #              gevType = 'GEV',
-  #              evdType = c('GEV', 'GPD'),
-  #              tail="low",
-  #              epy=-1,
-  #              trans=NULL,
-  #              lowdt=7)
-  #
-  # args <- tsEasyParseNamedArgs(ota, args)
-  # seasonalityVar<-args$seasonalityVar
-  # ciPercentile <- args$ciPercentile
-  # transfType <- args$transfType
-  # evdType <- args$evdType
-  # gevType <- args$gevType
-  # TrendTh <- args$TrendTh
-  # epy <- args$epy
-  # tail=args$tail
-  # lowdt=args$lowdt
-  # minPeakDistanceInDays<-args$minPeakDistanceInDays
-  # trans=args$trans
-
 
   timeStamps=as.POSIXct(timeAndSeries[,1])
   dt1=min(diff(timeStamps),na.rm=T)
@@ -171,7 +132,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     indices_to_extract <- seq(from = start_index, to = length(series), by = lowdt/dt)
     series=series[indices_to_extract]
     timeStamps=timeStamps[indices_to_extract]
-    shape_bnd=c(-1,0)
+    shape_bnd=c(-2,0)
     if (trans=="rev"){
       series=-1*series
     }else if(trans=="inv"){
@@ -179,7 +140,6 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     }else if (trans=="lninv"){
       series=-log(series)
     }
-
   }
   if (transfType == 'trend'){
     message('\nevaluating long term variations of extremes')
@@ -218,11 +178,22 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     if (is.na(TrendTh)){
       TrendTh=try(tsEvaFindTrendThreshold(series, timeStamps, timeWindow),T)
       if(length(TrendTh)==0){
-        TrendTh=NA
+        TrendTh=0.1
+      }
+      trasfData = tsEvaTransformSeriesToStationaryPeakTrend( timeStamps, series, timeWindow, TrendTh);
+    }else{
+      if (TrendTh=="MMX"){
+        trasfData = tsEvaTransformSeriesToStationaryMMXTrend( timeStamps, series, timeWindow);
+        message("using MMX trend")
+      }else{
+        trasfData = tsEvaTransformSeriesToStationaryPeakTrend( timeStamps, series, timeWindow, TrendTh);
+        c=0
+        while ((length(unique(trasfData$trendSeries))<2)) {
+          trasfData = tsEvaTransformSeriesToStationaryPeakTrend( timeStamps, series, timeWindow, TrendTh=TrendTh-c);
+          c=c+0.1
+        }
       }
     }
-    print(TrendTh)
-    trasfData = tsEvaTransformSeriesToStationaryPeakTrend( timeStamps, series, timeWindow, TrendTh);
     gevMaxima = 'annual'
     potEventsPerYear = epy
     minEventsPerYear = 1
@@ -483,3 +454,5 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
   return(list(nonStationaryEvaParams=nonStationaryEvaParams,stationaryTransformData=stationaryTransformData))
 
 }
+
+
