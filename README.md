@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Alowis/RtsEva/actions/workflows/R-CMD-check.yaml)
-[![PRsWelcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com/)
+\[![PRsWelcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)\]
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RtsEva)](https://cran.r-project.org/package=RtsEva)
 ![](https://cranlogs.r-pkg.org/badges/grand-total/RtsEva)
 <!-- badges: end -->
@@ -85,10 +85,6 @@ for flood and drought analysis is available here:
 
 A shiny app allowing the user to select different input timeseries and
 parameters: <https://alowis.shinyapps.io/RtsEva_demo/>
-
-## More
-
-https://alowis.quarto.pub/rtseva-package-demo/
 
 ## Contact
 
