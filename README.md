@@ -30,7 +30,7 @@ Besio, G., and Alfieri, L.: The transformed-stationary approach: a
 generic and simplified methodology for non-stationary extreme value
 analysis, Hydrol. Earth Syst. Sci., 20,3527-3547,
 doi:10.5194/hess-20-3527-2016,
-2016](http://www.hydrol-earth-syst-sci.net/20/3527/2016/)
+2016](https://hess.copernicus.org/articles/20/3527/2016/)
 
 ## Installation
 

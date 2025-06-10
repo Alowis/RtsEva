@@ -51,6 +51,5 @@ plot(result$trendSeries)
 }
 \seealso{
 \code{\link[=tsEvaDetrendTimeSeries]{tsEvaDetrendTimeSeries()}}, \code{\link[=tsEvaNanRunningVariance]{tsEvaNanRunningVariance()}},
-\code{\link[=tsEvaNanRunningMean]{tsEvaNanRunningMean()}}, \code{\link[=tsEvaNanRunningStatistics]{tsEvaNanRunningStatistics()}}, \code{\link[=mutate]{mutate()}}, \code{\link[=group_by]{group_by()}},
-\code{\link[=summarise]{summarise()}}, \code{\link[=floor_date]{floor_date()}}
+\code{\link[=tsEvaNanRunningMean]{tsEvaNanRunningMean()}}, \code{\link[=tsEvaNanRunningStatistics]{tsEvaNanRunningStatistics()}}
 }
