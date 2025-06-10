@@ -356,8 +356,7 @@ tsEvaTransformSeriesToStationaryPeakTrend <- function(timeStamps, series, timeWi
 #' plot(result$trendSeries)
 #'
 #' @seealso [tsEvaDetrendTimeSeries()], [tsEvaNanRunningVariance()],
-#' [tsEvaNanRunningMean()], [tsEvaNanRunningStatistics()], [mutate()], [group_by()],
-#' [summarise()], [floor_date()]
+#' [tsEvaNanRunningMean()], [tsEvaNanRunningStatistics()]
 #' @export
 tsEvaTransformSeriesToStationaryMMXTrend <- function(timeStamps, series, timeWindow) {
   # Check if timeStamps and series are of the same length
