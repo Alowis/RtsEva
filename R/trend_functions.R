@@ -1020,19 +1020,25 @@ tsEvaFindTrendThreshold<-function(series, timeStamps, timeWindow){
     stab <- stats::cor(nr, norm_trend, use = "pairwise.complete.obs")
     if (iter == 1)
       nr <- norm_trend
-    if (lneg >= 1)
-      lnegs = c(lnegs, lneg)
+    # accumulate unconditionally so lnegs stays aligned with sts and pctd
+    lnegs = c(lnegs, lneg)
     sts <- c(sts, stab)
     pctd = c(pctd, pcts[iter])
   }
-  dow=abs(diff(sts))[-1]
 
+  # by default, the selected threshold is the highest possible value
   rval = pctd[length(pctd)]
 
-  if(max(dow)>0.2){
-    message("breaking point")
-    rval = pctd[which.max(dow)+1]
+  # if trend abruptly changes, select threshold before the abrupt change
+  # (guarded: only meaningful when enough stability points were collected)
+  if (length(sts) > 3) {
+    dow=abs(diff(sts))[-1]
+    if(max(dow, na.rm = TRUE)>0.2){
+      message("breaking point")
+      rval = pctd[which.max(dow)+1]
+    }
   }
+  # if trend creates negative flow value, select the threshold with the least negative values
   if (sum(lnegs) > 1) {
     rval = pctd[which.min(lnegs)]
   }

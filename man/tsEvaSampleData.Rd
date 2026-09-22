@@ -9,7 +9,8 @@ tsEvaSampleData(
   meanEventsPerYear,
   minEventsPerYear,
   minPeakDistanceInDays,
-  tail = NA
+  tail = NA,
+  shape_bnd = c(-0.5, 1)
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ tsEvaSampleData(
 \item{minPeakDistanceInDays}{The minimum peak distance in days.}
 
 \item{tail}{The tail to be studied for POT selection, either 'high' or 'low'.}
+
+\item{shape_bnd}{The lower and upper bounds for the shape parameter of the
+fitted GPD, passed through to \code{\link[=tsGetPOT]{tsGetPOT()}}. Default is c(-0.5, 1).}
 }
 \value{
 A list containing the following elements:

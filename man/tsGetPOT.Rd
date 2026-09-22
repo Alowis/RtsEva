@@ -10,7 +10,8 @@ tsGetPOT(
   desiredEventsPerYear,
   minEventsPerYear,
   minPeakDistanceInDays,
-  tail
+  tail,
+  shape_bnd = c(-0.5, 1)
 )
 }
 \arguments{
@@ -27,6 +28,10 @@ thresholds for identifying peaks.}
 \item{minPeakDistanceInDays}{The minimum distance between two peaks in days.}
 
 \item{tail}{The tail to be studied for POT selection, either 'high' or 'low'.}
+
+\item{shape_bnd}{The lower and upper bounds for the shape parameter of the
+fitted GPD. Used to constrain the L-BFGS-B fit and to guide the optimal
+threshold selection. Default is c(-0.5, 1).}
 }
 \value{
 A list containing the following fields:

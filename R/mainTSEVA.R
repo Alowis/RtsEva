@@ -40,6 +40,10 @@
 #' @param TrendTh The threshold used to compute the trend on extreme events
 #' (only valid if transftype==trendPeaks). If not specified, the optimal
 #' threshold is identified within the function
+#' @param shape_bnd The lower and upper bounds for the shape parameter of the
+#' fitted extreme value distributions. If NA (default), the bounds are set
+#' automatically depending on the tail: c(-0.5, 1) for the high tail and
+#' c(-1, 0) for the low tail.
 #'
 #' @return A list containing the results of the non-stationary EVA.
 #' Containing the following components:
@@ -85,7 +89,7 @@
 TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDistanceInDays=10,
                    seasonalityVar=NA,minEventsPerYear=-1, gevMaxima='annual',
                    ciPercentile=90, gevType = 'GEV', evdType = c('GEV', 'GPD'),
-                   tail="high", epy=-1, lowdt=7, trans=NULL, TrendTh=NA){
+                   tail="high", epy=-1, lowdt=7, trans=NULL, TrendTh=NA, shape_bnd=NA){
 
 
   timeStamps=as.POSIXct(timeAndSeries[,1])
@@ -123,23 +127,26 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
   nonStationaryEvaParams = c()
   stationaryTransformData = c()
 
-  # default shape parameter bounds
-  shape_bnd=c(-0.5,1)
-
   if (tail=="low"){
     #default 7-day flow for low flow, can be modified by user
     start_index=1
     indices_to_extract <- seq(from = start_index, to = length(series), by = lowdt/dt)
     series=series[indices_to_extract]
     timeStamps=timeStamps[indices_to_extract]
-    shape_bnd=c(-2,0)
-    if (trans=="rev"){
-      series=-1*series
-    }else if(trans=="inv"){
-      series=1/series
-    }else if (trans=="lninv"){
-      series=-log(series)
+    # default shape parameter bounds for the low tail
+    if (is.na(shape_bnd[1])) shape_bnd=c(-1,0)
+    if (!is.null(trans)){
+      if (trans=="rev"){
+        series=-1*series
+      }else if(trans=="inv"){
+        series=1/series
+      }else if (trans=="lninv"){
+        series=-log(series)
+      }
     }
+  } else {
+    # default shape parameter bounds for the high tail
+    if (is.na(shape_bnd[1])) shape_bnd=c(-0.5,1)
   }
   if (transfType == 'trend'){
     message('\nevaluating long term variations of extremes')
@@ -177,7 +184,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     message(paste0('\nevaluating long term variations of the peaks'))
     if (is.na(TrendTh)){
       TrendTh=try(tsEvaFindTrendThreshold(series, timeStamps, timeWindow),T)
-      if(length(TrendTh)==0){
+      if(inherits(TrendTh, "try-error") || length(TrendTh)==0 || all(is.na(TrendTh))){
         TrendTh=0.1
       }
       print(TrendTh)
@@ -238,7 +245,7 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
 
   #estimating the non stationary EVA parameters
   message('\nExecuting stationary eva')
-  pointData = tsEvaSampleData(ms, potEventsPerYear, minEventsPerYear, minPeakDistanceInDays,tail);
+  pointData = tsEvaSampleData(ms, potEventsPerYear, minEventsPerYear, minPeakDistanceInDays, tail, shape_bnd);
   evaAlphaCI = .68; # in a gaussian approximation alphaCI~68% corresponds to 1 sigma confidence
   eva = tsEVstatistics(pointData, evaAlphaCI, gevMaxima, gevType, evdType,shape_bnd);
 
@@ -420,8 +427,14 @@ TsEvaNs<- function(timeAndSeries, timeWindow, transfType='trendPeaks',minPeakDis
     thresholdPotX = pointData$POT$threshold
     thresholdPotNS = thresholdPotX*trasfData$stdDevSeries + trasfData$trendSeries;
 
-    epsilonPotX <- pointData$POT$pars[2]
-    sigmaPotX <- pointData$POT$pars[1]
+    if (!is.null(pointData$POT$pars) && !inherits(pointData$POT$pars, "try-error") &&
+        !is.null(pointData$POT$pars$fitted.values)) {
+      sigmaPotX <- pointData$POT$pars$fitted.values[1]
+      epsilonPotX <- pointData$POT$pars$fitted.values[2]
+    } else {
+      sigmaPotX <- NA
+      epsilonPotX <- NA
+    }
     epsilonPotNS = epsilonPotX;
     sigmaPotNS = sigmaPotX*trasfData$stdDevSeries;
     thresholdPotNS = thresholdPotX*trasfData$stdDevSeries + trasfData$trendSeries;

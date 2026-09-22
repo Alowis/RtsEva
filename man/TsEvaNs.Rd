@@ -19,7 +19,8 @@ TsEvaNs(
   epy = -1,
   lowdt = 7,
   trans = NULL,
-  TrendTh = NA
+  TrendTh = NA,
+  shape_bnd = NA
 )
 }
 \arguments{
@@ -73,6 +74,11 @@ user or automatically set according to the tail selected.}
 \item{TrendTh}{The threshold used to compute the trend on extreme events
 (only valid if transftype==trendPeaks). If not specified, the optimal
 threshold is identified within the function}
+
+\item{shape_bnd}{The lower and upper bounds for the shape parameter of the
+fitted extreme value distributions. If NA (default), the bounds are set
+automatically depending on the tail: c(-0.5, 1) for the high tail and
+c(-1, 0) for the low tail.}
 }
 \value{
 A list containing the results of the non-stationary EVA.

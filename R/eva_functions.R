@@ -609,6 +609,8 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
 #' @param minEventsPerYear The minimum number of events per year.
 #' @param minPeakDistanceInDays The minimum peak distance in days.
 #' @param tail The tail to be studied for POT selection, either 'high' or 'low'.
+#' @param shape_bnd The lower and upper bounds for the shape parameter of the
+#' fitted GPD, passed through to [tsGetPOT()]. Default is c(-0.5, 1).
 #'
 #' @return A list containing the following elements:
 #'   \describe{
@@ -640,18 +642,13 @@ tsEvaComputeRLsGEVGPD<-function(nonStationaryEvaParams, RPgoal, timeIndex,trans=
 #' # View the result
 #' print(result)
 #' @export
-tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDistanceInDays,tail=NA) {
+tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDistanceInDays,tail=NA, shape_bnd=c(-0.5,1)) {
 
   pctsDesired = c(90, 95, 99, 99.9)
-  args <- list(meanEventsPerYear = meanEventsPerYear,
-               minEventsPerYear = minEventsPerYear,
-               potPercentiles = c(seq(70,90,by=1), seq(91,99.5,by=0.5)))
-  meanEventsPerYear = args$meanEventsPerYear
-  minEventsPerYear = args$minEventsPerYear
-  potPercentiles = args$potPercentiles
+  potPercentiles <- c(seq(70, 90, by = 1), seq(91, 95, by = 0.5), seq(95.1, 99.5, by = 0.1))
   if(is.na(tail)) stop("tail for POT selection needs to be 'high' or 'low'")
 
-  POTData <- tsGetPOT(ms, potPercentiles, meanEventsPerYear,minEventsPerYear,minPeakDistanceInDays, tail)
+  POTData <- tsGetPOT(ms, potPercentiles, meanEventsPerYear, minEventsPerYear, minPeakDistanceInDays, tail, shape_bnd)
 
   vals <- stats::quantile(ms[,2], pctsDesired/100,na.rm=T)
   percentiles <- list(precentiles = pctsDesired, values = vals)
@@ -690,6 +687,9 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 #' @param minEventsPerYear The minimum number of events per year.
 #' @param minPeakDistanceInDays The minimum distance between two peaks in days.
 #' @param tail The tail to be studied for POT selection, either 'high' or 'low'.
+#' @param shape_bnd The lower and upper bounds for the shape parameter of the
+#' fitted GPD. Used to constrain the L-BFGS-B fit and to guide the optimal
+#' threshold selection. Default is c(-0.5, 1).
 #'
 #' @return A list containing the following fields:
 #' \describe{
@@ -722,157 +722,131 @@ tsEvaSampleData <- function(ms, meanEventsPerYear,minEventsPerYear, minPeakDista
 #' print(POTdata)
 #'
 #' @export
-tsGetPOT <- function(ms, pcts, desiredEventsPerYear,minEventsPerYear, minPeakDistanceInDays, tail) {
-
-  if (minPeakDistanceInDays == -1) {
-    stop("label parameter 'minPeakDistanceInDays' must be set")
-  }
-  dt1=min(diff(ms[,1]),na.rm=T)
-  dt=as.numeric(dt1)
-  tdim=attributes(dt1)$units
-  if (tdim=="hours") dt=dt/24
-  if (tdim=="seconds") dt=dt/3600
-  minPeakDistance <- minPeakDistanceInDays/dt
+tsGetPOT <- function(ms, pcts, desiredEventsPerYear, minEventsPerYear, minPeakDistanceInDays, tail, shape_bnd = c(-0.5, 1)) {
+  if (minPeakDistanceInDays == -1) stop("label parameter 'minPeakDistanceInDays' must be set")
+  dt1 <- min(diff(ms[, 1]), na.rm = T)
+  dt <- as.numeric(dt1)
+  tdim <- attributes(dt1)$units
+  if (tdim == "hours") dt <- dt / 24
+  if (tdim == "seconds") dt <- dt / 3600
+  minPeakDistance <- minPeakDistanceInDays / dt
   minRunDistance <- minPeakDistance
-  nyears <- round(as.numeric((max(ms[,1]) - min(ms[,1]))/365.25))
+  nyears <- round(as.numeric((max(ms[, 1]) - min(ms[, 1])) / 365.25))
   if (length(pcts) == 1) {
-    pcts = c(pcts - 3, pcts)
-    desiredEventsPerYear = -1
+    pcts <- c(pcts - 3, pcts)
+    desiredEventsPerYear <- -1
   }
 
-  numperyear <- rep(NA, length(pcts))
-  minnumperyear <- rep(NA, length(pcts))
-  thrsdts <- rep(NA, length(pcts))
-  gpp=rep(NA, length(pcts))
-  devpp=rep(NA, length(pcts))
-  dej=0
-  skip=0
-  trip=NA
-  perfpen=0
-  for (ipp in 1:length(pcts)) {
-    #Skip is used to prevent finding peaks for unappropriate thresholds
-    if (skip>0) {
-      skip=skip-1
-    }else{
-      if(dej==0){
-        thrsdt <- stats::quantile(ms[,2],pcts[ipp]/100,na.rm=T)
-        thrsdts[ipp] <- thrsdt
-        ms[,2][which(is.na(ms[,2]))]=-9999
-        minEventsPerYear=1
+  n_pcts <- length(pcts)
+  numperyear <- rep(NA, n_pcts)
+  thrsdts <- rep(NA, n_pcts)
+  gpp <- rep(NA, n_pcts)
+  devpp <- rep(NA, n_pcts)
+  fitlist <- vector(mode = "list", length = n_pcts)
 
-        if(tail=="high") {
-          #boundaries of shape parameter
-          shape_bnd=c(-0.5,1)
-          pks <- pracma::findpeaks(ms[,2],minpeakdistance = minPeakDistance, minpeakheight = thrsdt)
-        }
-        if(tail=="low") {
-          pks <- declustpeaks(data = ms[,2] ,minpeakdistance = minPeakDistance ,minrundistance = minRunDistance, qt=thrsdt)
-          shape_bnd=c(-2,0)
-        }
-        numperyear[ipp] <- length(pks[,1])/nyears
-        if(numperyear[ipp]>=3*desiredEventsPerYear & ipp<(length(pcts)-5)) skip = floor(length(pcts)/8)
-        if(numperyear[ipp]<0.9*minEventsPerYear) {
-          perfpen=(pcts[ipp])*100
-        }
-        if(numperyear[ipp]<(0.7*minEventsPerYear)) {
-          perfpen=(pcts[ipp])*1000
-        }
-        if(numperyear[ipp]<=desiredEventsPerYear+1 & dej==0){
-          fgpd=suppressWarnings(try(POT::fitgpd(pks[,1], threshold = thrsdt, est = "mle",method="BFGS",std.err.type = "expected")))
-          if(inherits(fgpd, "try-error")){
-            gpdpar=9999
-            deviance=9999
-            devpp[ipp]=1e9
-            gpp[ipp]=9999
-          }else {
-            gpdpar=fgpd$fitted.values
-            deviance=fgpd$deviance
-            devpp[ipp]=stats::AIC(fgpd)+perfpen
-            gpp[ipp]=gpdpar[2]
-          }
-          nperYear <- tsGetNumberPerYear(ms, pks[,2])
-          minnumperyear[ipp] <- min(nperYear$Freq, na.rm = TRUE)
-        }
+  ms_clean <- ms[, 2]
+  ms_clean2 <- ms_clean
+  if (length(which(is.na(ms_clean))) > 0) {
+    ms_clean2 <- ms_clean[-which(is.na(ms_clean))]
+    ms_clean[which(is.na(ms_clean))] <- -9999
+  }
+  if (length(which(is.infinite(ms_clean))) > 0) {
+    ms_clean2 <- ms_clean[-which(is.infinite(ms_clean))]
+    ms_clean[which(is.infinite(ms_clean))] <- -9999
+  }
+
+  skip <- 0
+  for (ipp in 1:n_pcts) {
+    if (skip > 0) {
+      skip <- skip - 1
+      next
+    }
+    thrsdt <- stats::quantile(ms_clean2, pcts[ipp] / 100, na.rm = TRUE)
+    thrsdts[ipp] <- thrsdt
+    pks <- if (tail == "high") {
+      pracma::findpeaks(ms_clean, minpeakdistance = minPeakDistance, minpeakheight = thrsdt)
+    } else {
+      declustpeaks(data = ms_clean, minpeakdistance = minPeakDistance, minrundistance = minRunDistance, qt = thrsdt)
+    }
+    if (is.null(pks) || length(pks) == 0) next
+    numperyear[ipp] <- nrow(pks) / nyears
+    penalty_strength <- 1000
+    penalty_factor <- 1
+    if (numperyear[ipp] < minEventsPerYear) {
+      deficit <- 1 - (numperyear[ipp] / minEventsPerYear)
+      penalty_factor <- 1 + (deficit^2 * penalty_strength)
+    }
+    if (numperyear[ipp] <= (desiredEventsPerYear + 1)) {
+      fgpd <- suppressWarnings(try(POT::fitgpd(pks[, 1],
+        threshold = thrsdt, est = "mle",
+        method = "L-BFGS-B", lower = c(1e-6, shape_bnd[1]), upper = c(Inf, shape_bnd[2]),
+        std.err.type = "observed"
+      ), silent = TRUE))
+      fitlist[[ipp]] <- fgpd
+      if (inherits(fgpd, "try-error")) {
+        devpp[ipp] <- 1e9
+        gpp[ipp] <- NA
+      } else {
+        devpp[ipp] <- fgpd$deviance + penalty_factor
+        gpp[ipp] <- fgpd$fitted.values[2]
       }
     }
   }
 
-  #peaks with lowest threshold (retrieving the two largest peaks)
-  pkx <- declustpeaks(data = ms[,2] ,minpeakdistance = minPeakDistance ,minrundistance = minRunDistance, qt=stats::quantile(ms[,2],pcts[1]/100,na.rm=T))
-  md= abs(pkx[1,1]-pkx[2,1])
-  devpp[1]=NA
-  if(is.na(trip)){
-    isok=F
-    devpx=devpp
-    count=1
-    while(isok==F){
-      #safety measure for stability of parameter
-      dshap=c(0,diff(gpp))
-      #Penalizing fits with positive shape parameters for low tail
-      if(tail=="low") {
-        #for very bounded distributions
-        if (md<0.1){
-          devpp[which(gpp>=-0.5)]=devpp[which(gpp>=-0.5)]+9999
-        }else{
-          devpp[which(gpp>=0)]=devpp[which(gpp>=0)]+9999
-        }
+  devpp[1] <- NA
+  dist_to_bnd <- pmin(abs(gpp - shape_bnd[1]), abs(gpp - shape_bnd[2]))
+  dshap <- c(0, diff(gpp))
+  low_tail_threshold <- shape_bnd[2]
+  devpx <- devpp
+  if (tail == "low") devpx[gpp >= low_tail_threshold] <- NA
+  devpx[abs(dshap) > 0.5] <- NA
 
-      }
-      devpp[which(abs(dshap)>0.5)]=devpp[which(abs(dshap)>0.5)]+99999
-      trip=which.min(devpp)
-      #message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
-      #isok=T
-      #trip=which.min(devpx)
-      isok=dplyr::between(round(gpp[trip],1), shape_bnd[1], shape_bnd[2])
-      count=count+1
-      if(isok==F)devpx[trip]=devpx[trip]+9999
-      if(count>(length(devpx)-1)){
-        #safety measure for stability of parameter
-        trip=which.min(devpp)
-        message(paste0("shape outside boudaries: ",round(gpp[trip],2)))
-        isok=T
-      }
+  trip_in_bounds <- which(!is.na(devpx) & gpp >= shape_bnd[1] & gpp <= shape_bnd[2])
+  if (length(trip_in_bounds) > 0) {
+    trip <- trip_in_bounds[which.min(devpx[trip_in_bounds])]
+    message(paste0("Optimal shape found: ", round(gpp[trip], 3)))
+  } else {
+    valid_indices <- which(!is.na(devpx))
+    if (length(valid_indices) == 0) {
+      valid_indices <- 1:length(devpp)
+      devpx <- devpp
     }
+    v_dev <- devpx[valid_indices]
+    v_dist <- dist_to_bnd[valid_indices]
+    norm_dev <- (v_dev - min(v_dev, na.rm = T)) / (diff(range(v_dev, na.rm = T)) + 1e-10)
+    norm_dist <- (v_dist - min(v_dist, na.rm = T)) / (diff(range(v_dist, na.rm = T)) + 1e-10)
+    combined_score <- (0.5 * norm_dev) + (0.5 * norm_dist)
+    trip <- valid_indices[which.min(combined_score)]
+    message(paste0("Shape outside boundaries. Fallback selected: ", round(gpp[trip], 3)))
   }
-  message(paste0("\nmax threshold is: ", pcts[trip],"%"))
-  message(paste0("\nshape parameter is: ", round(gpp[trip],2)))
-  message(paste0("\naverage number of events per year = ",round(numperyear[trip],1) ))
+
+  message(paste0("\nmax threshold is: ", pcts[trip], "%"))
+  message(paste0("\nshape parameter is: ", round(gpp[trip], 2)))
+  message(paste0("\naverage number of events per year = ", round(numperyear[trip], 1)))
 
   diffNPerYear <- mean(diff(stats::na.omit(rev(numperyear)), na.rm = TRUE))
   if (diffNPerYear == 0) diffNPerYear <- 1
   diffNPerYear <- 1
-  thresholdError <- -mean(diff(stats::na.omit(thrsdts))/diffNPerYear)/2
+  thresholdError <- -mean(diff(stats::na.omit(thrsdts)) / diffNPerYear) / 2
   indexp <- trip
-  if (!is.na(indexp)) {
-    thrsd <- stats::quantile(ms[,2],pcts[indexp]/100)
+  if (length(indexp) > 0) {
+    thrsd <- stats::quantile(ms_clean2, pcts[indexp] / 100)
     pct <- pcts[indexp]
+    fit <- fitlist[[indexp]]
   } else {
     thrsd <- 0
-    pct
+    pct <- 0
+    fit <- NULL
   }
-  # Find peaks in the second column of the matrix 'ms'
-  if(tail=="high") pks_and_locs <- pracma::findpeaks(ms[,2],minpeakdistance = minPeakDistance, minpeakheight = thrsd)
-  if(tail=="low") pks_and_locs <- declustpeaks(data = ms[,2] ,minpeakdistance = minPeakDistance ,minrundistance = minRunDistance, qt=thrsd)
 
-  # Assign peaks and peak locations to separate variables
-  pks <- pks_and_locs[,1]
-  locs <- pks_and_locs[,2]
-  st<-pks_and_locs[,3]
-  end=pks_and_locs[,4]
-  # Create a list to store results
-  POTdata <- list()
-  # Assign values to the fields of the list
-  POTdata[['threshold']] <- thrsd
-  POTdata[['thresholdError']] <- thresholdError
-  POTdata[['percentile']] <- pct
-  POTdata[['peaks']] <- pks
-  POTdata[['stpeaks']] <- st
-  POTdata[['endpeaks']] <- end
-  POTdata[['ipeaks']] <- locs
-  POTdata[['time']] <- ms[locs, 1]
-  POTdata[['pars']] <- gpdpar
+  if (tail == "high") pks_and_locs <- pracma::findpeaks(ms_clean, minpeakdistance = minPeakDistance, minpeakheight = thrsd)
+  if (tail == "low") pks_and_locs <- declustpeaks(data = ms_clean, minpeakdistance = minPeakDistance, minrundistance = minRunDistance, qt = thrsd)
 
-
+  POTdata <- list(
+    threshold = thrsd, thresholdError = thresholdError, percentile = pct,
+    peaks = pks_and_locs[, 1], stpeaks = pks_and_locs[, 3], endpeaks = pks_and_locs[, 4],
+    ipeaks = pks_and_locs[, 2], time = ms[pks_and_locs[, 2], 1], pars = fit
+  )
   return(POTdata)
 }
 
@@ -1053,18 +1027,17 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
   rlvls <- numeric(length(Tr))
 
   if (('GPD' %in% evdType) && !is.null(pointData$annualMax)) {
-    # Perform GPD fitting and computation of return levels
+    # Reuse the GPD fit already computed during POT threshold selection
+    # (stored in pointData$POT$pars) instead of re-fitting here.
     message("Fitted GPD")
     ik <- 1
     th=pointData$POT$threshold
     d1 <- pointData$POT$peaks
 
-
-    fit <- suppressWarnings(try(POT::fitgpd(d1, threshold = th, est = "mle",
-                                       method="BFGS",std.err.type = "expected"),TRUE))
-    if(!inherits(fit, "try-error")){
-      ksi <- fit$par[2]
-      sgm <- fit$par[1]
+    fit <- pointData$POT$pars
+    if(!is.null(fit) && !inherits(fit, "try-error")){
+      ksi <- fit$param[2]
+      sgm <- fit$param[1]
       alphaCIx=1-alphaCI
       probs <- c(alphaCIx/2, 1-alphaCIx/2)
       kci <- try(stats::qnorm(probs, ksi, fit$std.err[2]),silent=T)
@@ -1090,7 +1063,8 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
       ik <- 1
       th=pointData$POT$threshold
       d1 <- pointData$POT$peaks
-      paramEstsall <- c(pointData$POT$pars[1], pointData$POT$pars[2],
+      gpdpars <- .gpdParsFromPOT(pointData$POT$pars)
+      paramEstsall <- c(gpdpars[1], gpdpars[2],
                         pointData$POT$threshold, length(d1),
                         length(pointData$POT$peaks), pointData$POT$percentile)
       EVdata$GPDstat <-  list(method=methodname,
@@ -1104,7 +1078,8 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
     ik <- 1
     th=pointData$POT$threshold
     d1 <- pointData$POT$peaks
-    paramEstsall <- c(pointData$POT$pars[1], pointData$POT$pars[2],
+    gpdpars <- .gpdParsFromPOT(pointData$POT$pars)
+    paramEstsall <- c(gpdpars[1], gpdpars[2],
                       pointData$POT$threshold, length(d1),
                       length(pointData$POT$peaks), pointData$POT$percentile)
     EVdata$GPDstat <-  list(method=methodname,
@@ -1116,6 +1091,19 @@ tsEVstatistics <- function(pointData, alphaCI = 0.95, gevMaxima = 'annual', gevT
 
   # Return outputs
   return(list(EVmeta = EVmeta, EVdata = EVdata, isValid = isValid))
+}
+
+# Safely extract GPD (sigma, shape) from a stored POT fit object, falling back
+# to NA when no usable fit is available. Internal helper (not exported).
+.gpdParsFromPOT <- function(pars) {
+  if (!is.null(pars) && !inherits(pars, "try-error") && !is.null(pars$fitted.values)) {
+    sgm <- pars$fitted.values[1]
+    ksi <- pars$fitted.values[2]
+  } else {
+    sgm <- NA
+    ksi <- NA
+  }
+  c(sgm, ksi)
 }
 
 
