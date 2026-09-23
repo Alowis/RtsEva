@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
+          - {os: macos-14,   r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
@@ -45,6 +45,7 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+          cache-version: 2
 
       - uses: r-lib/actions/check-r-package@v2
         with:
