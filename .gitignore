@@ -3,3 +3,8 @@
 .RData
 .Ruserdata
 inst/doc
+
+# renv: keep local reproducibility but don't track in git / CI
+renv.lock
+renv/
+.Rprofile
