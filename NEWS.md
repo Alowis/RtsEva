@@ -23,6 +23,34 @@ automatic trend threshold cannot be estimated, and guards the low-flow
 transformation against a NULL 'trans'.
 * 'tsEvaFindTrendThreshold' keeps the stability, negative-flow and percentile
 vectors aligned and guards the breaking-point detection against short series.
+* 'tsEvaNanRunningMean' was reimplemented with cumulative sums for a large
+speed-up on long time series; results are unchanged. Package byte-compilation
+was enabled ('ByteCompile: true').
+
+### Fixed
+
+* 'tsEvaNanRunningVariance' returned a slightly incorrect running variance: in
+the previous incremental implementation the count of valid points could drift
+out of sync with the summed squared values (the removal used index
+'minindx - 1' while the addition used 'maxindx + 1'). It has been reimplemented
+with cumulative sums to compute the correct centered-window mean of squares.
+The correction to the variance is small: on the bundled ArdecheStMartin series,
+the relative change is of the order of 1-2% (median ~1.7% at a one-year window),
+so fitted GEV/GPD standard-deviation-dependent parameters shift only slightly.
+* 'tsEvaNanRunningStatistics' contained more serious errors: the same
+valid-point count desynchronisation and, in addition, each incoming value was
+centered by the running mean at an incorrect index. This produced third and
+fourth running moments that were substantially wrong (median relative errors of
+several hundred percent on the bundled ArdecheStMartin series). It has been
+reimplemented with cumulative sums to compute the correct centered-window
+moments (validated to machine precision against a direct definition). Diagnostic
+quantities derived from these moments therefore change from previously incorrect
+values to correct ones.
+* As a consequence of the running-variance fix,
+'tsEvaTransformSeriesToStatSeasonal_ciPercentile' no longer returns an all-NA
+'trendSeries' on short series. Previously the incorrect running variance could
+yield negative values whose square root produced NaNs that propagated through
+the seasonal standard-deviation estimation; this is now resolved.
 
 ## [RtsEva 1.1.0] - 2025-06-09
 

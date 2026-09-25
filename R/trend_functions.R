@@ -1152,44 +1152,36 @@ initPercentiles <- function(subsrs, percentM, percent, percentP) {
 #' @export
 tsEvaNanRunningMean <- function(series, windowSize) {
   minNThreshold <- 1
-
-  rnmn <- matrix(nrow = length(series), ncol = 1)
-  dx <- floor(windowSize / 2)
   l <- length(series)
-  sm <- 0
-  n <- 0
-  smm <- c()
-  snne <- c()
-  spp <- c()
-  for (ii in c(1:l)) {
-    minindx <- max(ii - dx, 1)
-    maxindx <- min(ii + dx, l)
-    if (ii == 1) {
-      subsrs <- series[minindx:maxindx]
-      sm <- sum(subsrs, na.rm = T)
-      n <- sum(!is.na(subsrs))
-    } else {
-      if (minindx > 1) {
-        sprev <- series[minindx - 1]
-        if (!is.na(sprev)) {
-          sm <- sm - sprev
-          n <- n - 1
-        }
-      }
-      if (maxindx < l) {
-        snext <- series[maxindx]
-        if (!is.na(snext)) {
-          sm <- sm + snext
-          n <- n + 1
-        }
-      }
-    }
-    if (n > minNThreshold) {
-      rnmn[ii] <- sm / n
-    } else {
-      rnmn[ii] <- NaN
-    }
+  if (l == 0) {
+    return(numeric(0))
   }
+
+  # Vectorized implementation using prefix (cumulative) sums.
+  # This reproduces exactly the effective window of the previous
+  # incremental loop: for point ii the window is
+  #   lo = max(ii - dx, 1), hi = min(ii + dx, l - 1)
+  # with ii == 1 seeding the window up to (1 + dx). NA values are
+  # excluded from both the sum and the count, and the result is NaN
+  # wherever the number of valid points is not greater than minNThreshold.
+  dx <- floor(windowSize / 2)
+  notna <- !is.na(series)
+  x <- series
+  x[!notna] <- 0
+
+  cumSum <- c(0, cumsum(x))
+  cumCnt <- c(0, cumsum(as.numeric(notna)))
+
+  ii <- seq_len(l)
+  lo <- pmax(ii - dx, 1L)
+  hi <- pmin(ii + dx, l - 1L)
+  hi[1L] <- min(1L + dx, l)
+  hi <- pmax(hi, lo)
+
+  sm <- cumSum[hi + 1L] - cumSum[lo]
+  n <- cumCnt[hi + 1L] - cumCnt[lo]
+
+  rnmn <- ifelse(n > minNThreshold, sm / n, NaN)
   return(as.vector(rnmn))
 }
 
@@ -1210,46 +1202,41 @@ tsEvaNanRunningMean <- function(series, windowSize) {
 #'
 #' @export
 tsEvaNanRunningVariance <- function(series, windowSize) {
-
   minNThreshold <- 1
-
-  rnmn <- matrix(nrow = length(series), ncol = 1)
-  dx <- ceiling(windowSize / 2)
   l <- length(series)
-  smsq <- 0
-  n <- 0
-
-  for (ii in c(1:l)) {
-    minindx <- max(ii - dx, 1)
-    maxindx <- min(ii + dx, l)
-    if (ii == 1) {
-      subSqSrs <- series[minindx:maxindx]^2
-      smsq <- sum(subSqSrs, na.rm = T)
-      n <- sum(!is.na(subSqSrs))
-    } else {
-      if (minindx > 1) {
-        sprev <- series[minindx - 1]
-        if (!is.na(sprev)) {
-          smsq <- max(0, smsq - sprev^2)
-          n <- n - 1
-        }
-      }
-      if (maxindx < l) {
-        snext <- series[maxindx + 1]
-        if (!is.na(snext)) {
-          smsq <- smsq + snext^2
-          n <- n + 1
-        }
-      }
-    }
-    if (n > minNThreshold) {
-      rnmn[ii] <- smsq / n
-    } else {
-      rnmn[ii] <- NaN
-    }
-    # print(n)
+  if (l == 0) {
+    return(matrix(numeric(0), ncol = 1))
   }
-  return(rnmn)
+
+  # Vectorized implementation using prefix (cumulative) sums.
+  # For each point ii the (centered) window is
+  #   [max(ii - dx, 1), min(ii + dx, l)] with dx = ceiling(windowSize / 2)
+  # and the running variance is the mean of the squared values over the
+  # non-NA entries in that window (the series is expected to be zero-averaged
+  # before being passed in). The result is NaN wherever the number of valid
+  # points is not greater than minNThreshold.
+  #
+  # Note: this corrects a bug in the previous incremental implementation, where
+  # the count of valid points could drift out of sync with the summed terms
+  # (the removal used index minindx - 1 while the addition used maxindx + 1),
+  # producing a slightly incorrect running variance.
+  dx <- ceiling(windowSize / 2)
+  notna <- !is.na(series)
+  sq <- series^2
+  sq[!notna] <- 0
+
+  cumSumSq <- c(0, cumsum(sq))
+  cumCnt <- c(0, cumsum(as.numeric(notna)))
+
+  ii <- seq_len(l)
+  lo <- pmax(ii - dx, 1L)
+  hi <- pmin(ii + dx, l)
+
+  smsq <- cumSumSq[hi + 1L] - cumSumSq[lo]
+  n <- cumCnt[hi + 1L] - cumCnt[lo]
+
+  rnmn <- ifelse(n > minNThreshold, smsq / n, NaN)
+  return(matrix(rnmn, ncol = 1))
 }
 
 #' tsEvaNanRunningStatistics
@@ -1278,68 +1265,66 @@ tsEvaNanRunningVariance <- function(series, windowSize) {
 #'
 #' @export
 tsEvaNanRunningStatistics <- function(series, windowSize) {
-
   minNThreshold <- 1
-
-  rnmn <- tsEvaNanRunningMean(series, windowSize)
-  rnvar <- matrix(nrow = length(series), ncol = 1)
-  rn3mom <- matrix(nrow = length(series), ncol = 1)
-  rn4mom <- matrix(nrow = length(series), ncol = 1)
-
-  dx <- ceiling(windowSize / 2)
   l <- length(series)
-  sm <- 0
-  smsq <- 0
-  sm3pw <- 0
-  sm4pw <- 0
-  n <- 0
-  for (ii in c(1:l)) {
-    minindx <- max(ii - dx, 1)
-    maxindx <- min(ii + dx, l)
-    if (ii == 1) {
-      subsrs <- series[minindx:maxindx]
-      subsrsMean <- rnmn[1]
-      subSqSrs <- (subsrs - subsrsMean)^2
-      tg <- moments::skewness(subsrs)
-      kg <- moments::kurtosis(subsrs)
-      sub3pwSrs <- (subsrs - subsrsMean)^3
-      sub4pwSrs <- (subsrs - subsrsMean)^4
-      smsq <- sum(subSqSrs, na.rm = T)
-      sm3pw <- sum(sub3pwSrs, na.rm = T)
-      sm4pw <- sum(sub4pwSrs, na.rm = T)
-      n <- sum(!is.na(subSqSrs))
-      tes <- sm3pw / n
-    } else {
-      if (minindx > 1) {
-        sprev <- series[minindx - 1] - rnmn[minindx - 1]
-        if (!is.na(sprev)) {
-          smsq <- max(0, smsq - sprev^2)
-          sm3pw <- sm3pw - sprev^3
-          sm4pw <- max(0, sm4pw - sprev^4)
-          n <- n - 1
-        }
-      }
-      if (maxindx < l) {
-        snext <- series[maxindx + 1] - rnmn[minindx + 1]
-        if (!is.na(snext)) {
-          sm <- sm + snext
-          smsq <- smsq + snext^2
-          sm3pw <- sm3pw + snext^3
-          sm4pw <- sm4pw + snext^4
-          n <- n + 1
-        }
-      }
-    }
-    if (n > minNThreshold) {
-      rnvar[ii] <- smsq / n
-      rn3mom[ii] <- sm3pw / n
-      rn4mom[ii] <- sm4pw / n
-    } else {
-      rnvar[ii] <- NaN
-      rn3mom[ii] <- NaN
-      rn4mom[ii] <- NaN
-    }
+  if (l == 0) {
+    return(data.frame(rnvar = numeric(0), rn3mom = numeric(0), rn4mom = numeric(0)))
   }
+
+  # Vectorized implementation using prefix (cumulative) sums of the powers of
+  # the series. For each point ii the (centered) window is
+  #   [max(ii - dx, 1), min(ii + dx, l)] with dx = ceiling(windowSize / 2)
+  # and the central moments are computed over the non-NA entries in that window
+  # using the window's own mean m:
+  #   variance     = E[x^2] - m^2
+  #   third moment = E[x^3] - 3 m E[x^2] + 2 m^3
+  #   fourth moment= E[x^4] - 4 m E[x^3] + 6 m^2 E[x^2] - 3 m^4
+  # The result is NaN wherever the number of valid points is not greater than
+  # minNThreshold.
+  #
+  # Note: this corrects several bugs in the previous incremental implementation
+  # (the valid-point count drifting out of sync with the summed terms, and each
+  # incoming value being centered by the running mean at a wrong index), which
+  # produced incoherent higher-order moments.
+  dx <- ceiling(windowSize / 2)
+  notna <- !is.na(series)
+  x <- series
+  x[!notna] <- 0
+  x2 <- x^2
+  x3 <- x^3
+  x4 <- x^4
+
+  cumSum1 <- c(0, cumsum(x))
+  cumSum2 <- c(0, cumsum(x2))
+  cumSum3 <- c(0, cumsum(x3))
+  cumSum4 <- c(0, cumsum(x4))
+  cumCnt <- c(0, cumsum(as.numeric(notna)))
+
+  ii <- seq_len(l)
+  lo <- pmax(ii - dx, 1L)
+  hi <- pmin(ii + dx, l)
+
+  n <- cumCnt[hi + 1L] - cumCnt[lo]
+  S1 <- cumSum1[hi + 1L] - cumSum1[lo]
+  S2 <- cumSum2[hi + 1L] - cumSum2[lo]
+  S3 <- cumSum3[hi + 1L] - cumSum3[lo]
+  S4 <- cumSum4[hi + 1L] - cumSum4[lo]
+
+  nn <- ifelse(n > 0, n, NA)
+  m <- S1 / nn
+  E2 <- S2 / nn
+  E3 <- S3 / nn
+  E4 <- S4 / nn
+
+  var <- E2 - m^2
+  mom3 <- E3 - 3 * m * E2 + 2 * m^3
+  mom4 <- E4 - 4 * m * E3 + 6 * m^2 * E2 - 3 * m^4
+
+  keep <- n > minNThreshold
+  rnvar <- matrix(ifelse(keep, var, NaN), ncol = 1)
+  rn3mom <- matrix(ifelse(keep, mom3, NaN), ncol = 1)
+  rn4mom <- matrix(ifelse(keep, mom4, NaN), ncol = 1)
+
   output <- data.frame(rnvar, rn3mom, rn4mom)
   return(output)
 }

@@ -46,9 +46,9 @@ by considering time-varying parameters and their associated standard errors.
 timeAndSeries <- ArdecheStMartin
 #go from six-hourly values to daily max
 timeAndSeries <- max_daily_value(timeAndSeries)
-#keep only the 30 last years
+# keep only the 20 last years (for computational efficiency in the example)
 yrs <- as.integer(format(timeAndSeries$date, "\%Y"))
-tokeep <- which(yrs>=1990)
+tokeep <- which(yrs>=2000)
 timeAndSeries <- timeAndSeries[tokeep,]
 timeWindow <- 10*365 # 10 years
 TSEVA_data <- TsEvaNs(timeAndSeries, timeWindow,

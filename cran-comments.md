@@ -7,6 +7,14 @@ fit computed during threshold selection in `tsEVstatistics()`, and adds
 robustness in the trend threshold estimation. See NEWS.md for the full list of
 changes.
 
+This version also fixes bugs in the running-window moment helpers
+(`tsEvaNanRunningVariance` and `tsEvaNanRunningStatistics`) and speeds up those
+helpers. The running-variance correction is small (order 1-2% on the bundled
+example data), so fitted GEV/GPD parameters and return levels change only
+slightly; the running third/fourth moment correction is larger, replacing
+previously incorrect diagnostic values with correct ones. These are intentional
+correctness fixes and are documented in NEWS.md.
+
 ## Test environments
 
 * local: Windows, R release
